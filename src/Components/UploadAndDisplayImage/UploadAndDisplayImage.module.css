@@ -1,0 +1,51 @@
+/* .imageUploaderLabel {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 6px;
+  padding: 0 0 0 px;
+} */
+
+
+
+
+.imageRemoveButton {
+    width: 31px;
+    height: 31px;
+    z-index: 1;
+    border-radius: 31px;
+    color: #fff;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff0000;
+    border: 2px solid #fff;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  .displayImages div {
+    box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+    width: fit-content;
+    width: auto;
+  }
+  .uploadedImage {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  @media screen and (max-width: 991px) {
+    .imageUploaderLabel {
+      font-size: 14px;
+    }
+  }
+  
+  @media screen and (max-width: 767px) {
+    .imageUploaderLabel {
+      font-size: 13px;
+    }
+  }
+  

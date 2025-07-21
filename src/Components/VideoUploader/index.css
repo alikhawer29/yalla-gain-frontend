@@ -1,0 +1,14 @@
+.videoRemoveButton{
+    width: 31px;
+    height: 31px;
+    z-index: 1;
+    border-radius: 31px;
+    color: #fff;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff0000;
+    border: 2px solid #fff;
+    outline: none !important;
+    box-shadow: none !important;
+}

@@ -1,0 +1,32 @@
+.booking-detail-card {
+    background-color: rgba(218, 206, 228, 0.50);
+    border-radius: 25px;
+    padding: 30px;
+}
+
+.booking-detail-card .smallProfileImage {
+    border-radius: 100px;
+}
+
+.booking-detail-card a {
+    color: #15355E;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+@media screen and (max-width: 1199.5px) {
+    .booking-detail-card {
+        padding: 20px;
+    }
+
+}
+@media screen and (max-width: 575.5px) {
+    .booking-detail-card {
+        padding: 15px;
+    }
+
+}

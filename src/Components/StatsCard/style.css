@@ -1,0 +1,153 @@
+.stats_card {
+  border-radius: 20px;
+  padding: 1.5rem 1rem;
+  background: #333 !important;
+  color: #fff !important;
+}
+
+/* .statsContent {
+    display: flex;
+    gap: 1rem;
+    flex-grow: 1;
+} */
+
+/* .statsImg {
+    flex-shrink: 0;
+} */
+
+.statsImg img {
+  height: 82px;
+  aspect-ratio: 2/1;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0.5rem;
+}
+
+.statsDataImg {
+  position: absolute;
+  right: -70px;
+  top: 20px;
+  bottom: 0;
+  margin: auto;
+  width: 190px;
+  opacity: 0.1;
+}
+
+.statsData {
+  flex-grow: 1;
+}
+
+.statsNumber {
+  margin-bottom: 0;
+  font-weight: 500;
+  font-size: 34px;
+  color: var(--blackColor);
+}
+
+.statsIcons {
+  height: 50px;
+  width: 50px;
+  border-radius: 10px;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.statsText {
+  margin: 0;
+  font-weight: 500;
+  font-size: 18px;
+  color: #333;
+  text-transform: uppercase;
+  text-wrap: auto;
+}
+
+.statsChange {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.statsChange p {
+  color: var(--whiteColor);
+}
+
+.graphCard {
+  border-radius: 20px;
+  border: 0.5px solid;
+  /* opacity: 0.5; */
+  background: #333;
+  padding: 2rem;
+}
+
+.statsGraph {
+  margin-right: -1.5rem;
+  margin-bottom: -15px;
+
+  & svg {
+    width: 200px;
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 1399px) {
+  .statsGraph {
+    margin-right: -8px;
+  }
+}
+
+
+@media screen and (max-width: 1366px) {
+  .statsImg {
+    padding: 10px 20px;
+  }
+
+  .statsNumber {
+    font-size: 30px;
+  }
+}
+
+@media screen and (max-width: 1199px) {
+
+  .statsNumber {
+    font-size: 26px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .statsImg {
+    padding: 8px 15px;
+  }
+
+  .statsNumber {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .statsGraph {
+    margin-right: -1.5rem;
+  }
+
+  .statsNumber {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .statsText {
+    font-size: 16px;
+  }
+
+  .statsNumber {
+    font-size: 20px;
+  }
+
+  .statsGraph {
+    /* margin-right: -1rem; */
+    display: none;
+  }
+
+}

@@ -1,0 +1,122 @@
+.sidebar {
+  width: 310px;
+  height: 100vh;
+  position: fixed;
+  transition: all 0.15s ease-in-out;
+  background: #333333;
+  z-index: 4;
+  top: 70px;
+  padding-bottom: 84px;
+  overflow-y: auto;
+  white-space: nowrap;
+}
+
+.sideLink {
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #fff !important;
+  display: block;
+  padding: 0.8rem 1rem;
+  background: #fff0;
+  /* border-bottom: 1px solid #ccc; */
+  border-radius: 0px 15px 15px 0;
+  position: relative;
+  transition: 0.15s linear;
+  display: flex;
+}
+
+.sideLink:hover,
+.sideLink.active {
+  svg {
+    color: #fff !important;
+    /* path {
+      fill: #fff !important;
+    } */
+  }
+}
+
+.sidebar-li {
+  margin-top: 8px;
+}
+
+.sideLink:hover,
+.sideLink.active {
+  color: #fff !important;
+  background: #118076;
+  border-color: var(--primaryColor);
+}
+
+/* 
+.sideLink:hover .sideIcon img, .sideLink.active  .sideIcon img{
+    filter: invert(300%) brightness(200%);
+} */
+/* .sideIcon img{
+    filter: invert(300%) brightness(200%);
+} */
+.sideIcon {
+  font-size: 16px;
+  margin-right: 0.5rem;
+}
+
+/*----- Sidebar Collapsed Start -----*/
+
+.sidebar.collapsed {
+  width: 60px;
+  text-align: center;
+}
+
+.sidebar.collapsed .sideLinkText {
+  display: none;
+}
+
+.sideLinkText {
+  white-space: initial;
+}
+
+.sidebar.collapsed .sideLink:hover .sideLinkText {
+  display: block;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primaryColor);
+  color: #fff;
+  z-index: 999;
+  position: absolute;
+  padding: 0.8rem 1rem;
+  white-space: nowrap;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  cursor: grab;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(69, 69, 69, 0.2);
+  border-radius: 8px;
+  cursor: grab;
+}
+
+.sidebar::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
+}
+
+/*----- Sidebar Collapsed End -----*/
+
+@media screen and (max-width: 767px) {
+  .sidebar.collapsed {
+    width: 0;
+  }
+
+  .sidebar {
+    padding-bottom: 0;
+  }
+
+  .sidebar.collapsed .sideLink {
+    display: none;
+  }
+}

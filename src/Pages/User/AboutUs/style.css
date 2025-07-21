@@ -1,0 +1,13 @@
+.about_us_content_wrapper {
+    border-radius: 12.507px;
+    border: 1.251px solid #15355E;
+    background: rgba(21, 53, 94, 0.10);
+    box-shadow: 0px 5.003px 31.268px 0px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+}
+
+@media screen  and (max-width:575.5px){
+    .about_us_content_wrapper{
+        padding: 15px;
+    }
+}

@@ -1,0 +1,42 @@
+.admin-layout .site_card {
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0px;
+}
+.admin-layout .notificationWrapper.unread{
+    border: 0;
+    background-color: #e7f7ff;
+    border-radius: 0;
+}
+.admin-layout .notificationWrapper{
+    border-bottom: 1px solid #F2F2F2;
+    border-radius: 0px;
+    margin-bottom: 6px;
+}
+.admin-layout .dateTime p{
+    color: #999;
+}
+
+.admin-layout .dateTime p svg {
+    color: #999999;
+}
+.admin-layout .notificationText{
+    color: #999;
+}
+.admin-layout .unread .notificationText{
+    color: #000;
+}
+.admin-layout .unread .dateTime p{
+    color: #000;
+}
+.admin-layout .site_card .slimSelect{
+    padding: 8px 40px 8px 12px;
+}
+.admin-layout .newNotificationCount p {
+    color: #fff;
+    padding: 6px 15px;
+}
+.admin-layout .notificationsBodyHeader{
+    align-items: center;
+}

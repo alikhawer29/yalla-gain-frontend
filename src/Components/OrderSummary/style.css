@@ -1,0 +1,15 @@
+.location-container {
+    display: flex;
+    align-items: center;
+    /* Vertically center the text and icon */
+    gap: 8px;
+    /* Space between text and icon */
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+}
+
+.location-icon {
+    cursor: pointer;
+    color: orangered;
+    font-size: 20px;
+}

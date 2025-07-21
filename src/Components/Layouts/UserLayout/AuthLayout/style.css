@@ -1,0 +1,181 @@
+.user-login {
+  background-position: center;
+  min-height: calc(100vh - 163px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background-size: cover;
+  justify-content: center;
+  background-image: url(../../../../Assets/images/authBg.jpg);
+  background-repeat: no-repeat;
+  padding: 45px 0;
+  margin-top: 40px;
+}
+
+.auth-wrap {}
+
+.authFormWrapper {
+  /* background: #E9E9E9; */
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.10);
+}
+
+.login-social-acount {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.login-social-acount a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50px;
+  background: #ededed;
+  filter: drop-shadow(0px 2px 30px rgba(0, 0, 0, 0.2));
+  transition: 150ms all ease;
+}
+
+.login-social-acount .google-icon {
+  max-width: 25px;
+}
+
+.login-social-acount a svg {
+  font-size: 22px;
+  transition: 250ms all ease;
+}
+
+.login-social-acount a:hover {
+  opacity: 1;
+  transition: 250ms all ease;
+  border-color: #C8AA61;
+}
+
+.login-social-acount a:hover {
+  background-color: #dbdbdb;
+}
+
+/* .login-social-acount a:hover svg{ color: var(--white);} */
+
+.login-social-acount .fa-facebook-f path {
+  fill: #3D578F;
+}
+
+.login-social-acount .fa-apple path {
+  fill: #090909;
+}
+
+
+/* .auth_title {
+  color: #fff;
+  font-size: 70px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: -3.75px;
+  text-transform: capitalize;
+}
+.authFormWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #E9E9E9;
+  box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.10);  
+  position: relative;
+  border-radius: 26px;
+}
+
+.auth_card_title {
+  font-size: 56px;
+} */
+.user-login .authForm {
+  padding: 3rem 3rem;
+  width: 100%;
+  border-radius: 20px;
+  background: #FFF;
+  box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.10);
+}
+
+/* .authTitle {
+  font-weight: 600;
+  font-size: 50px;
+  text-transform: capitalize;
+  color: var(--lightblackColor);
+}
+.auth-sub-title {
+  color: #fff;
+  font-size: 40px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.authPara {
+  font-weight: 400;
+  font-size: 16px;
+  color: #9B9797;
+} */
+@media screen and (max-width: 1399px) {
+  .user-login .authForm {
+    padding: 2rem 2rem;
+  }
+
+  .auth_card_title {
+    font-size: 40px !important;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .authTitle {
+    font-size: 43px;
+  }
+
+  .authLogo img {
+    width: 250px;
+  }
+
+  .auth_card_title {
+    font-size: 42px !important;
+  }
+
+  .auth-sub-title {
+    font-size: 35px;
+  }
+}
+
+@media screen and (max-width: 1199px) {
+  .authForm {
+    padding: 2rem 2rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .authTitle {
+    font-size: 35px;
+  }
+
+  .auth_card_title {
+    font-size: 36px !important;
+  }
+
+  .auth-sub-title {
+    font-size: 30px;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .authForm {
+    padding: 2rem 1rem !important;
+  }
+  .authTitle {
+    font-size: 30px;
+  }
+  .authLogo img {
+    width: 200px;
+  }
+
+  .auth_card_title {
+    font-size: 25px !important;
+  }
+}

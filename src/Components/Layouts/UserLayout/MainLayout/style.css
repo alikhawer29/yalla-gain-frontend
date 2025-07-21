@@ -1,0 +1,84 @@
+
+.slick-slider .slick-dots {
+  bottom:auto;
+  width: auto;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  }
+  
+.slick-slider li {
+  display: block;
+  margin: 10px 0px;
+  }
+.slick-slider .slick-dots li button:before{
+    font-size: 6px;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    content: '';
+    background: #fff;
+    border-radius: 50px;
+    opacity: 1;
+  }
+.slick-slider .slick-dots li.slick-active button{
+  border: 1px solid #fff;
+  border-radius: 50px;
+  }
+
+
+.user-layout .container-fluid {
+  max-width:100%;
+  margin: 0 auto; /* Center the container horizontally */
+}
+
+
+/* Small devices (sm): 576px and up */
+@media (min-width: 576px) {
+  .user-layout .container-fluid {
+    max-width: 540px;
+  }
+}
+
+/* Medium devices (md): 768px and up */
+@media (min-width: 768px) {
+  .user-layout .container-fluid {
+    max-width: 720px;
+  }
+}
+
+/* Large devices (lg): 992px and up */
+@media (min-width: 992px) {
+  .user-layout .container-fluid {
+    max-width: 960px;
+  }
+}
+
+/* Extra large devices (xl): 1200px and up */
+@media (min-width: 1200px) {
+  .user-layout .container-fluid {
+    max-width: 1140px;
+  }
+}
+
+/* Extra extra large devices (xxl): 1400px and up */
+@media (min-width: 1400px) {
+  .user-layout .container-fluid {
+    max-width: 1320px;
+  }
+}
+
+/* XXL devices (larger desktops, 1600px and up) */
+@media (min-width: 1400px) and (max-width: 1666px) {
+  .user-layout .container-fluid {
+    max-width: 1400px; /* Adjust for large desktops */
+    padding: 0 30px;
+  }
+}
+
+@media (min-width: 1667px) {
+  .user-layout .container-fluid {
+    max-width: 1680px; /* Adjust as per your layout */
+  }
+}

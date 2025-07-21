@@ -1,0 +1,47 @@
+.authForm .multi-select .select__control {
+  border: 1px solid #dbdbdb;
+  border-radius: 50px;
+}
+
+.authForm .multi-select .select__control--is-focused {
+  border-color: #15355e;
+  box-shadow: none;
+}
+
+.authForm .multi-select .select__value-container {
+  padding: 0 15px;
+}
+
+.authForm .multi-select .select__input-container {
+  padding: 12px 0;
+  margin: 0;
+}
+
+.authForm .multi-select .select__indicator {
+  color: #15355e;
+}
+.authForm .multi-select .css-1u9des2-indicatorSeparator{
+  display: none;
+}
+/* .authForm .multi-select {
+  width: 30%;
+  height: 45px;
+}
+
+.authForm .multi-select .select__control {
+  background-color: #F9FBFF;
+  border: none;
+}
+
+.authForm .multi-select .select__placeholder {
+  color: #868686;
+  font-weight: 500;
+}
+
+.authForm .multi-select .select__indicator-separator {
+  background-color: #868686;
+}
+
+.authForm .multi-select .select__indicator svg {
+  fill: #868686;
+} */

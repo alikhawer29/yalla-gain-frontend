@@ -1,0 +1,16 @@
+.doller {
+  position: absolute;
+  right: 15px;
+  top: 50px;
+  pointer-events: none;
+  color: #adadad;
+}
+input[type="number"].hiddenArrows::-webkit-outer-spin-button,
+input[type="number"].hiddenArrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"].hiddenArrows {
+  -moz-appearance: textfield;
+}

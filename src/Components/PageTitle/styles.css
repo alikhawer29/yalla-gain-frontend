@@ -1,0 +1,46 @@
+.user-page-title { 
+    background: linear-gradient(86deg, #0B0B1D 3.56%, #003700 151.03%);
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+.user-page-title h2{ font-size: 75px;
+    color: #fff;
+    line-height: 1.1;
+}
+
+@media(max-width:1666px){
+    .user-page-title{
+        padding:50px 0;
+    }
+    .user-page-title h2 {
+        font-size: 50px;
+    }
+}
+
+/* @media(max-width:1199px){
+    .user-page-title{
+        padding:50px 0;
+    }
+    .user-page-title h2 {
+        font-size: 50px;
+    }
+} */
+
+@media(max-width:991px){
+    .user-page-title{
+        padding:35px 0;
+    }
+    .user-page-title h2 {
+        font-size: 42px;
+    }
+}
+@media(max-width:767px){
+    .user-page-title{
+        padding:25px 0;
+    }
+    .user-page-title h2 {
+        font-size: 32px;
+    }
+}
+

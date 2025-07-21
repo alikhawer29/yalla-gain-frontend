@@ -1,0 +1,26 @@
+.modalpara {
+  max-width: 320px;
+  margin-bottom: 10px !important;
+  margin: 0 auto;
+  color: #333333;
+  text-transform: capitalize;
+  font-size: 18px
+}
+
+.modalButton {
+  font-size: 16px;
+}
+
+.modal-backdrop {
+  --bs-backdrop-opacity: 0.8;
+}
+
+.modal-body .btn-primary {
+  padding: 15px 15px;
+  min-width: 150px;
+}
+
+.modal-body .btn-secondary {
+  padding: 15px 15px;
+  min-width: 150px;
+}

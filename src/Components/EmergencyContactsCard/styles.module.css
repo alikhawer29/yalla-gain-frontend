@@ -1,0 +1,7 @@
+.emergencyCard{
+    min-width: 240px;
+    border-radius: 20px;
+    background: rgba(220, 220, 220, 0.10);
+    box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.10);
+    padding: 1rem 1rem 1rem 1.5rem;
+}

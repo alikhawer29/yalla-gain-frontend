@@ -1,0 +1,71 @@
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-checkbox {
+  display: none;
+}
+
+.toggle-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: var(--primaryColor);
+  border-radius: 25px;
+  width: 40px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.toggle-checkbox + .toggle-label {
+  background-color: #ffffff;
+  border: 1px solid #212552;
+}
+
+.toggle-slider {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: rgb(0, 146, 32);
+  transition: transform 0.3s;
+  transform: translateX(3px);
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background-color: var(--primaryColor);
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-slider {
+  transform: translateX(20px);
+}
+
+.toggle-text {
+  font-size: 16px;
+  color: var(--blackColor);
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 3px;
+}
+
+.form-check-input[type=checkbox] {
+  cursor: pointer;
+  border-color: #15355e !important;
+}
+
+.form-check-label {
+  cursor: pointer;
+}
+
+.form-check-input[type=checkbox]:checked {
+  background-color: #15355e;
+
+}
+
+.form-check-input[type=checkbox]:focus {
+  box-shadow: none;
+  border-color: #15355e !important;
+}

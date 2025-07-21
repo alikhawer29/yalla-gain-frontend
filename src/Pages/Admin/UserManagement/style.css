@@ -1,0 +1,58 @@
+.preparing {
+  background: #f2f2f2;
+  display: block;
+  border: 1px solid #c0c3c9;
+  border-radius: 10px;
+  padding: 12px 30px;
+  font-size: 16px;
+  color: #999999;
+  font-weight: normal;
+}
+.orderDeBox {
+  border: 2px solid rgb(254 49 86 / 27%);
+  background: #ffebeb;
+  text-align: center;
+  padding: 30px;
+  border-radius: 3px;
+}
+
+.borderBox {
+  border: 1px solid rgb(254 49 86 / 26%);
+  border-radius: 5px;
+  padding: 10px 10px;
+}
+
+.nav-tabs.tabsOrders {
+  margin: 0;
+  border: 0;
+  gap: 1rem;
+}
+.nav-tabs.tabsOrders li {
+  flex: unset !important;
+  width: auto;
+}
+
+.nav-tabs.tabsOrders li button {
+  background: #ffe1a7;
+  font-size: 14px;
+  color: #d68d00;
+  border-radius: 5px;
+  padding: 10px 40px;
+}
+.nav-tabs.tabsOrders li button.active {
+  background: #f1b84b;
+  color: #fff;
+}
+.productThumbnail img {
+  max-width: 65px;
+  height: 60px;
+  object-fit: cover;
+  width: 100%;
+  object-position: center;
+  border-radius: 10px;
+}
+@media screen and (max-width: 1199px) {
+  .over-flow-x {
+    overflow-x: scroll;
+  }
+}

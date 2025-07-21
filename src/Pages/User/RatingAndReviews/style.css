@@ -1,0 +1,93 @@
+/* Review */
+
+.rating-reviews{}
+.reviews-bar{}
+.reviews-bar .reviews-item label{
+  flex-shrink:0 ;
+}
+.reviews-bar .reviews-item:not(:last-child){
+  margin-bottom: 7px;
+}
+.reviews-bar .reviews-item .progress{
+  flex-grow: 1;
+  background-color: #E8EAEB;
+  height: 12px;
+  min-width: 270px;
+}
+.bg-progress{
+  background-color: #FFE420;
+}
+.reviews-item label{
+  color: #495560;
+  min-width: 80px;
+}
+.reviews-item label,
+.reviews-item span {
+  font-size: 17px;
+  font-weight: 700;
+}
+.reviews-item span{
+  color:#778088;
+  min-width: 50px;
+}
+
+.reviews-info h3{
+  font-size: 40px;
+  margin-bottom: 0;
+}
+.reviews-info h3 span{
+  font-size: 35px;
+}
+.reviews-info .review-count{
+  color: #666666;
+  font-size: 18px;
+}
+
+.review-tabs .btn{
+  padding:10px 30px;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid #15355E;
+}
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 60px;
+  background: lightgray 50% / cover no-repeat, #FFF;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.15); 
+  border: 3px solid transparent;
+}
+.card-comment {
+  border-bottom: 1px solid #d7d7d7;
+  padding: 0rem 0 1.5rem 0;
+}
+.card-comment:last-child{
+  padding-bottom: 0px;
+  border-bottom: none;
+}
+.comment-info{
+  max-width: 250px;
+  min-width: 250px;
+}
+.comment-info .star-rating{
+  color: #E9D225;
+  font-size: 20px;
+}
+.comment-info h6{
+  color: #1C2B38;
+  font-weight: 700;
+  font-size: 17px;
+}
+.comment-info .published-date{
+  color: #666;
+  font-size: 16px;
+}
+.comment-text p{
+  color: #666666;
+  line-height: 1.5;
+  margin-bottom: 0px;
+}

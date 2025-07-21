@@ -1,0 +1,52 @@
+.subscriptions-card {
+  border-radius: 12px;
+  border: 1px solid #D9D9D9;
+  background: #E5E5E5;
+  padding: 2.5rem 2rem;
+  transition: 0.5s ease-in-out;
+}
+.subscriptions-card:hover{
+  background: #e1e1e1;    
+}
+
+.subscriptions-card .package-name h2{
+  font-size: 25px;
+  color: var(--lightblackColor);
+}
+.subscriptions-card .package-name p{
+  font-size: 17px;
+  color: #666666;
+}
+.subscriptions-card .package-price h3 {
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--lightblackColor);
+  line-height: 1;
+}
+.subscriptions-card .package-price span {
+  font-size: 14px;
+  font-weight: 300;
+  color: #666666;
+}
+.subscriptions-card .card-body{
+  min-height: 250px;
+}
+.subscriptions-card .card-body h4{
+  font-size: 19px;
+}
+
+.subscriptions-card .package-feature{
+  list-style: none;
+}
+.subscriptions-card .package-feature li{
+  font-size: 15px;
+  color: #6C6C6C;
+  line-height: 1.5;
+  padding-top:9px;
+  padding-bottom:9px;
+}
+.subscriptions-card .package-feature li:last-child{
+  padding-bottom:0px;
+  
+}
+.subscriptions-card .package-feature svg{}

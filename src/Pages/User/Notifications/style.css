@@ -1,0 +1,32 @@
+.notification-page .notificationWrapper {
+  padding: 2rem 1.7rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0px;
+  border: 1px solid #F2F2F2;
+background: #FFF;
+  /* box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.10); */
+}
+.notification-page .notificationText{
+  color: #666;
+  margin-bottom: 5px;
+}
+.notification-page .notificationWrapper.unread{
+  background-color: rgb(197 228 246 / 50%);
+}
+.notification-page .notificationWrapper.unread .notificationText{
+  color: #000;
+}
+.notification-page .slimSelect{
+  padding: 8px 50px 8px 10px;
+}
+.notification-page .slimSelect + .chevron-icon{
+  transform: translateY(-50%);
+  top: 50% !important;
+}
+
+
+@media screen and (max-width: 575.5px) {
+  .notification-page .notificationWrapper {
+    padding: 1rem;
+  }
+}

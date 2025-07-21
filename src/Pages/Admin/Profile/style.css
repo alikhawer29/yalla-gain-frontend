@@ -1,0 +1,46 @@
+.profileImage {
+    display: inline-block;
+    position: relative;
+}
+
+.upload-btn {
+    font-size: 16px;
+    background: var(--primaryColor);
+    color: #fff;
+    border-radius: 99px;
+    width: 35px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    cursor: pointer;
+}
+.btnCP{
+    background: transparent;
+    border: 0;
+    text-decoration: underline;
+    color: #333333;    
+}
+.password-wrap button.eyeButton{
+    color: var(--grayColor);
+}
+.adminProfileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 100px;
+    & img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+@media screen and (max-width: 575.5px) {
+    .adminProfileImage{
+        width: 120px;
+        height: 120px;
+    }
+}
