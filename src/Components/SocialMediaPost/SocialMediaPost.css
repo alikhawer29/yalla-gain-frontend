@@ -1,11 +1,11 @@
 .post {
-  padding: 26px 20px;
+  padding: 26px 0px;
   margin: 16px 0;
   margin-left: auto;
   margin-right: auto;
   border-radius: 10px;
-  background: #fff;
-  box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.08);
+  background: #333;
+  /* box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.08); */
 }
 
 .post-header,
@@ -32,12 +32,12 @@
   margin-left: 16px;
 }
 .post-user-info h2 {
-  color: #333;
+  color: #fff;
   font-weight: 600;
   font-size: 18px;
 }
 .post-comments-user-info h4 {
-  color: #333;
+  color: #fff;
   font-weight: 600;
   font-size: 15px;
 }
@@ -57,7 +57,7 @@
 }
 .post-content {
   margin-top: 16px;
-  color: #333;
+  color: #fff;
   font-size: 15px;
   line-height: 24px; /* 150% */
 }
@@ -87,12 +87,13 @@
 .post-interactions span {
   font-size: 13px;
   font-weight: 600;
+  color: #fff;
 }
 
 .likes-comments {
   display: flex;
   align-items: center;
-  color: #333;
+  color: #fff;
   font-size: 13px;
   text-transform: capitalize;
   cursor: pointer;
@@ -119,6 +120,7 @@
 
 .comment p {
   margin: 0;
+  color: #fff;
 }
 
 .comment small {
@@ -138,7 +140,7 @@
 .reaction-user{
   display: flex;
   border-radius: 5px;
-  background: #fff;
+  background: #333;
   box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
   padding: 16px 20px;
   margin-top: 12px;
@@ -147,7 +149,7 @@
 .comment-user {
   display: flex;
   border-radius: 5px;
-  background: #fff;
+  background: #333;
   box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
   padding: 28px 20px 12px 18px;
   margin-top: 12px;
@@ -161,13 +163,13 @@
 }
 .reactions-user-list p,
 .comments-user-list h6 {
-  color: #333;
+  color: #fff;
   font-weight: 600;
   font-size: 15px;
   margin: 0;
 }
 .comments-user-list p {
-  color: #333;
+  color: #fff;
   font-size: 15px;
   margin: 0;
 }
@@ -175,4 +177,26 @@
   position: absolute;
   right: -4px;
   bottom: -1px;
+}
+
+.post .elipses-wrapper .classicToggle{
+  border: none;
+  outline: none;
+  font-size: 24px;
+}
+.post .dropdown-menu {
+  background: #333 !important;
+  & button{
+    color: #fff !important;
+  }
+}
+
+
+@media screen and (max-width: 575.5px) {
+  .post-user-info{
+    margin-left: 6px;
+  }
+  .post .elipses-wrapper .classicToggle{
+    padding: 0px;
+  }
 }

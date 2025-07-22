@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 // import { getDetails } from "../../../Services/Api";
 import { images } from "../../../Assets";
@@ -125,7 +125,7 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
     showModal("", `User status has been changed to ${newStatusValue === "1" ? "Active" : "Inactive"} successfully.`, null, true);
   };
 
-  const { email, phone_number, user_name, date_of_birth } = profileData;
+  const { email, phone_number, user_name, date_of_birth, id: user_id } = profileData;
   return (
     <DashboardLayout pageTitle="User Details">
       <div className="user-details">
@@ -156,8 +156,11 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
             </div>
           </div>
           <div className="col-12">
-            <div className="detail-box-img mb-4">
+            <div className="d-flex align-items-center gap-5 mb-4">
+            <div className="detail-box-img">
               <img src={profileData?.UserImage ?? images.placeholder} alt="User" />
+            </div>
+            <Link className="btn btn-primary" to={`/admin/user-management/${user_id}/user-post`}>User Post</Link>
             </div>
             <div className="row">
               <div className="col-xxl-9 col-lg-11">

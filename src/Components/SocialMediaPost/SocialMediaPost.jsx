@@ -63,7 +63,7 @@ const SocialMediaPost = ({ postData, showModal }) => {
           </div>
           <Dropdown className="elipses-wrapper">
             <Dropdown.Toggle variant="transparent " className="notButton classicToggle ">
-              <FaEllipsisH />
+              <FaEllipsisH color="#fff" />
             </Dropdown.Toggle>
             <Dropdown.Menu
               onClick={() => {
@@ -115,7 +115,7 @@ const SocialMediaPost = ({ postData, showModal }) => {
                 </div>
                 <Dropdown className="elipses-wrapper" style={{ height: 10, position: "relative", top: "-15px" }}>
                   <Dropdown.Toggle variant="transparent " className="notButton classicToggle">
-                    <FaEllipsisH />
+                    <FaEllipsisH color="#fff" />
                   </Dropdown.Toggle>
                   <Dropdown.Menu
                     align="end"
@@ -163,8 +163,8 @@ const SocialMediaPost = ({ postData, showModal }) => {
         background={"gray"}
         size="lg"
       >
-        <div className="d-flex justify-content-between align-items-start reactionsModal">
-          <h4 className="modalHeading">People Who Reacted</h4>
+        <div className="d-flex justify-content-between align-items-center reactionsModal">
+          <h4 className="modalHeading text-start text-white mb-0">People Who Reacted</h4>
           <button className="closeButton" onClick={() => setShowReactions(false)}>
             <IoClose size={24} />
           </button>
@@ -176,12 +176,12 @@ const SocialMediaPost = ({ postData, showModal }) => {
               <div key={reaction} className="reaction me-2" style={{ zIndex: i + 1 }}>
                 {(IconToBeUsed = reactionsIcons[reaction])}
                 <IconToBeUsed width={20} height={20} />
-                <span className="ms-1">{formatNumber(interactions.reactions[reaction])}</span>
+                <span className="ms-1 text-white">{formatNumber(interactions.reactions[reaction])}</span>
               </div>
             ))}
 
           <div className="d-flex flex-row-reverse">
-            <span className="mx-2 me-3">All ({formatNumber(sumReactions(interactions.reactions))})</span>
+            <span className="mx-2 me-3 text-white">All ({formatNumber(sumReactions(interactions.reactions))})</span>
             {Object.entries(interactions.reactions)
               .slice(0, Math.min(3, Object.entries(interactions.reactions).length))
               .reverse()
@@ -218,8 +218,8 @@ const SocialMediaPost = ({ postData, showModal }) => {
         size="lg"
         background="gray"
       >
-        <div className="d-flex justify-content-between align-items-start reactionsModal">
-          <h2 className="modalHeading">Comments</h2>
+        <div className="d-flex justify-content-between align-items-center reactionsModal">
+          <h2 className="modalHeading text-start mb-0">People Who commented</h2>
           <button className="closeButton" onClick={() => setShowComments(false)}>
             <IoClose size={24} />
           </button>
@@ -234,17 +234,17 @@ const SocialMediaPost = ({ postData, showModal }) => {
                   <div className="d-flex justify-content-between">
                     <h6>{comment.userName}</h6>
                     <Dropdown className="elipses-wrapper" style={{ height: 10, position: "relative", top: "-15px" }}>
-                      <Dropdown.Toggle variant="transparent " className="notButton classicToggle p-0">
-                        <FaEllipsisH />
+                      <Dropdown.Toggle variant="transparent " className="notButton classicToggle p-0" style={{ border: "none"}}>
+                        <FaEllipsisH color="#fff" />
                       </Dropdown.Toggle>
-                      <Dropdown.Menu align="end" className="dropdownMenu px-3 cp">
+                      <Dropdown.Menu align="end" className="dropdownMenu px-3 cp" style={{background: "#333"}}>
                         <button
                           className="d-flex gap-3 align-items-center border-0 bg-transparent rounded p-0"
                           onClick={() => {
                             handleDeleteComment();
                           }}
                         >
-                          <FaTrash />
+                          <FaTrash color="#fff" />
                           <p className="text-decoration-none m-0">Delete</p>
                         </button>
                       </Dropdown.Menu>
@@ -265,7 +265,7 @@ const SocialMediaPost = ({ postData, showModal }) => {
                           ))}
                       </div>
                     )}
-                    {comment?.reactions && <span className="ms-1">{formatNumber(sumReactions(comment.reactions))}</span>}
+                    {comment?.reactions && <span className="ms-1 text-white">{formatNumber(sumReactions(comment.reactions))}</span>}
                   </div>
                 </div>
               </div>
