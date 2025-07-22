@@ -9,14 +9,14 @@ import { FaXmark } from "react-icons/fa6";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { images } from "../../../Assets";
 // import SendIcon from "../../../Assets/images/svg/Send.svg?react";
+import CustomButton from "../../../Components/CustomButton";
 import CustomInput from "../../../Components/CustomInput/index";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import { chat_box, loginCredentials, sidebar } from "../../../Config/data";
 import withModal from "../../../HOC/withModal";
-import { usePageTitleUser } from "../../../Utils/helper";
+import { usePageTitle } from "../../../Utils/helper";
 import Styles from "./chat.module.css";
 import "./style.css";
-import CustomButton from "../../../Components/CustomButton";
 
 const Chat = ({ showModal }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +34,7 @@ const Chat = ({ showModal }) => {
     setChatBox(chat_box);
     setCurrentUserData(loginCredentials);
   }, []);
-  usePageTitleUser("Chat");
+  usePageTitle("Chat");
   const handleUserClick = (user) => {
     // Handle user click logic
   };

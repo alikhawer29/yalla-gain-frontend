@@ -262,17 +262,17 @@
 .userMenuItem {
   font-size: 15px;
   text-decoration: none;
-  color: #333;
+  color: #fff;
   display: block;
-  background: #f5f5f5;
+  background: #333;
   padding: 0.5rem 0.5rem;
   transition: 0.3s linear;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #111;
 }
 
 .userMenuItem:hover {
-  color: #15355E;
-  background-color: #C5E4F6;
+  color: #fff;
+  background-color: #118076;
 }
 
 /* @media screen and (max-width: 991px) {

@@ -5,5 +5,5 @@
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-l
-  RewriteRule . irshad/index.html [L]
+  RewriteRule . yalla/index.html [L]
 </IfModule>
