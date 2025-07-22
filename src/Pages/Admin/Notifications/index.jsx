@@ -6,23 +6,20 @@ import CustomPagination from "../../../Components/CustomPagination";
 const Notifications = () => {
   const apiEndpoint = `/admin-api/notifications`;
   return (
-  
-  <DashboardLayout pageTitle="Notifications">
-   
-  <div className="dashCard container-fluid">
-     <div className="row mb-4">
-      <div className="col-12">
-        <h2 className="mainTitle">Notifications</h2>
+    <DashboardLayout pageTitle="Notifications">
+      <div className="dashCard container-fluid">
+        <div className="row mb-4">
+          <div className="col-12">
+            <h2 className="mainTitle">Notifications</h2>
+          </div>
+        </div>
+        <ConsolidatedNotifications apiEndpoint={apiEndpoint} />
+        <div className="mt-4">
+          <CustomPagination pagination={`pagination`} setFilters={`setFilters`} />
+        </div>
       </div>
-    </div>
-    <ConsolidatedNotifications apiEndpoint={apiEndpoint} />  
-    <CustomPagination 
-    pagination={`pagination`} 
-    setFilters={`setFilters`} 
-    />
-  </div>
-</DashboardLayout>
-  )
+    </DashboardLayout>
+  );
 };
 
 export default Notifications;

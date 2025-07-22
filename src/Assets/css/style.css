@@ -209,7 +209,7 @@ a:hover {
   background: #e7e7e7 !important;
 }
 
-.green_color{
+.green_color {
   color: #118076;
 }
 
@@ -351,7 +351,7 @@ a:hover {
 .closeButton {
   font-size: 16px;
   color: var(--blackColor);
-  background: transparent;
+  background: var(--whiteColor);
   width: 30px;
   height: 30px;
   border-radius: 99px;
@@ -367,7 +367,7 @@ a:hover {
 
 .closeButton:hover {
   color: var(--whiteColor);
-  background: #15355E;
+  background: #118076;
 }
 
 .modalImage {
@@ -389,7 +389,7 @@ a:hover {
 }
 
 .modalHeading {
-  color: var(--blackColor);
+  color: var(--whiteColor);
   text-align: center;
   font-size: 22px;
   font-weight: 700;
@@ -446,8 +446,9 @@ a:hover {
 /*----- Radio Css End -----*/
 
 .dashCard {
-  border-radius: 15px;
-  background: #FFF;
+  border-radius: 20px;
+  border: 0.5px solid #AAA;
+  background: #333;
   box-shadow: 0px 4px 60px 0px rgba(247, 236, 232, 0.10);
   padding: 1.5rem 1.5rem;
 }
@@ -463,13 +464,13 @@ a:hover {
   font-weight: 700;
   text-transform: capitalize;
   font-size: 36px;
-  color: #000000;
+  color: #fff;
 }
 
 .sub-title {
   font-weight: 500;
   font-size: 26px;
-  color: #000000;
+  color: #fff;
 }
 
 .secondaryTitle {
@@ -740,12 +741,12 @@ a:hover {
   position: relative;
 }
 
-.radio-checkbox-container input:checked + .custom-checkbox {
+.radio-checkbox-container input:checked+.custom-checkbox {
   background-color: #4caf50;
   border-color: #4caf50;
 }
 
-.radio-checkbox-container input:checked + .custom-checkbox::after {
+.radio-checkbox-container input:checked+.custom-checkbox::after {
   content: "\2713";
   /* Unicode for checkmark */
   color: white;
@@ -756,7 +757,7 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
-.radio-checkbox-container input + .custom-checkbox:hover {
+.radio-checkbox-container input+.custom-checkbox:hover {
   border-color: #4caf50;
 }
 
@@ -941,7 +942,7 @@ h3.page-title {
 
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-link:hover,
-.nav-tabs .show > .nav-link {
+.nav-tabs .show>.nav-link {
   color: var(--bs-white);
   background: var(--primBtn);
   border-color: var(--primBtn);
@@ -993,7 +994,7 @@ h3.page-title {
 
 .style-underline-tabs .nav-link.active:after,
 .style-underline-tabs .nav-link:hover:after,
-.style-underline-tabs .show > .nav-link:after {
+.style-underline-tabs .show>.nav-link:after {
 
   opacity: 1;
   /* Show underline on hover */
@@ -1001,7 +1002,7 @@ h3.page-title {
 
 .style-underline-tabs .nav-link.active,
 .style-underline-tabs .nav-link:hover,
-.style-underline-tabs .show > .nav-link {
+.style-underline-tabs .show>.nav-link {
   background: transparent;
   color: #333;
 }
@@ -1036,7 +1037,7 @@ h3.page-title {
 
 .nav-pills .nav-link.active,
 .nav-pills .nav-link:hover,
-.nav-pills .show > .nav-link {
+.nav-pills .show>.nav-link {
   color: var(--bs-white);
   background: linear-gradient(261deg, #1a8c1a 45.38%, #1819ff 174.25%);
 }
@@ -1069,11 +1070,11 @@ h3.page-title {
 
 .user-layout .customPagination p.paginationText,
 .admin-layout .customPagination p.paginationText {
-  color: #999;
+  color: #fff;
 }
 
-.user-layout .customPagination > .row.align-items-baseline,
-.admin-layout .customPagination > .row.align-items-baseline {
+.user-layout .customPagination>.row.align-items-baseline,
+.admin-layout .customPagination>.row.align-items-baseline {
   align-items: center !important;
 }
 
@@ -1086,11 +1087,11 @@ h3.page-title {
 
 .user-layout .customPagination .page-item .page-link,
 .admin-layout .customPagination .page-item .page-link {
-  border-color: var(--pagiBorderColor);
+  border-color: #fff;
   border-style: solid;
   border-width: 1px 0px 1px 0px;
   padding: 10px 20px;
-  color: var(--paginationColor);
+  color: #fff;
   font-size: 14px;
   font-weight: 500;
   background-color: transparent;
@@ -1104,7 +1105,7 @@ h3.page-title {
   text-align: center;
   background: transparent;
   padding: 10px 20px;
-  color: #ffffff;
+  color: #fff;
   border-top: 1px solid var(--pagiBorderColor);
   border-bottom: 1px solid var(--pagiBorderColor);
   display: block;
@@ -1114,10 +1115,10 @@ h3.page-title {
 
 .user-layout .customPagination .page-item:first-child a,
 .admin-layout .customPagination .page-item:first-child a {
-  border-top-left-radius: 50px;
-  border-bottom-left-radius: 50px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   border-left: 1px solid var(--pagiBorderColor);
-  color: #000;
+  color: #fff;
   display: inline-flex;
   align-items: center;
   padding: 0 15px;
@@ -1135,10 +1136,10 @@ h3.page-title {
 
 .user-layout .customPagination .page-item:last-child a,
 .admin-layout .customPagination .page-item:last-child a {
-  border-top-right-radius: 50px;
-  border-bottom-right-radius: 50px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
   border-right: 1px solid var(--pagiBorderColor);
-  color: #000;
+  color: #fff;
   display: inline-flex;
   align-items: center;
   padding: 0 15px;
@@ -1204,7 +1205,7 @@ h3.page-title {
 .admin-layout .page-item .page-link:focus {
   z-index: 3;
   color: #ffffff;
-  background: #C5E4F6;
+  background: #118076 !important;
   border-color: var(--pagiBorderColor);
   outline: 0;
   /* box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);*/
@@ -1239,8 +1240,8 @@ h3.page-title {
   width: 1px;
 }
 
-.user-layout ul.pagination .break > a,
-.admin-layout ul.pagination .break > a {
+.user-layout ul.pagination .break>a,
+.admin-layout ul.pagination .break>a {
   border-color: var(--primaryColor);
   border-style: solid;
   border-width: 1px 0px 1px 0px;
@@ -1253,8 +1254,8 @@ h3.page-title {
   position: relative;
 }
 
-.user-layout ul.pagination .break > a::before,
-.admin-layout ul.pagination .break > a::before {
+.user-layout ul.pagination .break>a::before,
+.admin-layout ul.pagination .break>a::before {
   position: absolute;
   content: "";
   height: 16px;
@@ -1315,14 +1316,14 @@ h3.page-title {
 
 .detail-box h6 {
   font-size: 20px;
-  color: #15355E;
+  color: #fff;
   font-weight: 500;
   text-transform: capitalize;
 }
 
 .detail-box p {
   font-size: 18px;
-  color: #666;
+  color: #999;
   font-weight: 500;
 }
 

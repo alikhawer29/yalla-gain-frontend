@@ -13,7 +13,7 @@ const Profile = () => {
     <>
       <DashboardLayout pageTitle="My Profile">
         <div className="dashCard">
-          <div className="row ">
+          <div className="row mb-4">
             <div className="col-12">
               <h2 className="mainTitle">My Profile</h2>
             </div>
@@ -30,26 +30,27 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-xl-3 col-lg-6 mb-3">
+                    <div className="col-xl-4 col-lg-6 mb-3">
                       <div className="detail-box">
                         <h6 className="">First Name</h6>
                         <p className="">{user?.first_name}</p>
                       </div>
                     </div>
-                    <div className="col-xl-3 col-lg-6 mb-3">
+                    <div className="col-xl-4 col-lg-6 mb-3">
                       <div className="detail-box">
                         <h6 className="">Last Name</h6>
                         <p className="">{user?.last_name}</p>
                       </div>
                     </div>
-
-                    <div className="col-xl-3 col-lg-6 mb-3">
+                  </div>
+                  <div className="row">
+                    <div className="col-xl-4 col-lg-6 mb-3">
                       <div className="detail-box">
                         <h6 className="">Email Address</h6>
                         <p className="">{user?.email}</p>
                       </div>
                     </div>
-                    <div className="col-xl-3 col-lg-6 mb-3">
+                    <div className="col-xl-4 col-lg-6 mb-3">
                       <div className="detail-box">
                         <h6 className="">Phone No</h6>
                         <p className="d-flex align-items-center gap-2">
@@ -72,7 +73,7 @@ const Profile = () => {
                     />
                     <CustomButton
                       type="button"
-                      className="btn btn-outline-primary min-width-190"
+                      className="btn btn-secondary min-width-190"
                       text="Change Password"
                       onClick={() => {
                         navigate("/admin/change-password");

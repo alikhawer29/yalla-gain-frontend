@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import BackButton from "../../../Components/BackButton";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import { userAppointmentLogsData } from "../../../Config/data";
+import { userBookingLogsData } from "../../../Config/data";
 import { dateFormat, getCountryFlag, isNullOrEmpty } from "../../../Utils/helper";
 import "./style.css";
 
@@ -16,7 +16,7 @@ const AppointmentDetails = () => {
 
   useEffect(() => {
     const getAppointmentDetails = async () => {
-      const response = userAppointmentLogsData?.detail?.data?.find((app) => app.id === id);
+      const response = userBookingLogsData?.detail?.data?.find((app) => app.id === id);
 
       // const response = await getDetails(`/admin-api/users/${id}`);
       if (response) {

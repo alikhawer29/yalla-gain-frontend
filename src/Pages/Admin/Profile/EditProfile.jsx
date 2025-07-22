@@ -43,7 +43,7 @@ const EditProfile = ({ showModal }) => {
     startSubmitting();
     values.image = imageObject;
     showModal(
-      "",
+      "successfully",
       `Profile has been updated successfully`,
       // null,
       () => navigate(`/admin/profile`),
@@ -94,7 +94,7 @@ const EditProfile = ({ showModal }) => {
                       return (
                         <form onSubmit={handleSubmit}>
                           <div className="row mb-3">
-                            <div className="col-lg-4 mb-3 mt-4">
+                            <div className="col-lg-4 mb-md-5 mb-3 mt-4">
                               <div className="edit_profile_img">
                                 <img src={profilePic ?? images.userImage} alt="User" />
                                 <input
@@ -146,7 +146,7 @@ const EditProfile = ({ showModal }) => {
                                 </div>
                                 <div className="col-12 my-1">
                                   <label htmlFor="phoneInput" className="mainLabel">
-                                    Contact number<span className="text-danger">*</span>
+                                    Phone number<span className="text-danger">*</span>
                                   </label>
                                   <PhoneInput
                                     defaultCountry="US"
@@ -158,10 +158,10 @@ const EditProfile = ({ showModal }) => {
                                   />
                                   {touched.phone && errors.phone ? <div className="text-danger">{errors.phone}</div> : null}
                                 </div>
-                                <div className="col-12 my-1">
+                                {/* <div className="col-12 my-1">
                                   <label className="mainLabel mb-0">Email Address</label>
                                   <p className="grayColor">{values?.email}</p>
-                                </div>
+                                </div> */}
                               </div>
 
                               <div className="row mt-4">

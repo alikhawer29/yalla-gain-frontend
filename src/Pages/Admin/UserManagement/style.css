@@ -8,6 +8,7 @@
   color: #999999;
   font-weight: normal;
 }
+
 .orderDeBox {
   border: 2px solid rgb(254 49 86 / 27%);
   background: #ffebeb;
@@ -27,6 +28,7 @@
   border: 0;
   gap: 1rem;
 }
+
 .nav-tabs.tabsOrders li {
   flex: unset !important;
   width: auto;
@@ -39,10 +41,12 @@
   border-radius: 5px;
   padding: 10px 40px;
 }
+
 .nav-tabs.tabsOrders li button.active {
   background: #f1b84b;
   color: #fff;
 }
+
 .productThumbnail img {
   max-width: 65px;
   height: 60px;
@@ -51,6 +55,34 @@
   object-position: center;
   border-radius: 10px;
 }
+
+.viewLink {
+  text-decoration: none;
+  color: #118076 !important;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+
+.user-details .status1,
+.user-details .status1+.chevron-icon {
+  color: #00B612 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300b612' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.user-details .status0,
+.user-details .status0+.chevron-icon {
+  color: #D10000 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23d10000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.user-details .status-action label {
+  color: #fff;
+}
+
 @media screen and (max-width: 1199px) {
   .over-flow-x {
     overflow-x: scroll;

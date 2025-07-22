@@ -4,39 +4,52 @@
     box-shadow: none;
     padding: 0px;
 }
-.admin-layout .notificationWrapper.unread{
+
+.admin-layout .notificationWrapper.unread {
     border: 0;
-    background-color: #e7f7ff;
-    border-radius: 0;
+    background-color: rgba(17, 128, 118, 0.25);
+    border-radius: 20px;
+    border-color: #118076;
 }
-.admin-layout .notificationWrapper{
+
+.admin-layout .notificationWrapper {
     border-bottom: 1px solid #F2F2F2;
     border-radius: 0px;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
 }
-.admin-layout .dateTime p{
+
+.admin-layout .dateTime p {
     color: #999;
 }
 
 .admin-layout .dateTime p svg {
     color: #999999;
 }
-.admin-layout .notificationText{
+
+.admin-layout .notificationText {
     color: #999;
 }
-.admin-layout .unread .notificationText{
-    color: #000;
+
+.admin-layout .unread .notificationText {
+    color: #fff;
 }
-.admin-layout .unread .dateTime p{
-    color: #000;
+
+.admin-layout .unread .dateTime p {
+    color: #fff;
 }
-.admin-layout .site_card .slimSelect{
+
+.admin-layout .site_card .slimSelect {
     padding: 8px 40px 8px 12px;
+    border-radius: 5px;
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
 }
+
 .admin-layout .newNotificationCount p {
     color: #fff;
     padding: 6px 15px;
 }
-.admin-layout .notificationsBodyHeader{
+
+.admin-layout .notificationsBodyHeader {
     align-items: center;
 }

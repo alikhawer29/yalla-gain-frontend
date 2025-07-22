@@ -28,10 +28,12 @@
   background-color: transparent !important;
   box-shadow: none;
   outline: none !important;
+  color: #fff !important;
 }
 
 .PhoneInputInput:focus-visible {
   outline: none !important;
+  color: #fff !important;
 }
 .form-control{
   color: #FFF !important;

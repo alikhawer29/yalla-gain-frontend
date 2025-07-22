@@ -26,6 +26,9 @@
 }
 .password-wrap button.eyeButton{
     color: var(--grayColor);
+    &:hover{
+        color: #118076;
+    }
 }
 .adminProfileImage {
     width: 150px;

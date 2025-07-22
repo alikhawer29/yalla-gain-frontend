@@ -3,7 +3,7 @@ import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import CustomTable from "../../../Components/CustomTable";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import { userAppointmentLogsData } from "../../../Config/data";
+import { userBookingLogsData } from "../../../Config/data";
 import { appointmentLogsHeaders } from "../../../Config/TableHeaders";
 import { appointmentTypeOptions } from "../../../Config/TableStatus";
 import withFilters from "../../../HOC/withFilters";
@@ -13,7 +13,7 @@ const AppointmentLogs = ({ filters, setFilters, pagination, updatePagination }) 
   const [appointmentLogs, setAppointmentLogs] = useState([]);
   const fetchAppointmentLogs = async () => {
     try {
-      const response = userAppointmentLogsData;
+      const response = userBookingLogsData;
       if (response.status) {
         const { data, total, per_page, current_page, to } = response.detail;
         setAppointmentLogs(data);

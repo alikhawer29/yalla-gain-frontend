@@ -144,7 +144,7 @@ const HeaderNotification = ({
                         e.preventDefault();
                         handleNotificationAction(notification.id);
                       }}
-                      style={{ fontSize: 12, color: "#333333" }}
+                      style={{ fontSize: 12, color: "#999999" }}
                       className="notButton underlineOnHover"
                     >
                       {notification.read_at === null
@@ -159,7 +159,7 @@ const HeaderNotification = ({
             <div className="text-center py-3">No notifications found</div>
           )}
         </div>
-        <div className="notiFooter text-center pe-4">
+        <div className="notiFooter text-end pe-4">
           <Link
             to={viewAllLink || `/${role}/notifications`}
             className="underlineOnHover"

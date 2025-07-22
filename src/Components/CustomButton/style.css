@@ -51,16 +51,16 @@ fieldset:disabled .btn {
 
 /****** Secondary Primary ******/
 .btn-secondary {
-    color: #15355E;
-    background: rgb(21 53 94 / 10%);
-    border-color: #15355E;
+    color: #118076;
+    background: rgb(117 128 118 / 10%);
+    border-color: #118076;
 }
 
 .btn-secondary:hover,
 .btn-secondary:not(:disabled):not(.disabled):active {
     color: var(--bs-white);
-    background-color: #15355E;
-    border-color: #15355E;
+    background-color: #118076;
+    border-color: #118076;
 }
 
 /****|| Button Outline Primary ||****/

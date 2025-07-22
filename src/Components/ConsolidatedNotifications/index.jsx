@@ -112,7 +112,7 @@ const ConsolidatedNotifications = ({
             {loading ? (
               <LoadingSpinner />
             ) : (
-              notifications.map((notification) => (
+              notifications.slice(0, 4).map((notification) => (
                 <React.Fragment key={notification.id}>
                   <NotificationCard
                     id={notification.id}
@@ -129,9 +129,9 @@ const ConsolidatedNotifications = ({
             )}
           </Col>
         </Row>
-        <div className="text-center">
+        {/* <div className="text-center">
           <CustomButton text="Load More" className="siteBtn primaryBtn" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -30,11 +30,11 @@
 }
 
 .admin-layout .customTable tr td:first-child {
-  border-radius: 50px 0 0 50px !important;
+  border-radius: 10px 0 0 10px !important;
 }
 
 .admin-layout .customTable tr td:last-child {
-  border-radius: 0 50px 50px 0 !important;
+  border-radius: 0 10px 10px 0 !important;
 }
 
 .customTable tr td:last-child {
@@ -255,13 +255,17 @@ User Table Styling ***************/
   border-right: 1px solid #E7E7E7 !important;
   padding-right: 1.5rem !important;
 }
+.admin-layout .customTable table thead th {
+  color: #fff;
+}
 
 .admin-layout .customTable tbody td {
   border-top: 1px solid #E7E7E7;
   border-bottom: 1px solid #E7E7E7;
   padding: 1.1rem 1.2rem !important;
   background-color: transparent;
-  color: #707070;
+  color: #999;
+  font-weight: 600;
 }
 
 .user-layout .customTable tbody tr:nth-child(even) td {

@@ -825,7 +825,7 @@ export const bankNameOptions = [
   { value: "abc", text: "Abc" },
   { value: "xyz", text: "Xyz" },
 ];
-export const subcriptionStatus = [
+export const activeExpiredStatus = [
   { value: "all", text: "All" },
   { value: "1", text: "Active" },
   { value: "0", text: "Expired" },
@@ -860,14 +860,14 @@ export const yearOptions = [
   // You can add more years as needed
 ];
 
-export const bookingStatus = [
+export const bookingTypeStatus = [
   {
     value: "all",
     text: "All",
   },
   {
     value: "1",
-    text: "Approved",
+    text: "Upcoming",
   },
   {
     value: "2",
@@ -875,92 +875,31 @@ export const bookingStatus = [
   },
   {
     value: "3",
-    text: "Pending",
+    text: "Past",
+  },
+  {
+    value: "4",
+    text: "Approved",
   },
 ];
 
-export const bookingType = [
-  {
-    value: "all",
-    text: "Al",
-  },
-  {
-    value: "1",
-    text: "Onsite",
-  },
-  {
-    value: "2",
-    text: "Online",
-  },
-];
-export const paymentStatus = [
+export const ongoingStatus = [
   {
     value: "all",
     text: "All",
   },
   {
     value: "1",
-    text: "Order",
+    text: "On Going",
   },
   {
     value: "2",
-    text: "Booking",
-  },
-];
-export const accountType = [
-  {
-    value: "saving",
-    text: "Saving",
+    text: "Failed",
   },
   {
-    value: "current",
-    text: "Current",
+    value: "3",
+    text: "Completed",
   },
-];
-export const bankName = [
-  {
-    value: "bank_abc",
-    text: "Bank Abc",
-  },
-  {
-    value: "bankb",
-    text: "Bank B",
-  },
-  {
-    value: "bankc",
-    text: "Bank C",
-  },
-];
-
-export const serviceCategories = [
-  {
-    label: "Category A",
-    value: "categoryA",
-  },
-  { label: "Category B", value: "categoryB" },
-  { label: "Category C", value: "categoryC" },
-];
-export const productCategories = [
-  {
-    text: "Product A",
-    value: "producta",
-  },
-  { text: "Product B", value: "productb" },
-  { text: "Product C", value: "productc" },
-];
-export const servicesOptions = [
-  { text: "Select Services", value: "" },
-  { text: "Services A", value: "services_a" },
-  { text: "Services B", value: "services_b" },
-  { text: "Services C", value: "services_c" },
-];
-
-export const deliveryOptions = [
-  {
-    text: "E-Delivery",
-    value: "edelivery",
-  },
-  { text: "Normal Delivery", value: "normal" },
 ];
 
 export const countryOptions = [

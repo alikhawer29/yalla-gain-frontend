@@ -3,7 +3,7 @@
   display: inline-block;
 }
 
-.tabel-select + .chevron-icon {
+.tabel-select+.chevron-icon {
   right: 0px;
   left: 90%;
   top: 4px;
@@ -19,13 +19,17 @@
 }
 
 .status1,
-.status1 + .chevron-icon {
+.status1+.chevron-icon {
   color: #00B612 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300B612' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
 }
 
 .status0,
-.status0 + .chevron-icon {
+.status0+.chevron-icon {
   color: #D10000 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23D10000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
 }
 
 .tabel-select:focus-visible {

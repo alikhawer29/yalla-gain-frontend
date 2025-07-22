@@ -98,8 +98,7 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                       {userData?.map((item, index) => (
                         <tr key={item?.id}>
                           <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                          <td>{item?.first_name}</td>
-                          <td>{item?.last_name}</td>
+                          <td>{item?.user_name}</td>
                           <td>{item?.email}</td>
                           <td>{dateFormat(item?.created_at)}</td>
                           {/* Status column with Select dropdown */}
@@ -117,13 +116,9 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                             </Select>
                           </td>
                           <td>
-                            <div className="d-flex cp gap-3 tableAction align-items-center justify-content-center">
-                              <span className="tooltip-toggle" aria-label="View">
-                                <Link to={`${item.id}`}>
-                                  <FaEye size={20} />
-                                </Link>
-                              </span>
-                            </div>
+                            <Link className="viewLink" to={`${item.id}`}>
+                              View
+                            </Link>
                           </td>
                         </tr>
                       ))}

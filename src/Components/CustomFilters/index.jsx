@@ -1,16 +1,17 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import React, { useCallback, useEffect, useState } from "react";
-import "./style.css";
-import CustomButton from "../CustomButton";
-import { Select } from "../Select";
-import { sorting } from "../../Config/TableStatus";
 import debounce from "lodash.debounce";
-import SiteInput from "../Input/input";
+import React, { useCallback, useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
+import { RiEqualizerLine } from "react-icons/ri";
+import { sorting } from "../../Config/TableStatus";
+import CustomButton from "../CustomButton";
+import SiteInput from "../Input/input";
+import { Select } from "../Select";
+import "./style.css";
 // import { FaFilter } from "react-icons/fa6";
 
 import { FaFilter } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const CustomFilters = (props) => {
   const { showEntries = true, showFilter = true, showSearch = true } = props;
@@ -84,7 +85,7 @@ const CustomFilters = (props) => {
                 className="select-entries"
                 value={formData?.per_page}
                 name="per_page"
-                label="Showing :"
+                label="Showing"
                 onChange={(value) => handleSelectChange("per_page", value)}
                 labelclass="secondaryLabel mb-0"
               >
@@ -113,7 +114,8 @@ const CustomFilters = (props) => {
             {showFilter && (
               <Dropdown className="filter-dropdown">
                 <Dropdown.Toggle className="btn_filter">
-                  <FaFilter size={20} color="white" />
+                  {/* <FaFilter size={20} color="white" /> */}
+                   <RiEqualizerLine size={24} />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu align="end">
@@ -125,7 +127,7 @@ const CustomFilters = (props) => {
                       <div className="mb-3">
                         {props?.dateFilters?.map(({ title, toTitle, fromTitle, from, to }, index) => (
                           <div className="filterWrapper mb-4" key={index}>
-                            <h5 className="mb-2 fw-medium">Filter By {title}</h5>
+                            <h5 className="mb-2 fw-medium text-white">Filter By {title}</h5>
                             {fromTitle && <label className="filterLabel w-100 mb-0 mt-2">{fromTitle}</label>}
                             <input
                               type="date"

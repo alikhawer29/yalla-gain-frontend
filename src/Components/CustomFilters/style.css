@@ -15,7 +15,7 @@
 }
 
 .filterLabel {
-  color: #000;
+  color: #fff;
   font-weight: 500;
   margin-bottom: 0.2rem;
   white-space: nowrap;
@@ -47,7 +47,7 @@
 }
 
 .filter-title {
-  color: var(--blackColor);
+  color: var(--whiteColor);
   font-size: 18px;
   font-weight: 700;
   text-transform: capitalize;
@@ -154,7 +154,7 @@
 }
 
 .tableFilters .select-entries {
-  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   height: 45px;
   min-width: 70px;
   padding: 10px 30px 10px 15px;
@@ -162,23 +162,25 @@
 }
 
 .admin-layout .tableFilters .select-entries {
-  padding: 11px 50px 11px 15px;
+  padding: 11px 65px 11px 15px;
   height: 45px;
+  border-radius: 10px;
 }
 
 /*************** User Filter DropDown Style 
 *********************/
 .user-layout .filter-dropdown .dropdown-menu,
 .admin-layout .filter-dropdown .dropdown-menu {
-  border-radius: 20px;
+  border-radius: 10px;
   border: 1px solid #EBEBEB;
-  background: #FAFAFA;
+  background: #333;
   box-shadow: 0px 4px 60px 0px rgba(0, 0, 0, 0.10);
 }
 
 .user-layout .filter-dropdown .dropdown-menu .mainInput,
 .admin-layout .filter-dropdown .dropdown-menu .mainInput {
   padding: 10px 15px;
+  border-radius: 5px;
 }
 
 .user-layout .filter-dropdown .dropdown-menu .selectInput,
@@ -216,10 +218,18 @@
 .user-layout .tableFilters .btn_filter,
 .admin-layout .tableFilters .btn_filter {
   padding: 0px;
-  background: #15355E;
+  background: transparent;
   width: 45px;
   height: 45px;
-  border-radius: 50px;
+  border-radius: 5px;
+  border-color: #fff;
+
+  &:hover {
+    border-color: #118076;
+    color: #118076;
+  }
+
+  /* border-color: #828282; */
 }
 
 .user-layout .tableFilters .btn_filter:hover {
@@ -256,6 +266,10 @@
   padding: 11px 45px 11px 20px;
   width: 100%;
   max-width: none;
+}
+
+.admin-layout .tableFilters .filterWrapper .searchInput::placeholder {
+  color: #fff !important;
 }
 
 .admin-layout .tableFilters .filterWrapper .searchButton {
