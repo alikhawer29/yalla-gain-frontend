@@ -44,6 +44,7 @@ import UserEditProfile from "../Pages/User/Profile/UserEditProfile";
 import PersonalDetails from "../Pages/User/Auth/PersonalDetails";
 import ErrorPage from "../Pages/User/ErrorPage";
 import UserPosts from "../Pages/Admin/UserManagement/UserPosts";
+import Chat from "../Pages/Admin/Chat/Chat";
 
 const roles = {
   admin: "admin",
@@ -80,6 +81,9 @@ const routes = [
           { path: "admin/user-management", element: <UserManagement /> },
           { path: "admin/user-management/:id", element: <UserDetails /> },
           { path: "admin/user-management/:id/user-post", element: <UserPosts /> },
+
+
+          { path: "admin/chat", element: <Chat /> },
 
           // Appointments //
           { path: "admin/appointments", element: <AppointmentLogs /> },

@@ -197,8 +197,8 @@ const CustomFilters = (props) => {
                       ))}
                     </div>
                     <div className="d-flex justify-content-center gap-2">
-                      <CustomButton onClick={handleApply} variant="primary" text="Apply" />
-                      <CustomButton onClick={handleClear} variant="secondary" text="Clear" />
+                      <CustomButton onClick={handleApply} variant="primary flex-grow-1" text="Apply" />
+                      <CustomButton onClick={handleClear} variant="secondary flex-grow-1" text="Clear" />
                     </div>
                   </div>
                 </Dropdown.Menu>

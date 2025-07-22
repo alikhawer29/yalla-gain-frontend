@@ -28,7 +28,7 @@ const CustomButton = ({
           aria-hidden="true"
         ></span>
       )}
-      <span className="ms-2">{isPending ? loadingText : children || text}</span>
+      <span className="">{isPending ? loadingText : children || text}</span>
 
       {/* {isPending ? loadingText : children || text} */}
     </button>

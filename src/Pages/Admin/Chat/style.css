@@ -1,0 +1,82 @@
+.chat-search {
+  position: relative;
+}
+
+.chat-search .inputWrapper {
+  margin-bottom: 0;
+}
+
+.chat-search .form-control {
+  padding: 15px 45px 15px 20px;
+}
+
+.chat-search .searchButton {
+
+  left: auto;
+  right: 0;
+  color: #999;
+  max-width: 50px;
+  padding: 0 35px 0 10px;
+}
+
+.documentDownloadBtn {
+  width: 30px;
+  height: 30px;
+  color: #fff !important;
+  background: #15355E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  font-size: 16px;
+  padding: 8px;
+}
+
+p.message-date {
+  font-size: 14px;
+}
+
+.chatHeaderDropdown {
+  width: 49px;
+  height: 49px;
+  background-color: transparent;
+  border: 1px solid #DADDDD;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatHeaderDropdown .dropdown-toggle {
+  background-color: transparent !important;
+  color: #000 !important;
+  font-size: 22px !important;
+  margin-bottom: 5px;
+}
+
+.chatHeaderDropdown .dropdown-toggle::after {
+  display: none;
+}
+
+.chatHeaderDropdown .dropdown-toggle::after {
+  display: none;
+}
+
+.chat_filter .dropdown-menu {
+  padding: 0;
+}
+
+.chat_filter .dropdown-item {
+  padding: 0;
+}
+
+.chat_filter .dropdown-item .nav-link {
+  padding: 6px 17px;
+}
+
+.chat_filter .dropdown-item .nav-link:hover,
+.chat_filter .dropdown-item .nav-link.active {
+  background-color: #15355E;
+  color: #fff;
+
+}
