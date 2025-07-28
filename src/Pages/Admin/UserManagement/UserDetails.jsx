@@ -237,7 +237,7 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
         </div>
         <div className="row dashCard mb-3">
           <div className="col-12">
-            <h2 className="mainTitle">Challneges</h2>
+            <h2 className="mainTitle">Challenges</h2>
           </div>
           <div className="col-12">
             <CustomTable
