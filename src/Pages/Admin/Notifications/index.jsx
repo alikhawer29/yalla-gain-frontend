@@ -1,10 +1,9 @@
 import "./style.css";
 import ConsolidatedNotifications from "../../../Components/ConsolidatedNotifications";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import CustomPagination from "../../../Components/CustomPagination";
 
 const Notifications = () => {
-  const apiEndpoint = `/admin-api/notifications`;
+  const apiEndpoint = `/notification/all/list`;
   return (
     <DashboardLayout pageTitle="Notifications">
       <div className="dashCard container-fluid">
@@ -14,9 +13,6 @@ const Notifications = () => {
           </div>
         </div>
         <ConsolidatedNotifications apiEndpoint={apiEndpoint} />
-        <div className="mt-4">
-          <CustomPagination pagination={`pagination`} setFilters={`setFilters`} />
-        </div>
       </div>
     </DashboardLayout>
   );

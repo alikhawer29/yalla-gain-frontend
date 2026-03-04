@@ -1,0 +1,7 @@
+/* View Video styles */
+.video-view .detail-label { color: #ffffff; font-weight: 600; }
+.video-view .detail-value { color: #ffffff; }
+.video-view .detail-value-weak { color: #d7d7d7; }
+.video-view .media img { width: 240px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); display: block; }
+.video-view .media video { width: 540px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); display: block; }
+

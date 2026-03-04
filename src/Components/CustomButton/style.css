@@ -1,102 +1,99 @@
 /***** Buttons*****/
 .btn {
-    outline: none;
-    color: var(--bs-white);
-    padding: 15px 35px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.6s ease 0s;
-    text-transform: capitalize;
-    line-height: normal;
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-    border-style: solid;
-    border-width: 1px;
+  outline: none;
+  color: var(--bs-white);
+  padding: 15px 35px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.6s ease 0s;
+  text-transform: capitalize;
+  line-height: normal;
+  border-radius: 5px;
+  text-align: center;
+  display: inline-block;
+  border-style: solid;
+  border-width: 1px;
 }
 
 .btn.disabled,
 .btn:disabled,
 fieldset:disabled .btn {
-    color: #fff;
-    pointer-events: none;
-    background-color: #DEDEDE;
-    border-color: #DEDEDE;
+  color: #fff;
+  pointer-events: none;
+  background-color: #dedede;
+  border-color: #dedede;
 }
 
 .btn-link {
-    color: #000;
-    outline: none;
-    padding: 3px 10px;
+  color: #000;
+  outline: none;
+  padding: 3px 10px;
 }
 
 .btn-link:hover,
 .btn-link:focus {
-    color: #27446a;
+  color: #27446a;
 }
 
 /****** Button Primary ******/
 .btn-primary {
-    color: var(--bs-white);
-    background: #118076;
-    border-color: #118076;
+  color: var(--bs-white);
+  background: #118076;
+  border-color: #118076;
 }
 
 .btn-primary:hover,
 .btn-primary:not(:disabled):not(.disabled):active {
-    color: #118076;
-    background: rgb(21 53 94 / 10%);
-    border-color: #118076;
+  color: #118076;
+  background: rgb(21 53 94 / 10%);
+  border-color: #118076;
 }
 
 /****** Secondary Primary ******/
 .btn-secondary {
-    color: #fff;
-    background: rgb(117 128 118 / 10%);
-    border-color: #118076;
+  color: #fff;
+  background: rgb(117 128 118 / 10%);
+  border-color: #118076;
 }
 
 .btn-secondary:hover,
 .btn-secondary:not(:disabled):not(.disabled):active {
-    color: var(--bs-white);
-    background-color: #118076;
-    border-color: #118076;
+  color: var(--bs-white);
+  background-color: #118076;
+  border-color: #118076;
 }
 
 /****|| Button Outline Primary ||****/
 .btn-outline-primary {
-    color: #15355E;
-    background: transparent;
-    border-color: #15355E;
+  color: #15355e;
+  background: transparent;
+  border-color: #15355e;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:not(:disabled):not(.disabled):active {
-    color: var(--bs-white);
-    background-color: #15355E;
-    border-color: #15355E;
+  color: var(--bs-white);
+  background-color: #15355e;
+  border-color: #15355e;
 }
 
 /****|| Button Outline Danger ||****/
 .btn-outline-danger {
-    border: 1px solid #D9001B;
-    color: #D9001B;
-    background: #FBE5E8;
+  border: 1px solid #d9001b;
+  color: #d9001b;
+  background: #fbe5e8;
 }
 
 .btn-outline-danger:hover,
 .btn-outline-danger:not(:disabled):not(.disabled):active {
-    border: 1px solid #D9001B;
-    color: #FBE5E8;
-    background: #D9001B;
+  border: 1px solid #d9001b;
+  color: #fbe5e8;
+  background: #d9001b;
 }
 
-
-
-
 @media (max-width: 375px) {
-    .btn {
-        padding: 10px 30px;
-        font-size: 15px;
-    }
+  .btn {
+    padding: 10px 30px;
+    font-size: 15px;
+  }
 }

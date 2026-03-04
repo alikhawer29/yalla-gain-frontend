@@ -25,7 +25,7 @@ const CustomFilters = (props) => {
     debounce((updatedFormData) => {
       props.setFilters(updatedFormData);
     }, 500),
-    [props.setFilters]
+    [props.setFilters],
   );
 
   const handleChange = (name, value) => {
@@ -78,14 +78,16 @@ const CustomFilters = (props) => {
   return (
     <>
       <div className="tableFilters">
-        <div className={`d-flex ${showEntries ? "justify-content-between" : "justify-content-end"} gap-3 flex-wrap align-items-center`}>
+        <div
+          className={`d-flex ${showEntries ? "justify-content-between" : "justify-content-end"} gap-3 flex-wrap align-items-center`}
+        >
           {showEntries && (
             <div className="d-flex align-items-center gap-3">
               <Select
                 className="select-entries"
                 value={formData?.per_page}
                 name="per_page"
-                label="Showing"
+                label="Show"
                 onChange={(value) => handleSelectChange("per_page", value)}
                 labelclass="secondaryLabel mb-0"
               >
@@ -115,7 +117,7 @@ const CustomFilters = (props) => {
               <Dropdown className="filter-dropdown">
                 <Dropdown.Toggle className="btn_filter">
                   {/* <FaFilter size={20} color="white" /> */}
-                   <RiEqualizerLine size={24} />
+                  <RiEqualizerLine size={24} />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu align="end">
@@ -125,30 +127,43 @@ const CustomFilters = (props) => {
                   <div className="fiter-main">
                     {props?.dateFilters && (
                       <div className="mb-3">
-                        {props?.dateFilters?.map(({ title, toTitle, fromTitle, from, to }, index) => (
-                          <div className="filterWrapper mb-4" key={index}>
-                            <h5 className="mb-2 fw-medium text-white">Filter By {title}</h5>
-                            {fromTitle && <label className="filterLabel w-100 mb-0 mt-2">{fromTitle}</label>}
-                            <input
-                              type="date"
-                              placeholder="From"
-                              label="From"
-                              name={from}
-                              className="w-100 mb-3 form-control"
-                              value={formData[from] || ""}
-                              onChange={handleInputChange}
-                            />
-                            {toTitle && <label className="filterLabel w-100 mb-0">{toTitle}</label>}
-                            <input
-                              type="date"
-                              placeholder="To"
-                              name={to}
-                              className="w-100 form-control"
-                              value={formData[to] || ""}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        ))}
+                        {props?.dateFilters?.map(
+                          ({ title, toTitle, fromTitle, from, to }, index) => (
+                            <div className="filterWrapper mb-4" key={index}>
+                              <h5 className="mb-2 fw-medium text-white">
+                                Filter By{" "}
+                                {title == "Date" ? "Created On Date" : title}
+                              </h5>
+                              {fromTitle && (
+                                <label className="filterLabel w-100 mb-0 mt-2">
+                                  {fromTitle}
+                                </label>
+                              )}
+                              <input
+                                type="date"
+                                placeholder="From"
+                                label="From"
+                                name={from}
+                                className="w-100 mb-3 form-control"
+                                value={formData[from] || ""}
+                                onChange={handleInputChange}
+                              />
+                              {toTitle && (
+                                <label className="filterLabel w-100 mb-0">
+                                  {toTitle}
+                                </label>
+                              )}
+                              <input
+                                type="date"
+                                placeholder="To"
+                                name={to}
+                                className="w-100 form-control"
+                                value={formData[to] || ""}
+                                onChange={handleInputChange}
+                              />
+                            </div>
+                          ),
+                        )}
                       </div>
                     )}
                     <div className="mb-3">
@@ -180,14 +195,20 @@ const CustomFilters = (props) => {
                     <div className="my-3">
                       {props?.selectOptions?.map((option, index) => (
                         <div className="my-3" key={index}>
-                          {option?.main_title && <h5 className="filterLabel w-100 mb-2 fw-medium text-capitalize">{option?.main_title}</h5>}
+                          {option?.main_title && (
+                            <h5 className="filterLabel w-100 mb-2 fw-medium text-capitalize">
+                              {option?.main_title}
+                            </h5>
+                          )}
                           {option ? (
                             <Select
                               name={option.title}
                               className="mainInput w-100 "
                               labelclass="mb-2 filterLabel "
                               value={formData[option.title] || ""}
-                              onChange={(value) => handleChange(option.title, value)}
+                              onChange={(value) =>
+                                handleChange(option.title, value)
+                              }
                               label={`${option?.title}`}
                             >
                               {option?.options}
@@ -197,8 +218,16 @@ const CustomFilters = (props) => {
                       ))}
                     </div>
                     <div className="d-flex justify-content-center gap-2">
-                      <CustomButton onClick={handleApply} variant="primary flex-grow-1" text="Apply" />
-                      <CustomButton onClick={handleClear} variant="secondary flex-grow-1" text="Clear" />
+                      <CustomButton
+                        onClick={handleApply}
+                        variant="primary flex-grow-1"
+                        text="Apply"
+                      />
+                      <CustomButton
+                        onClick={handleClear}
+                        variant="secondary flex-grow-1"
+                        text="Clear"
+                      />
                     </div>
                   </div>
                 </Dropdown.Menu>

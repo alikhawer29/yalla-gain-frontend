@@ -1,6 +1,7 @@
 .select-container {
   position: relative;
-  display: inline-block;
+  display: block;
+  width: 100%;
 }
 
 .tabel-select+.chevron-icon {
@@ -14,7 +15,7 @@
   appearance: none !important;
   border: none;
   height: auto;
-  padding: 0px 40px 0px 3px;
+  padding: 0px 22px 0px 3px;
   box-shadow: none;
 }
 
@@ -69,11 +70,16 @@ select,
   box-shadow: 0 0 5px #0000000d;
   height: 50px;
   border: 1px solid #dbdbdb;
-  border-radius: 50px;
+  border-radius: 5px;
   background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
   background-repeat: no-repeat;
   background-position: right .8rem center;
   background-size: 19px 15px;
+}
+
+/* Keep pill style for compact status selects inside tables */
+.tabel-select {
+  border-radius: 50px !important;
 }
 
 .form-select option,

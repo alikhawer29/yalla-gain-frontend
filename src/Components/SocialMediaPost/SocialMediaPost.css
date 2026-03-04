@@ -6,6 +6,7 @@
   border-radius: 10px;
   background: #333;
   /* box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.08); */
+  position: relative;
 }
 
 .post-header,
@@ -62,11 +63,18 @@
   line-height: 24px; /* 150% */
 }
 
+.post-media {
+  width: 100%;
+  height: auto;
+}
+
 .post-interactions {
   display: flex;
   justify-content: space-between;
   margin-top: 16px;
 }
+
+/* delete-pill removed; using dropdown delete only */
 
 .reactions-wrapper {
   display: flex;
@@ -137,14 +145,13 @@
 .reactions-user-list {
   margin-top: 24px;
 }
-.reaction-user{
+.reaction-user {
   display: flex;
   border-radius: 5px;
   background: #333;
   box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.08);
   padding: 16px 20px;
   margin-top: 12px;
-  
 }
 .comment-user {
   display: flex;
@@ -179,24 +186,24 @@
   bottom: -1px;
 }
 
-.post .elipses-wrapper .classicToggle{
+.post .elipses-wrapper .classicToggle {
   border: none;
   outline: none;
   font-size: 24px;
 }
 .post .dropdown-menu {
   background: #333 !important;
-  & button{
+  & button {
     color: #fff !important;
   }
 }
 
-
 @media screen and (max-width: 575.5px) {
-  .post-user-info{
+  .post-user-info {
     margin-left: 6px;
   }
-  .post .elipses-wrapper .classicToggle{
+  .post .elipses-wrapper .classicToggle {
     padding: 0px;
   }
+  /* no width constraints on mobile either */
 }

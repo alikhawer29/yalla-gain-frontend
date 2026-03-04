@@ -2,287 +2,252 @@ import { useState, useEffect } from "react";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import StatCard from "../../../Components/StatsCard/index";
 import "./style.css";
-import { cardLinks, generateNextFiveYears, getIcon, getText } from "../../../Utils/helper";
+import { generateNextFiveYears } from "../../../Utils/helper";
 import { getAll } from "../../../Services/Api";
 import { Graph } from "../../../Components/Graph";
-import { chartStatus } from "../../../Config/TableStatus";
-import { dashboardChartDataOne, dashboardChartDataTwo, dashboardChartDataThree, dashboardChartDatafour, statsData } from "../../../Config/data";
+import { images } from "../../../Assets";
 import { Link } from "react-router-dom";
 
 export const Dashboard = () => {
-  const [data, setData] = useState([]);
-  const [selectedValueTwo, setSelectedValueTwo] = useState("weekly");
-  const [chartdata, setChartData] = useState(dashboardChartDataOne); // Default to first chart data
-  const [revenueChartdata, setRevenueChartData] = useState(dashboardChartDataTwo); // Default to second chart data
-  const [userdata, setNewUsersData] = useState(dashboardChartDataThree); // Default to third chart data
-  const [doctorData, setDoctorData] = useState(dashboardChartDataThree); // Default to fourth chart data
-  const [trainerData, setTrainerData] = useState(dashboardChartDataThree);
-  const [labels, setLabels] = useState([]);
-  const [yearData, setYearData] = useState();
-  const getCurrentYear = () => new Date().getFullYear();
-  const [selectedValue, setSelectedValue] = useState(getCurrentYear());
+    // Top stats cards
+    const [data, setData] = useState([]);
 
-  const fetchHomeData = async () => {
-    // Fetch and set data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll("/admin-api/account/home");
-    //   if (response && response.status) {
-    //     setData(
-    //       Object.entries(response?.detail).map(([key, value]) => ({
-    //         id: key,
-    //         image: getIcon(key),
-    //         text: getText(key),
-    //         change: value.total,
-    //         increase: value.trend,
-    //         sinceWeek: "since last week",
-    //         link: cardLinks(key),
-    //       }))
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching home data:", error);
-    // }
+    // Year selectors (per graph)
+    const getCurrentYear = () => new Date().getFullYear();
+    const defaultYear = String(getCurrentYear());
+    const [earningsYear, setEarningsYear] = useState(defaultYear);
+    const [bookingsYear, setBookingsYear] = useState(defaultYear);
+    const [usersYear, setUsersYear] = useState(defaultYear);
+    const [doctorsYear, setDoctorsYear] = useState(defaultYear);
+    const [trainersYear, setTrainersYear] = useState(defaultYear);
 
-    // Set static data for demonstration
-    setData(statsData);
-  };
+    // Graph datasets (12 months each)
+    const emptySeries = new Array(12).fill(0);
+    const [chartdata, setChartData] = useState({ heading: "Total Earning", label: "Total Earning", fill: true, data: emptySeries });
+    const [revenueChartdata, setRevenueChartData] = useState({ heading: "New Bookings", label: "New Bookings", fill: true, data: emptySeries });
+    const [userdata, setNewUsersData] = useState({ heading: "Total Users", label: "Total Users", fill: true, data: emptySeries });
+    const [doctorData, setDoctorData] = useState({ heading: "Total Doctors", label: "Total Doctors", fill: true, data: emptySeries });
+    const [trainerData, setTrainerData] = useState({ heading: "Total Trainers", label: "Total Trainers", fill: true, data: emptySeries });
 
-  const handleSelectChange = (value) => {
-    setSelectedValue(value);
-    fetchOrderChart(value);
-  };
+    // Helpers
+    const monthOrder = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const toSeries = (obj = {}) => monthOrder.map((m) => Number(obj?.[m]) || 0);
 
-  const handleSelectChangeTwo = (value) => {
-    setSelectedValueTwo(value);
-    setYearData("");
-    fetchRevenueChart(value, "");
-  };
+    // Fetch top stats
+    const fetchStats = async () => {
+        try {
+            const res = await getAll("/dashboard/stats");
+            const totals = res?.original?.data || res; // support both shapes
+            setData([
+                { id: 1, image: images.Stats1, number: String(totals?.total_earning ?? 0), text: "total earning", change: totals?.total_earning ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#ECE7F1" },
+                { id: 2, image: images.Stats2, number: String(totals?.total_users ?? 0), text: "Total Users", change: totals?.total_users ?? 0, increase: true, arrowIcon: true, total_post: "Since last week", backgroundColor: "#E8F3F0" },
+                { id: 3, image: images.Stats3, number: String(totals?.total_doctors ?? 0), text: "Total Doctors", change: totals?.total_doctors ?? 0, increase: true, arrowIcon: true, total_post: "Since last week", backgroundColor: "#E2F1FB" },
+                { id: 4, image: images.Stats4, number: String(totals?.total_trainers ?? 0), text: "Total Trainers", change: totals?.total_trainers ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#FFF7CF" },
+                { id: 5, image: images.Stats5, number: String(totals?.total_appointments ?? 0), text: "New Booking", change: totals?.total_appointments ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#FFF7CF" },
+            ]);
+        } catch (error) {
+            // keep existing data if any; otherwise empty
+            console.error("Error fetching dashboard stats", error);
+        }
+    };
 
-  const handleSelectYear = (value) => {
-    const newValue = `&further_type=${value}`;
-    setYearData(newValue);
-    fetchRevenueChart(selectedValueTwo, newValue);
-  };
+    // Individual year change handlers
+    const handleEarningYearChange = (value) => {
+        const yr = value || defaultYear;
+        setEarningsYear(yr);
+        fetchEarningGraph(yr);
+    };
+    const handleBookingYearChange = (value) => {
+        const yr = value || defaultYear;
+        setBookingsYear(yr);
+        fetchBookingGraph(yr);
+    };
+    const handleUsersYearChange = (value) => {
+        const yr = value || defaultYear;
+        setUsersYear(yr);
+        fetchUsersGraph(yr);
+    };
+    const handleDoctorsYearChange = (value) => {
+        const yr = value || defaultYear;
+        setDoctorsYear(yr);
+        fetchDoctorsGraph(yr);
+    };
+    const handleTrainersYearChange = (value) => {
+        const yr = value || defaultYear;
+        setTrainersYear(yr);
+        fetchTrainersGraph(yr);
+    };
 
-  const fetchOrderChart = async (value) => {
-    // Fetch order chart data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll("/admin-api/charts/user?year=" + value);
-    //   if (response && response.status) {
-    //     setChartData({
-    //       data: response.detail,
-    //       label: "users",
-    //       heading: "Users",
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching order chart data:", error);
-    // }
+    // Graph: Earnings
+    const fetchEarningGraph = async (year) => {
+        try {
+            const res = await getAll("/dashboard/graph/earning", { year });
+            const series = toSeries(res?.original?.data || res?.data || res);
+            setChartData({ heading: "Total Earning", label: "Total Earning", fill: true, data: series });
+        } catch (error) {
+            console.error("Error fetching earning graph", error);
+            setChartData((prev) => ({ ...prev, data: emptySeries }));
+        }
+    };
 
-    setChartData(dashboardChartDataOne); // Use predefined data
-  };
+    // Graph: Bookings
+    const fetchBookingGraph = async (year) => {
+        try {
+            const res = await getAll("/dashboard/graph/bookings", { year });
+            const series = toSeries(res?.original?.data || res?.data || res);
+            setRevenueChartData({ heading: "New Bookings", label: "New Bookings", fill: true, data: series });
+        } catch (error) {
+            console.error("Error fetching bookings graph", error);
+            setRevenueChartData((prev) => ({ ...prev, data: emptySeries }));
+        }
+    };
 
-  const fetchRevenueChart = async (value, newValue = "") => {
-    // Fetch revenue chart data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll(
-    //     `/admin-api/charts/payment?type=${value}${newValue}`
-    //   );
-    //   if (response && response.status) {
-    //     setRevenueChartData({
-    //       data: response.detail,
-    //       label: "revenue",
-    //       heading: "Revenue",
-    //     });
-    //     const dates = response.detail.map((item) => item[0]);
-    //     setLabels(dates);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching revenue chart data:", error);
-    // }
+    // Graph: Users
+    const fetchUsersGraph = async (year) => {
+        try {
+            const res = await getAll("/dashboard/graph/users", { year });
+            const series = toSeries(res?.original?.data || res?.data || res);
+            setNewUsersData({ heading: "Total Users", label: "Total Users", fill: true, data: series });
+        } catch (error) {
+            console.error("Error fetching users graph", error);
+            setNewUsersData((prev) => ({ ...prev, data: emptySeries }));
+        }
+    };
 
-    setRevenueChartData(dashboardChartDataTwo); // Use predefined data
-  };
+    // Graph: Doctors
+    const fetchDoctorsGraph = async (year) => {
+        try {
+            const res = await getAll("/dashboard/graph/doctors", { year });
+            const series = toSeries(res?.original?.data || res?.data || res);
+            setDoctorData({ heading: "Total Doctors", label: "Total Doctors", fill: true, data: series });
+        } catch (error) {
+            console.error("Error fetching doctors graph", error);
+            setDoctorData((prev) => ({ ...prev, data: emptySeries }));
+        }
+    };
 
-  const fetchNewUsers = async (value, newValue = "") => {
-    // Fetch new users data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll(
-    //     `/admin-api/charts/payment?type=${value}${newValue}`
-    //   );
-    //   if (response && response.status) {
-    //     setNewUsersData({
-    //       data: response.detail,
-    //       label: "new_users",
-    //       heading: "New Users Registered",
-    //     });
-    //     const dates = response.detail.map((item) => item[0]);
-    //     setLabels(dates);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching new users data:", error);
-    // }
+    // Graph: Trainers
+    const fetchTrainersGraph = async (year) => {
+        try {
+            const res = await getAll("/dashboard/graph/trainers", { year });
+            const series = toSeries(res?.original?.data || res?.data || res);
+            setTrainerData({ heading: "Total Trainers", label: "Total Trainers", fill: true, data: series });
+        } catch (error) {
+            console.error("Error fetching trainers graph", error);
+            setTrainerData((prev) => ({ ...prev, data: emptySeries }));
+        }
+    };
 
-    setNewUsersData(dashboardChartDataThree); // Use predefined data
-  };
+    const years = generateNextFiveYears();
 
-  const fetchNewDoctors = async (value, newValue = "") => {
-    // Fetch new users data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll(
-    //     `/admin-api/charts/payment?type=${value}${newValue}`
-    //   );
-    //   if (response && response.status) {
-    //     setNewUsersData({
-    //       data: response.detail,
-    //       label: "new_users",
-    //       heading: "New Users Registered",
-    //     });
-    //     const dates = response.detail.map((item) => item[0]);
-    //     setLabels(dates);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching new users data:", error);
-    // }
+    useEffect(() => {
+        fetchStats();
+        fetchEarningGraph(earningsYear);
+        fetchBookingGraph(bookingsYear);
+        fetchUsersGraph(usersYear);
+        fetchDoctorsGraph(doctorsYear);
+        fetchTrainersGraph(trainersYear);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    setDoctorData(dashboardChartDatafour); // Use predefined data
-  };
-  const fetchNewTrainers = async (value, newValue = "") => {
-    // Fetch new users data (uncomment if fetching from API)
-    // try {
-    //   const response = await getAll(
-    //     `/admin-api/charts/payment?type=${value}${newValue}`
-    //   );
-    //   if (response && response.status) {
-    //     setNewUsersData({
-    //       data: response.detail,
-    //       label: "new_users",
-    //       heading: "New Users Registered",
-    //     });
-    //     const dates = response.detail.map((item) => item[0]);
-    //     setLabels(dates);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching new users data:", error);
-    // }
-
-    setTrainerData(dashboardChartDatafour); // Use predefined data
-  };
-
-  const years = generateNextFiveYears();
-
-  useEffect(() => {
-    fetchHomeData();
-    fetchOrderChart(selectedValue);
-    fetchRevenueChart(selectedValueTwo, yearData);
-    fetchNewUsers(userdata, yearData);
-    fetchNewDoctors(doctorData, yearData);
-    fetchNewTrainers(trainerData, yearData);
-  }, []);
-
-  return (
-    <>
-      <DashboardLayout pageTitle="Dashboard">
-        {/* <div className="container-fluid dashCard pt-1"> */}
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-12">
-              <div className="">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                      <h2 className="mainTitle text-white mb-3">Dashboard</h2>
-                      {/* <Link to={'/admin/dashboard/app-report'} className="btn btn-primary min-width-180">Report</Link> */}
+    return (
+        <>
+            <DashboardLayout pageTitle="Dashboard">
+                {/* <div className="container-fluid dashCard pt-1"> */}
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="">
+                                <div className="row">
+                                    <div className="col-12">
+                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                            <h2 className="mainTitle text-white mb-3">Dashboard</h2>
+                                            {/* <Link to={'/admin/dashboard/app-report'} className="btn btn-primary min-width-180">Report</Link> */}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    {data?.map((stats, index) => (
+                                        <div className="col-xxl-4 col-xl-6 mb-xl-4 mb-3" key={stats.id}>
+                                            <StatCard item={stats} index={index + 1} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-                <div className="row">
-                  {data?.map((stats, index) => (
-                    <div className="col-xxl-4 col-xl-6 mb-xl-4 mb-3" key={stats.id}>
-                      <StatCard item={stats} index={index + 1} />
+                    <div className="row mb-3">
+                        <div className="col-12">
+                            <Graph
+                                type="line"
+                                item={chartdata}
+                                selectedValue={String(earningsYear)}
+                                onSelectChange={handleEarningYearChange}
+                                options={years}
+                                text="Total Earning"
+                                heading="Total Earning"
+                                backgroundColor="rgba(17, 128, 118, 0.25)"
+                            />
+                        </div>
                     </div>
-                  ))}
+                    <div className="row mb-3">
+                        <div className="col-12">
+                            <Graph
+                                type="line"
+                                item={revenueChartdata}
+                                selectedValue={String(bookingsYear)}
+                                onSelectChange={handleBookingYearChange}
+                                options={years}
+                                text="New Bookings"
+                                heading="New Bookings"
+                                backgroundColor="rgba(17, 128, 118, 0.25)"
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-12">
+                            <Graph
+                                type="line"
+                                item={userdata}
+                                selectedValue={String(usersYear)}
+                                onSelectChange={handleUsersYearChange}
+                                options={years}
+                                text="Total Users"
+                                heading="Total Users"
+                                backgroundColor="rgba(17, 128, 118, 0.25)"
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-12">
+                            <Graph
+                                type="line"
+                                item={doctorData}
+                                selectedValue={String(doctorsYear)}
+                                onSelectChange={handleDoctorsYearChange}
+                                options={years}
+                                text="Total Doctors"
+                                heading="Total Doctors"
+                                backgroundColor="rgba(17, 128, 118, 0.25)"
+                            />
+                        </div>
+                    </div>
+                    <div className="row mb-3">
+                        <div className="col-12">
+                            <Graph
+                                type="line"
+                                item={trainerData}
+                                selectedValue={String(trainersYear)}
+                                onSelectChange={handleTrainersYearChange}
+                                options={years}
+                                text="Total Trainer"
+                                heading="Total Trainer"
+                                backgroundColor="rgba(17, 128, 118, 0.25)"
+                            />
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <Graph
-                type="line"
-                item={chartdata}
-                selectedValue={selectedValue}
-                onSelectChange={handleSelectChange}
-                options={chartStatus}
-                onSelectYear={handleSelectYear}
-                text="Total Earning"
-                heading="Total Earning"
-                backgroundColor="rgba(17, 128, 118, 0.25)"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <Graph
-                type="line"
-                item={revenueChartdata}
-                selectedValueTwo={selectedValueTwo}
-                onSelectChange={handleSelectChangeTwo}
-                options={chartStatus}
-                onSelectYear={handleSelectYear}
-                text="New Bookings"
-                heading="New Bookings"
-                backgroundColor="rgba(17, 128, 118, 0.25)"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <Graph
-                type="line"
-                item={userdata} // Use user data for New Users Registered
-                selectedValueTwo={selectedValueTwo}
-                onSelectChange={handleSelectChangeTwo}
-                options={chartStatus}
-                onSelectYear={handleSelectYear}
-                text="Total Users"
-                heading="Total Users"
-                backgroundColor="rgba(17, 128, 118, 0.25)"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <Graph
-                type="line"
-                item={doctorData} // Use fourth data for doctors
-                selectedValueTwo={selectedValueTwo}
-                onSelectChange={handleSelectChangeTwo}
-                options={chartStatus}
-                onSelectYear={handleSelectYear}
-                text="Total Doctors"
-                heading="Total Doctors"
-                backgroundColor="rgba(17, 128, 118, 0.25)"
-              />
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-12">
-              <Graph
-                type="line"
-                item={trainerData} // Use fifth data for trainers
-                selectedValueTwo={selectedValueTwo}
-                onSelectChange={handleSelectChangeTwo}
-                options={chartStatus}
-                onSelectYear={handleSelectYear}
-                text="Total Trainer"
-                heading="Total Trainer"
-                backgroundColor="rgba(17, 128, 118, 0.25)"
-              />
-            </div>
-          </div>
-        </div>
-      </DashboardLayout>
-    </>
-  );
+            </DashboardLayout>
+        </>
+    );
 };

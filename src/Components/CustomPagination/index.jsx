@@ -14,7 +14,7 @@ const CustomPagination = ({ pagination, setFilters }) => {
     (pageNumber) => {
       setFilters((prev) => ({ ...prev, page: pageNumber }));
     },
-    [setFilters]
+    [setFilters],
   );
 
   const handleFirstPage = () => handlePageChange(1);
@@ -32,7 +32,7 @@ const CustomPagination = ({ pagination, setFilters }) => {
           onClick={() => handlePageChange(number)}
         >
           {number}
-        </Pagination.Item>
+        </Pagination.Item>,
       );
     }
   } else {
@@ -40,7 +40,7 @@ const CustomPagination = ({ pagination, setFilters }) => {
       items.push(
         <Pagination.Item key={1} onClick={() => handlePageChange(1)}>
           1
-        </Pagination.Item>
+        </Pagination.Item>,
       );
       items.push(<Pagination.Ellipsis key="start-ellipsis" />);
     }
@@ -56,7 +56,7 @@ const CustomPagination = ({ pagination, setFilters }) => {
           onClick={() => handlePageChange(number)}
         >
           {number}
-        </Pagination.Item>
+        </Pagination.Item>,
       );
     }
 
@@ -68,7 +68,7 @@ const CustomPagination = ({ pagination, setFilters }) => {
           onClick={() => handlePageChange(totalPages)}
         >
           {totalPages}
-        </Pagination.Item>
+        </Pagination.Item>,
       );
     }
   }

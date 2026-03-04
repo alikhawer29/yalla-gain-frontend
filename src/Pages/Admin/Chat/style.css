@@ -11,7 +11,6 @@
 }
 
 .chat-search .searchButton {
-
   left: auto;
   right: 0;
   color: #999;
@@ -23,7 +22,7 @@
   width: 30px;
   height: 30px;
   color: #fff !important;
-  background: #15355E;
+  background: #15355e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +39,7 @@ p.message-date {
   width: 49px;
   height: 49px;
   background-color: transparent;
-  border: 1px solid #DADDDD;
+  border: 1px solid #dadddd;
   border-radius: 100px;
   display: flex;
   align-items: center;
@@ -76,7 +75,6 @@ p.message-date {
 
 .chat_filter .dropdown-item .nav-link:hover,
 .chat_filter .dropdown-item .nav-link.active {
-  background-color: #15355E;
+  background-color: #15355e;
   color: #fff;
-
 }

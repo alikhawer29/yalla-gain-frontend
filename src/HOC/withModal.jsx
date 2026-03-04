@@ -21,8 +21,11 @@ const withModal = (WrappedComponent) => {
       errorMessage: "",
       reasonHeading: "",
       reasonSubHeading: "",
-      reasonLabel: "", // Add reasonLabel in state
+      reasonLabel: "",
+      reasonPlaceholder: "",
+      hideCancel: false,
     });
+
     const reasonModal = (
       heading,
       para,
@@ -31,10 +34,12 @@ const withModal = (WrappedComponent) => {
       showReason = false,
       reasonHeading = "",
       reasonSubHeading = "",
-      reasonLabel = ""
+      reasonLabel = "",
+      reasonPlaceholder = "",
+      hideCancel = false
     ) => {
       setModalState({
-        currentStep: MODAL_STEPS.INITIAL,
+        currentStep: showReason ? MODAL_STEPS.REASON_INPUT : MODAL_STEPS.INITIAL,
         show: true,
         success,
         heading,
@@ -45,8 +50,9 @@ const withModal = (WrappedComponent) => {
         showReason,
         reasonValue: "",
         errorMessage: "",
-        reasonLabel, // Set reasonLabel
-        // Reset reason value for each new modal errorMessage: "", // Clear previous error messages
+        reasonLabel,
+        reasonPlaceholder,
+        hideCancel,
       });
     };
 
@@ -62,19 +68,17 @@ const withModal = (WrappedComponent) => {
       setModalState((prev) => ({
         ...prev,
         reasonValue: e.target.value,
-        errorMessage: "", // Clear error message on input change
+        errorMessage: "",
       }));
     };
 
     const handleSubmit = () => {
       if (modalState.currentStep === MODAL_STEPS.INITIAL) {
-        // Move to reason input step
         setModalState((prev) => ({
           ...prev,
           currentStep: MODAL_STEPS.REASON_INPUT,
         }));
       } else if (modalState.currentStep === MODAL_STEPS.REASON_INPUT) {
-        // Validate reason input
         if (modalState.reasonValue.trim() === "") {
           setModalState((prev) => ({
             ...prev,
@@ -82,7 +86,6 @@ const withModal = (WrappedComponent) => {
           }));
           return;
         }
-        // Execute action and move to success step
         if (modalState.action) {
           modalState.action(modalState.reasonValue);
         }
@@ -99,7 +102,7 @@ const withModal = (WrappedComponent) => {
           {...props}
           showModal={showModal}
           reasonModal={reasonModal}
-          closeModal={handleModalClose} // ✅ Add this line
+          closeModal={handleModalClose}
         />
         <CustomModal
           show={modalState.show}
@@ -116,7 +119,12 @@ const withModal = (WrappedComponent) => {
           reasonLabel={
             modalState.reasonLabel?.trim() ? modalState.reasonLabel : "Reason"
           }
-          reasonPlaceholder={props?.reasonPlaceholder || "Enter reason here..."}
+          reasonPlaceholder={
+            modalState.reasonPlaceholder?.trim()
+              ? modalState.reasonPlaceholder
+              : props?.reasonPlaceholder || "Enter reason here..."
+          }
+          hideCancel={modalState.hideCancel}
           btnText={props?.btnText}
           errorMessage={modalState.errorMessage}
         />
@@ -126,36 +134,3 @@ const withModal = (WrappedComponent) => {
 };
 
 export default withModal;
-
-//Example-1 for just confirmation
-
-// const confirmPopup = (id, status) => {
-//   showModal(
-//     `Are you sure you want to ${status === "Active" ? "Inactivate" : "Activate"} this User?`, //heading
-//     () => onConfirm(status, id) //action
-//   );
-// };
-
-//Example-2 for confirmation with reason
-
-// const confirmPopup = (id, status) => {
-//   reasonModal(
-//     "Are you sure you want to cancel this user?",  //heading
-//     (reason) => onConfirm(id, reason), //action
-//     false, //success
-//     true, //reason
-//   );
-// };
-
-// const onConfirm = async (id, status) => {
-//   try {
-//     reasonModal(
-//       `User ${status === "Active" ? "inactivated" : "activated"
-//       } successfully`, //heading
-//       null, //action
-//       true //sucess
-//     );
-//   } catch (error) {
-//     console.error("Error updating user status:", error);
-//   }
-// };

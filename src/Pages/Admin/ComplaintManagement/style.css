@@ -1,0 +1,49 @@
+.query-view .detail-label {
+  color: #ffffff;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.query-view .detail-value {
+  color: #ffffff;
+}
+
+.query-view .detail-row .detail-label::after {
+  content: ":";
+  margin-left: 4px;
+}
+
+.query-view .query-message {
+  background: #0f0f10;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+/* New compact info layout to match reference */
+/* Match BookingView label/value look */
+.query-view .info-block { padding: 0; }
+
+/* Apply to any info-label inside Query view */
+.query-view .info-label,
+.query-view .info-block .info-label {
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+/* Apply to any info-value inside Query view */
+.query-view .info-value,
+.query-view .info-block .info-value {
+  color: #8aa6a1;
+  font-size: 16px;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+.query-view .info-block + .info-block {
+  margin-top: 8px;
+}

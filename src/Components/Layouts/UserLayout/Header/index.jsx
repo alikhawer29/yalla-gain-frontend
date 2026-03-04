@@ -24,7 +24,7 @@ import CustomModal from "../../../CustomModal";
 import HeaderNotification from "../../../HeaderNotification";
 import Toast, { showToast } from "../../../Toast";
 import "./style.css";
-import { notificationsData } from "../../../../Config/data";
+import { getAll } from "../../../../Services/Api";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -117,11 +117,11 @@ export const Header = () => {
 
   const [notificationData, setNotificationData] = useState([]);
   const getNotification = async () => {
-    // let url = `/${role}-api/notifications`;
-    // const response = await getAll(url);
-    const response = notificationsData;
-    if (response) {
-      setNotificationData(response?.detail?.notifications?.data);
+    try {
+      const response = await getAll(`/notification/all/list`, { per_page: 5, page: 1 });
+      setNotificationData(response?.data ?? []);
+    } catch (e) {
+      setNotificationData([]);
     }
   };
 

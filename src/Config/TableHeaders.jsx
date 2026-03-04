@@ -73,58 +73,13 @@ export const appointmentHeader = [
 ];
 
 export const appointmentLogsHeaders = [
-  {
-    key: "id",
-    title: "S.No",
-  },
-  {
-    key: "bookingId",
-    title: "Booking ID",
-  },
-  {
-    key: "username",
-    title: "User Name",
-  },
-  {
-    key: "consultantName",
-    title: "Consultant Name",
-  },
-  {
-    key: "category",
-    title: "Category",
-  },
-  {
-    key: "bookingDate",
-    title: "Booking Date",
-  },
-  {
-    key: "appointmentDate",
-    title: "Appointment Date",
-  },
-  {
-    key: "sessionType",
-    title: "Session Type",
-  },
-  {
-    key: "appointmentType",
-    title: "Appointment Type",
-  },
-  {
-    key: "duration",
-    title: "Duration",
-  },
-  {
-    key: "amount",
-    title: "Amount",
-  },
-  {
-    key: "status",
-    title: "Status",
-  },
-  {
-    key: "action",
-    title: "Action",
-  },
+  { key: "id", title: "S.No" },
+  { key: "bookingId", title: "Booking ID" },
+  { key: "userName", title: "User Name" },
+  { key: "serviceCategory", title: "Service Category" },
+  { key: "providerName", title: "Service Provider Name" },
+  { key: "bookingDate", title: "Booking Date" },
+  { key: "charges", title: "Charges" },
 ];
 
 export const bookingsLogsHeaders = [
@@ -175,6 +130,15 @@ export const challengeLogsHeaders = [
     title: "Status",
   },
 ];
+
+export const serviceCategoryHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "title", title: "Category Title" },
+  { key: "type", title: "Type" },
+  { key: "created_at", title: "Creation Date" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
 export const subscriptionLogsHeaders = [
   {
     key: "id",
@@ -204,5 +168,189 @@ export const subscriptionLogsHeaders = [
     key: "status",
     title: "Status",
   },
+];
+
+// Admin-level subscription logs list (users' subscriptions)
+export const subscriptionAdminLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "full_name", title: "Full Name" },
+  { key: "email", title: "Email Address" },
+  { key: "plan_name", title: "Plan Name" },
+  { key: "status", title: "Status" },
+  { key: "price", title: "Price" },
+  { key: "purchase_date", title: "Purchase date" },
+  { key: "expiry_date", title: "Expiry Date" },
+];
+
+// Subscription plans management table headers
+export const subscriptionPlanHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "title", title: "Subscription Title" },
+  { key: "duration", title: "Duration" },
+  { key: "cost", title: "Cost" },
+  { key: "created_at", title: "Creation Date" },
+  { key: "updated_at", title: "Last modified" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+// Commission logs table headers
+export const commissionLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "commission_percentage", title: "Commission Percentage" },
+  { key: "updated_on", title: "Update On" },
+];
+
+// Payout logs table headers
+export const payoutLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "disbursement_time", title: "Disbursement Time" },
+  { key: "updated_on", title: "Update On" },
+];
+
+// Payment Logs (Doctor/Trainer bookings)
+export const paymentLogsBookingHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "booking_id", title: "Booking ID" },
+  { key: "booking_charges", title: "Booking Charges" },
+  { key: "commission", title: "Commission" },
+  { key: "booking_date", title: "Booking Date" },
+];
+
+// Query/Feedback logs table headers
+export const queryLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "name", title: "Name" },
+  { key: "email", title: "Email Address" },
+  { key: "subject", title: "Subject" },
+  { key: "message", title: "Message" },
+  { key: "created_at", title: "Date" },
+  { key: "action", title: "Action" },
+];
+
+export const complaintLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "name", title: "Name" },
+  { key: "email", title: "Email Address" },
+  { key: "user_type", title: "User Type" },
+  { key: "created_at", title: "Date" },
+  { key: "action", title: "Action" },
+];
+
+// Reports management
+export const reportsBookingHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "booking_id", title: "Booking ID" },
+  { key: "name", title: "Name" },
+  { key: "user_type", title: "User Type" },
+  { key: "booking_date", title: "Booking Date" },
+  { key: "reported_on", title: "Reported On" },
+  { key: "charges", title: "Charges" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+export const reportsNewsfeedHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "name", title: "Name" },
+  { key: "email", title: "Email Address" },
+  { key: "reported_on", title: "Reported On" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+// Workout Content management table headers
+export const contentHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "title", title: "Title" },
+  { key: "exercise_key", title: "Exercise Type" },
+  // { key: "image", title: "Image" },
+  { key: "created_at", title: "Created On" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+// Workout Content videos table headers
+export const contentVideoHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "title", title: "Title" },
+  { key: "sets", title: "Sets" },
+  { key: "rest_time", title: "Rest Time" },
+  // { key: "language", title: "Language" },
+  { key: "created_at", title: "Created On" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+// Yalla coin logs (in-app and management)
+export const inAppCoinHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "full_name", title: "Full Name" },
+  { key: "email", title: "Email Address" },
+  { key: "coins", title: "Yalla Coins" },
+  { key: "price", title: "Price" },
+  { key: "purchase_date", title: "Purchase date" },
+];
+
+export const coinManagementHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "amount", title: "Set Amount" },
+  { key: "created_at", title: "Update On" },
+];
+
+// Challenge management headers (static for now)
+export const challengeHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "title", title: "Challenge Title" },
+  { key: "type", title: "Challenge Type" },
+  { key: "upload_date", title: "Upload Date" },
+  { key: "duration", title: "Duration" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+// Doctor management module headers
+export const doctorManagementHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "name", title: "Doctor Name" },
+  { key: "email", title: "Email Address" },
+  { key: "registrationDate", title: "Registration Date" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+export const doctorBookingHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "bookingId", title: "Booking ID" },
+  { key: "serviceCategory", title: "Service Category" },
+  { key: "date", title: "Date" },
+  { key: "charges", title: "Charges" },
+  { key: "status", title: "Status" },
+];
+
+export const doctorServicesHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "serviceCategory", title: "Service Category" },
+  { key: "createdOn", title: "Creation Date" },
+  { key: "charges", title: "Service Charges" },
+  { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
+];
+
+export const doctorServiceBookingHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "bookingId", title: "Booking ID" },
+  { key: "userName", title: "User Name" },
+  { key: "date", title: "Date" },
+  { key: "charges", title: "Charges" },
+  { key: "status", title: "Status" },
+];
+
+export const doctorRequestsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "doctorName", title: "Doctor Name" },
+  { key: "status", title: "Status" },
+  { key: "requestedDate", title: "Requested Date" },
+  { key: "action", title: "Action" },
 ];
 

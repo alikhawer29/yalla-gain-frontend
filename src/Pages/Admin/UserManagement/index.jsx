@@ -12,17 +12,27 @@ import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { dateFormat, serialNum } from "../../../Utils/helper";
 import "./style.css";
+import { getAll, post } from "../../../Services/Api";
 
-const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagination }) => {
+const UserManagement = ({
+  showModal,
+  filters,
+  setFilters,
+  pagination,
+  updatePagination,
+}) => {
   const [userData, setUserData] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
   const fetchUsers = async () => {
     try {
       startSubmitting(true);
-      const response = userManagementData;
+      // const response = userManagementData;
+      const response = await getAll(`/users`, filters);
+
       if (response.status) {
-        const { data, total, per_page, current_page, to } = response.detail;
+        const { data } = response;
+        const { total, per_page, current_page, to } = response.meta;
         setUserData(data);
         updatePagination({
           showData: to,
@@ -38,20 +48,33 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
     }
   };
 
-  // Handle status change
   const handleStatusChange = (e, userId) => {
     const newStatusValue = e;
-    // Open the modal for confirmation
-    showModal(``, `Are you sure you want to change this user status to ${newStatusValue === "1" ? "Active" : "Inactive"}?`, () =>
-      onConfirmStatusChange(userId, newStatusValue)
+    showModal(
+      null,
+      `Are you sure you want to change this user's status to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
+      }?`,
+      () => onConfirmStatusChange(userId, newStatusValue),
     );
   };
 
-  // Confirm status change and update the state
   const onConfirmStatusChange = async (userId, newStatusValue) => {
-    // Update the status in the userData state
-    setUserData((prevData) => prevData.map((user) => (user.id === userId ? { ...user, status_detail: newStatusValue } : user)));
-    showModal("", `User status has been changed to ${newStatusValue === "1" ? "Active" : "Inactive"} successfully.`, null, true);
+    const response = await post(`/user/${userId}/status`);
+    // setUserData((prevData) =>
+    //     prevData.map((user) =>
+    //         user.id == userId ? { ...user, status: newStatusValue } : user
+    //     )
+    // );
+    fetchUsers();
+    showModal(
+      null,
+      `User status has been changed to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
+      } successfully.`,
+      null,
+      true,
+    );
   };
 
   useEffect(() => {
@@ -80,8 +103,8 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                     dateFilters={[
                       {
                         title: "Registration Date",
-                        from: "fromDate",
-                        to: "toDate",
+                        from: "from",
+                        to: "to",
                         fromTitle: "From",
                         toTitle: "To",
                       },
@@ -89,7 +112,7 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                     selectOptions={[
                       {
                         main_title: "Filter by status",
-                        title: "Status",
+                        title: "status",
                         options: normalStatus,
                       },
                     ]}
@@ -97,18 +120,24 @@ const UserManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                     <tbody>
                       {userData?.map((item, index) => (
                         <tr key={item?.id}>
-                          <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                          <td>{item?.user_name}</td>
+                          <td>
+                            {serialNum(
+                              (filters.page - 1) * filters.per_page + index + 1,
+                            )}
+                          </td>
+                          <td>
+                            {item?.first_name} {item?.last_name}
+                          </td>
                           <td>{item?.email}</td>
-                          <td>{dateFormat(item?.created_at)}</td>
+                          <td>{item?.created_at}</td>
                           {/* Status column with Select dropdown */}
                           <td>
                             <Select
-                              className={`tabel-select status${item?.status_detail}`}
+                              className={`tabel-select status${item?.status ? "Active" : "Inactive"}`}
                               required
                               id={`status${item?.id}`}
                               name="status"
-                              value={item?.status_detail}
+                              value={item?.status ? "1" : "0"}
                               onChange={(e) => handleStatusChange(e, item?.id)}
                               isInputNeeded={false}
                             >

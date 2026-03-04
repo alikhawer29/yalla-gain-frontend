@@ -1,32 +1,59 @@
-.booking-detail-card {
-    background-color: rgba(218, 206, 228, 0.50);
-    border-radius: 25px;
-    padding: 30px;
+.booking-logs-card {
+  border-radius: 18px;
+  padding: 24px;
 }
 
-.booking-detail-card .smallProfileImage {
-    border-radius: 100px;
+.logs-type-group,
+.logs-status-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.booking-detail-card a {
-    color: #15355E;
-    font-weight: 700;
-    text-decoration: none;
-
-    &:hover {
-        text-decoration: underline;
-    }
+.type-chip,
+.status-chip {
+  min-width: 130px;
+  padding: 10px 28px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
 }
 
-@media screen and (max-width: 1199.5px) {
-    .booking-detail-card {
-        padding: 20px;
-    }
-
+.type-chip {
+  text-transform: uppercase;
 }
-@media screen and (max-width: 575.5px) {
-    .booking-detail-card {
-        padding: 15px;
-    }
 
+.type-chip.active,
+.status-chip.active {
+  background: #118076;
+  border-color: #118076;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(17, 128, 118, 0.25);
+}
+
+.status-chip {
+  min-width: 140px;
+  font-weight: 500;
+}
+
+.booking-link {
+  color: #1ec59b;
+  font-weight: 600;
+}
+
+.booking-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+  .type-chip,
+  .status-chip {
+    flex: 1 1 calc(50% - 8px);
+    min-width: auto;
+    text-align: center;
+  }
 }

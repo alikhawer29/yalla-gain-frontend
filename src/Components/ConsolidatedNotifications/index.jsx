@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { notificationsData } from "../../Config/data";
 import { notificationOptions } from "../../Config/TableStatus";
 import withPagination from "../../HOC/withPagination";
 import { dateFormat, humanReadable } from "../../Utils/helper";
-import CustomButton from "../CustomButton";
 import LoadingSpinner from "../Loader";
 import NotificationCard from "../NotificationCard";
 import { Select } from "../Select";
 import "./style.css";
 import { useAuth } from "../../Hooks/useAuth";
+import { getAll, post } from "../../Services/Api";
+import CustomPagination from "../CustomPagination";
 
 const ConsolidatedNotifications = ({
   apiEndpoint,
@@ -25,17 +25,26 @@ const ConsolidatedNotifications = ({
 
   const fetchNotifications = async () => {
     try {
-      const responses = notificationsData;
+      const params = { ...filters };
+      if (selectedStatus) params.status = selectedStatus; // read | unread
 
-      // const responses = await getAll(`${apiEndpoint}${selectedStatus ? `?status=${selectedStatus}` : ""}`, filters);
-      const { data, total, per_page, current_page, to } =
-        responses?.detail?.notifications;
-      setNotifications(data);
+      const responses = await getAll(`${apiEndpoint}`, params);
+
+      // API expected shape: { data: [...], meta: { current_page, per_page, total, to } }
+      const list = responses?.data ?? [];
+      const meta = responses?.meta ?? {};
+
+      setNotifications(list);
       updatePagination({
-        showData: to,
-        currentPage: current_page,
-        totalRecords: total,
-        totalPages: Math.ceil(total / per_page),
+        showData: meta.to ?? list.length,
+        currentPage: meta.current_page ?? filters.page,
+        totalRecords: meta.total ?? list.length,
+        totalPages:
+          meta.last_page ??
+          Math.ceil(
+            (meta.total ?? list.length) / (meta.per_page ?? filters.per_page),
+          ),
+        perPage: meta.per_page ?? filters.per_page,
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -51,29 +60,38 @@ const ConsolidatedNotifications = ({
 
   const handleNotificationAction = async (val) => {
     try {
-      // const response = await post(`${apiEndpoint}/${val}`);
-      // const  {data} = notificationsData?.detail?.notifications;
-
+      const target = notifications.find((n) => n.id === val);
+      if (!target) return;
+      const unread = (target.read_at ?? target.read) === null;
+      const endpoint = unread ? `/notification/read` : `/notification/unread`;
+      await post(endpoint, { uuid: val });
+      // Update UI optimistically
       setNotifications((prevData) =>
-        prevData.map((notification) =>
-          notification.id === val
-            ? { ...notification, read_at: "2024-06-14T10:42:45.000000Z" }
-            : notification
-        )
+        prevData.map((n) =>
+          n.id === val
+            ? { ...n, read_at: unread ? new Date().toISOString() : null }
+            : n,
+        ),
       );
-
-      // if (response) {
-      //   fetchNotifications();
-      // }
     } catch (error) {
       console.error("Error handling notification action:", error);
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      await post(`/notification/all/read`);
+      // Refresh list
+      fetchNotifications();
+    } catch (e) {
+      console.error("Error marking all as read:", e);
     }
   };
 
   // console.log(notifications)
 
   return (
-    <div className={role == "user" && 'py-sm-5 py-3'}>
+    <div className={role == "user" && "py-sm-5 py-3"}>
       <div className="site_card">
         <Row className="mb-4">
           <Col xs={12}>
@@ -83,24 +101,19 @@ const ConsolidatedNotifications = ({
                   className="slimSelect"
                   value={selectedStatus}
                   onChange={setSelectedStatus}
-                  label="Showing"
+                  label="Show"
                   labelclass="pe-3"
                 >
                   {notificationOptions}
                 </Select>
               </div>
-              {role== "user" && (
-              <div>
-                <h2 className="page-title fw-bold mb-0">Notifications</h2>
-              </div>
+              {role == "user" && (
+                <div>
+                  <h2 className="page-title fw-bold mb-0">Notifications</h2>
+                </div>
               )}
               <div>
-                <button
-                  className="mark_all_btn"
-                  onClick={() => {
-                    console.log("mark all clicked");
-                  }}
-                >
+                <button className="mark_all_btn" onClick={markAllRead}>
                   Mark All as Read
                 </button>
               </div>
@@ -111,27 +124,46 @@ const ConsolidatedNotifications = ({
           <Col xs={12}>
             {loading ? (
               <LoadingSpinner />
-            ) : (
-              notifications.slice(0, 4).map((notification) => (
+            ) : notifications.length > 0 ? (
+              notifications.map((notification) => (
                 <React.Fragment key={notification.id}>
                   <NotificationCard
                     id={notification.id}
-                    text={notification?.data?.body}
-                    name={notification?.data?.title}
+                    /* Support both old mock structure and new API fields */
+                    text={notification?.data?.body || notification?.message}
+                    name={notification?.data?.title || notification?.title}
                     date={dateFormat(notification?.created_at)}
                     time={humanReadable(notification?.created_at)}
-                    read={notification?.read_at}
-                    notiRead={notification?.read_at}
+                    read={
+                      notification?.read_at !== undefined
+                        ? notification?.read_at
+                        : (notification?.read ?? null)
+                    }
+                    notiRead={
+                      notification?.read_at !== undefined
+                        ? notification?.read_at
+                        : (notification?.read ?? null)
+                    }
                     onClick={handleNotificationAction}
                   />
                 </React.Fragment>
               ))
+            ) : (
+              <div className="text-center py-3">No notifications found</div>
             )}
           </Col>
         </Row>
-        {/* <div className="text-center">
-          <CustomButton text="Load More" className="siteBtn primaryBtn" />
-        </div> */}
+        {/* Pagination */}
+        <Row>
+          <Col xs={12} className="mt-3">
+            {pagination && pagination.totalRecords > 0 && (
+              <CustomPagination
+                pagination={pagination}
+                setFilters={setFilters}
+              />
+            )}
+          </Col>
+        </Row>
       </div>
     </div>
   );

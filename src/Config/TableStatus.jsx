@@ -105,6 +105,21 @@ export const serviceOptions = [
     text: "Service 3",
   },
 ];
+
+export const serviceCategoryTypeOptions = [
+  {
+    value: "",
+    text: "Select Type",
+  },
+  {
+    value: "doctor",
+    text: "Doctor",
+  },
+  {
+    value: "trainer",
+    text: "Trainer",
+  },
+];
 export const language = [
   {
     value: "",
@@ -115,45 +130,22 @@ export const language = [
     text: "English",
   },
   {
-    value: "spanish",
-    text: "Spanish",
-  },
-  {
-    value: "mandarin",
-    text: "Mandarin Chinese",
-  },
-  {
-    value: "hindi",
-    text: "Hindi",
-  },
-  {
-    value: "arabic",
-    text: "Arabic",
+    value: "chinese",
+    text: "Chinese",
   },
   {
     value: "portuguese",
     text: "Portuguese",
   },
   {
-    value: "bengali",
-    text: "Bengali",
-  },
-  {
     value: "russian",
     text: "Russian",
-  },
-  {
-    value: "japanese",
-    text: "Japanese",
   },
   {
     value: "french",
     text: "French",
   },
-  {
-    value: "german",
-    text: "German",
-  },
+
 ];
 export const timeDuration = [
   {
@@ -168,6 +160,13 @@ export const timeDuration = [
     value: "1_hour",
     text: "1 Hour",
   },
+];
+// Challenge kinds
+export const challengeKinds = [
+  { value: "", text: "Select" },
+  { value: "run", text: "Run" },
+  { value: "workout", text: "Workout" },
+  { value: "cycle", text: "Cycle" },
 ];
 export const partsOfSpeech = [
   {
@@ -228,6 +227,15 @@ export const grammaticalGender = [
     value: "common",
     text: "Common",
   },
+];
+// Exercise keys for workout content
+export const exerciseKeys = [
+  { value: "", text: "Select Exercise" },
+  { value: "push-up", text: "Push up" },
+  { value: "plank", text: "Plank" },
+  { value: "barbell biceps curl", text: "Barbell biceps curl" },
+  { value: "squat", text: "Squat" },
+  { value: "deadlift", text: "Deadlift" },
 ];
 export const challengeTypes = [
   {
@@ -826,9 +834,9 @@ export const bankNameOptions = [
   { value: "xyz", text: "Xyz" },
 ];
 export const activeExpiredStatus = [
-  { value: "all", text: "All" },
+  { value: "", text: "All" },
   { value: "1", text: "Active" },
-  { value: "0", text: "Expired" },
+  { value: "2", text: "Expired" },
 ];
 
 // Year Options
@@ -980,3 +988,4 @@ export const userTypeStatus = [
     text: "Consultant",
   },
 ];
+

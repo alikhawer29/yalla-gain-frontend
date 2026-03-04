@@ -16,7 +16,7 @@ const ChangePasswordForm = ({
   return (
     <Formik
       initialValues={{
-        current_password: "",
+        old_password: "",
         password: "",
         password_confirmation: "",
       }}
@@ -41,11 +41,11 @@ const ChangePasswordForm = ({
                 required
                 placeholder="Enter Current Password"
                 inputclass="mb-3"
-                id="current_password"
-                value={values.current_password}
+                id="old_password"
+                value={values.old_password}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={touched.current_password && errors.current_password}
+                error={touched.old_password && errors.old_password}
               />
             </Col>
             <Col md={12} className="my-1">

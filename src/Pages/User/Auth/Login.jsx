@@ -7,18 +7,18 @@ import "./style.css";
 
 
 const UserLogin = () => {
-  usePageTitleUser("Login");
-  return (
-    <>
-      <UserAuthLayout authTitle="Login" authMain authPara="" authLeftText="Your Journey to Emotional Wellness" dontHaveAcc>
-        <LoginForm
-          // actor="user"
-          // apiEndpoint="/admin-api/auth/login"
-          validationSchema={loginValidationSchema}
-        />
-      </UserAuthLayout>
-  </>
-  );
+    usePageTitleUser("Login");
+    return (
+        <>
+            <UserAuthLayout authTitle="Login" authMain authPara="" authLeftText="Your Journey to Emotional Wellness" dontHaveAcc>
+                <LoginForm
+                    actor="admin"
+                    apiEndpoint="/login"
+                    validationSchema={loginValidationSchema}
+                />
+            </UserAuthLayout>
+        </>
+    );
 };
 
 export default UserLogin;

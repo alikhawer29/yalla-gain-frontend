@@ -1,0 +1,81 @@
+.stats {
+  margin-bottom: 1rem;
+  border-right: 2px solid #fff0;
+}
+
+.stats:not(:last-child) {
+  border-color: #dadada;
+}
+
+.chartjs-tooltip {
+  position: absolute;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 3px 10px rgb(0, 0, 0, 0.16);
+  padding: 10px;
+}
+
+.admin-layout .dropdown-graph {
+  padding: 12px 50px 12px 20px;
+  height: unset;
+  border-radius: 10px;
+}
+
+.app-report .statsCard {
+  background-color: rgba(153, 153, 153, 0.1);
+  border-radius: 25px;
+  border: none;
+  padding: 20px 30px;
+
+  & h6 {
+    color: #999;
+    font-weight: 500;
+  }
+
+  & h3 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+}
+
+.app-report .filterCard {
+  border-radius: 25px;
+  background: rgba(153, 153, 153, 0.1);
+  padding: 20px 30px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.app-report .progressCard {
+  border-radius: 25px;
+  background: rgba(153, 153, 153, 0.1);
+  padding: 20px 30px;
+  & h3 {
+    color: #333;
+    font-weight: 500;
+  }
+  & h5 {
+    color: #333;
+    font-weight: 400;
+  }
+}
+
+@media screen and (max-width: 1200px) and (min-width: 768px) {
+  .stats,
+  .stats:not(:last-child) {
+    border-color: #dadada;
+  }
+
+  .stats:nth-child(odd) {
+    border-color: #dadada;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .stats,
+  .stats:not(:last-child),
+  .stats:nth-child(odd) {
+    border-color: #dadada;
+  }
+}

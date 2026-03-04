@@ -5,7 +5,7 @@ import "./style.css";
 
 const UserNotifications = () => {
   usePageTitle("Notifications", true);
-  const apiEndpoint = `/admin-api/notifications`;
+  const apiEndpoint = `/notification/all/list`;
   return (
     <section className="page-content p-0 notification-page">
       <Container fluid>

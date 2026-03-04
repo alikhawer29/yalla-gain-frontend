@@ -1,0 +1,21 @@
+/* View and Edit plan styling refinements */
+.plan-view .detail-label {
+  color: #ffffff;
+  font-weight: 600;
+}
+.plan-view .detail-value {
+  color: #ffffff;
+}
+.plan-view .detail-value-weak {
+  color: #ffffff;
+}
+.plan-view .detail-features {
+  margin: 0.25rem 0 0 0;
+  padding-left: 1rem;
+}
+.plan-view .detail-features li {
+  margin-bottom: 0.35rem;
+}
+.plan-status-color {
+  color: #ffffff;
+}

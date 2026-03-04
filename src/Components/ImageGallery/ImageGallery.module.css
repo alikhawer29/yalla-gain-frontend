@@ -23,8 +23,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(146, 31, 31, 0.877);
-  opacity: 0.4;
+  background-color: rgba(0, 0, 0, 0.25);
+  opacity: 0; /* only on hover */
   transition: opacity 0.3s;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .thumbnail:hover::after {
-  opacity: 1;
+  opacity: 0.12;
 }
 
 .modal {
@@ -50,7 +50,8 @@
   align-items: center;
 }
 
-.modal .modal-body {}
+.modal .modal-body {
+}
 
 .modalContent {
   position: relative;

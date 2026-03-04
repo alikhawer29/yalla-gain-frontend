@@ -2,7 +2,7 @@ import { AuthLayout } from "../../../Components/Layouts/AdminLayout/Auth";
 import StepTwo from "../../../Components/ForgetPasswordComponents/StepTwo";
 import { usePageTitle } from "../../../Utils/helper";
 const ForgetPassword2 = () => {
-   usePageTitle("Forgot Password");
+  usePageTitle("Forgot Password");
   return (
     <AuthLayout
       authTitle="Forgot Password"
@@ -12,8 +12,8 @@ const ForgetPassword2 = () => {
       authMain
     >
       <StepTwo
-        apiEndpoint="/admin-api/password-recovery/verify-code"
-        resendEndpoint="/admin-api/password-recovery/verify-email"
+        apiEndpoint="/verify/code"
+        resendEndpoint="/reset/password"
         navigateTo="/admin/forget-password3"
       />
     </AuthLayout>

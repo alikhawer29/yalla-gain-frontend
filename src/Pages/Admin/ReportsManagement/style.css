@@ -1,0 +1,107 @@
+.tabWrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.text-grey {
+  color: #999;
+}
+
+.tabBtn {
+  background: #1b2522;
+  border: 1px solid #2a3a35;
+  color: #cfe6e2;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+.tabBtn.active {
+  background: #118076;
+  border-color: #118076;
+  color: #fff;
+}
+
+.status {
+  text-transform: capitalize;
+}
+.status.pending {
+  color: #ffb020;
+}
+.status.resolved {
+  color: #37c776;
+}
+
+.report-view .sectionTitle {
+  color: #cfe6e2;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.report-view .info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+.report-view .info-item .label {
+  color: #7fa6a0;
+  font-size: 13px;
+}
+.report-view .info-item .value {
+  color: #e9fbf7;
+  font-weight: 500;
+}
+
+.post-img.placeholder-img {
+  width: 100%;
+  padding-top: 66%;
+  background: #1b2522;
+  border: 1px solid #2a3a35;
+  border-radius: 8px;
+}
+
+/* Match placement like Appointment Logs */
+.logs-type-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Post view cards */
+.post-card {
+  padding: 8px 0 4px;
+}
+.post-header .detail-box-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.post-header .detail-box-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.post-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0f1715;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* .post-media::before { content: ""; display: block; padding-top: 60%; } */
+.post-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.post-media.placeholder {
+  background: #0f1715;
+}

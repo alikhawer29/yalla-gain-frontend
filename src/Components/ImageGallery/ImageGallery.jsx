@@ -61,17 +61,32 @@ const ImageGallery = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isModalOpen]);
+  // Dynamic per-row: 2 images => 2 per row, 3 => 3, >=4 => 4
+  const perRow = fullWidth
+    ? (Array.isArray(images) && images.length > 1
+        ? Math.min(4, Math.max(2, images.length))
+        : 1)
+    : 1;
+  const gapPx = gap ? gapMap[gap] : 8;
+  const quarterWidthCalc = `calc((100% - ${(perRow - 1) * gapPx}px) / ${perRow})`;
+
+  const multiple = Array.isArray(images) && images.length > 1;
+
   return (
-    <div style={fullWidth ? { width: "100%" } : {}} className={`d-flex gap-${gap} flex-wrap ${className}`}>
+    <div
+      style={fullWidth ? { width: "100%" } : {}}
+      className={`d-flex flex-wrap gap-${gap} ${className || ""}`}
+    >
       {images?.map((image, i) => (
         <img
           key={i}
           src={image}
-          alt="banner image"
+          alt="post image"
           className={`${Styles.thumbnail} ${!scaleOnHover ? Styles.noScale : ""}`}
           style={{
             objectFit: "cover",
-            width: fullWidth ? `calc((100% - ${(images.length - 1) * (gap ? gapMap[gap] : 8)}px) / ${images.length})` : width,
+            width: fullWidth ? quarterWidthCalc : width,
+            flex: fullWidth ? `0 0 ${quarterWidthCalc}` : undefined,
             maxWidth: maxWidth,
             maxHeight: maxHeight,
             height: height,
@@ -80,7 +95,7 @@ const ImageGallery = ({
           onClick={() => openModal(i)}
         />
       ))}
-
+    
       {isModalOpen && (
         <div className={Styles.modal} onClick={closeModal}>
           <div className={Styles.modalContent} onClick={(e) => e.stopPropagation()}>

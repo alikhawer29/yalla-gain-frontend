@@ -7,18 +7,18 @@ import LoginForm from "../../../Components/LoginForm/index.jsx";
 // import LoginForm from "../../../Components/LoginForm/index.jsx";
 
 const AdminLogin = () => {
-  usePageTitle("Login");
-  return (
-    <>
-      <AuthLayout authTitle="admin login" authMain authPara="Please login to your account">
-        <LoginForm
-          actor="admin"
-          // apiEndpoint="/admin-api/auth/login"
-          validationSchema={loginValidationSchema}
-        />
-      </AuthLayout>
-    </>
-  );
+    usePageTitle("Login");
+    return (
+        <>
+            <AuthLayout authTitle="admin login" authMain authPara="Please login to your account">
+                <LoginForm
+                    actor="admin"
+                    apiEndpoint="/login"
+                    validationSchema={loginValidationSchema}
+                />
+            </AuthLayout>
+        </>
+    );
 };
 
 export default AdminLogin;

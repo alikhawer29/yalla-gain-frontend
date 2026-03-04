@@ -42,6 +42,7 @@ export const Graph = (props) => {
 
         <Select
           className="dropdown-graph mainInput w-auto"
+          wrapperClass="w-auto"
           onChange={handleSelectChange}
           value={selectedValue}
         >
@@ -59,8 +60,8 @@ export const Graph = (props) => {
           height={90}
           options={{
             plugins: {
-                legend: false,
-              },
+              legend: false,
+            },
             responsive: true,
             maintainAspectRatio: false,
             scales: {
@@ -94,19 +95,19 @@ export const Graph = (props) => {
             labels: props?.label
               ? props?.label
               : [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ],
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+              ],
 
             tension: "0.5",
             datasets: [

@@ -1,0 +1,201 @@
+import { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { BiCheck, BiCheckDouble } from "react-icons/bi";
+import { FaBars, FaDownload, FaFile, FaFileAlt, FaFileExcel, FaFilePdf, FaFileWord, FaTelegramPlane } from "react-icons/fa";
+
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaXmark } from "react-icons/fa6";
+import ScrollToBottom from "react-scroll-to-bottom";
+import { images } from "../../../Assets";
+// import SendIcon from "../../../Assets/images/svg/Send.svg?react";
+import CustomButton from "../../../Components/CustomButton";
+import CustomInput from "../../../Components/CustomInput/index";
+import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import { chat_box, loginCredentials, sidebar } from "../../../Config/data";
+import withModal from "../../../HOC/withModal";
+import { usePageTitle } from "../../../Utils/helper";
+import Styles from "./chat.module.css";
+import "./style.css";
+
+const Chat = ({ showModal }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [messageInput, setMessageInput] = useState("");
+  const [sideData, setSideData] = useState([]);
+  const [chatBox, setChatBox] = useState([]);
+  const [currentUserData, setCurrentUserData] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [imageFiles, setImageFiles] = useState([]); // For images
+  const [documentFiles, setDocumentFiles] = useState([]); // For Word, Excel, PDF
+  const [chatFilter, setChatFilter] = useState("all");
+
+  useEffect(() => {
+    setSideData(sidebar);
+    setChatBox(chat_box);
+    setCurrentUserData(loginCredentials);
+  }, []);
+  usePageTitle("Chat");
+  const handleUserClick = (user) => {
+    // Handle user click logic
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // For image uploads
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setImageFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
+
+  const getFileIcon = (filename) => {
+    const ext = filename.split(".").pop()?.toLowerCase();
+
+    switch (ext) {
+      case "pdf":
+        return <FaFilePdf size={20} color="#E74C3C" />;
+      case "doc":
+      case "docx":
+        return <FaFileWord size={20} color="#2E86C1" />;
+      case "xls":
+      case "xlsx":
+        return <FaFileExcel size={20} color="#27AE60" />;
+      case "ppt":
+      case "pptx":
+        return <FaFilePowerpoint size={20} color="#E67E22" />;
+      case "txt":
+        return <FaFileAlt size={20} color="#666" />;
+      case "zip":
+      case "rar":
+        return <FaFileArchive size={20} color="#7D3C98" />;
+      default:
+        return <FaFile size={20} color="#666" />;
+    }
+  };
+
+  const PermissionToShare = () => {
+    showModal(``, `Permission Granted to user to share file successfully.`, null, true);
+  };
+
+  const UserRestricted = () => {
+    showModal(``, `User restricted to message Successfully.`, null, true);
+  };
+
+  const BlockedUser = () => {
+    showModal(``, `User Blocked Successfully.`, null, true);
+  };
+
+  // For document uploads
+  const handleDocumentChange = (e) => {
+    const files = Array.from(e.target.files);
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
+
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type) || file.name.match(/\.(pdf|doc|docx|xls|xlsx)$/i));
+
+    if (validFiles.length !== files.length) {
+      alert("Only PDF, Word (.doc, .docx), Excel (.xls, .xlsx) files are allowed");
+    }
+
+    if (validFiles.length > 0) {
+      setDocumentFiles((prev) => [...prev, ...validFiles]);
+    }
+
+    e.target.value = ""; // Reset input
+  };
+
+  const handleSend = () => {
+    if (!messageInput && imageFiles.length < 1 && documentFiles.length < 1) {
+      return;
+    }
+
+    const newMessage = {
+      "user-id": currentUserData["user-id"],
+      name: currentUserData["full-name"],
+      message: messageInput,
+      picture: currentUserData["photo-path"] || images.UserImage, // Add fallback
+      time: new Date().toLocaleTimeString(),
+      date: new Date().toLocaleDateString(),
+      images: [...imageFiles], // Image files
+      documents: [...documentFiles], // Document files
+    };
+
+    setChatBox((prevChatBox) => [...prevChatBox, newMessage]);
+    setMessageInput("");
+    setImageFiles([]);
+    setDocumentFiles([]);
+  };
+
+  return (
+    <DashboardLayout>
+      <section className={"dashCard"}>
+        <Container fluid className="px-sm-2 px-0">
+          <div className=" px-sm-0">
+            <div className="site_card p-0 ">
+              <h2 className="fw-bold pt-3 mb-3 mainTitle">Chats</h2>
+              <div className={`d-flex justify-content-between align-items-center mb-xl-0 mb-3`}>
+                <button className={`${Styles[`sidebar-toggle`]} ${Styles[`chatToggleButton`]}`} onClick={toggleSidebar}>
+                  <FaBars />
+                </button>
+              </div>
+              <div className={`${Styles[`chat-module`]}`}>
+                <div className={`${Styles[`chat-sidebar`]} ${isSidebarOpen ? `${Styles.open}` : ``}`}>
+                  <button className={`d-xl-none d-block ${Styles.sidebarCloseBtn}`} onClick={() => setIsSidebarOpen(false)}>
+                    <FaXmark />
+                  </button>
+                  <div className={`d-flex align-items-center gap-2 px-2 ${Styles[`chat-sidebar-top`]}`}>
+                    <div className="chat-search flex-grow-1">
+                      <CustomInput
+                        type="text"
+                        placeholder="Search..."
+                        name="search"
+                        id="search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      <button className="searchButton notButton">
+                        <FontAwesomeIcon icon={faSearch} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="px-2 pb-3" style={{background: "#333"}}>
+                    <div className="d-flex justify-content-center gap-2">
+                      <CustomButton
+                        onClick={() => {
+                          setChatFilter("all");
+                        }}
+                        className={`btn min-width-120 ${chatFilter === "all" ? "btn-primary" : "btn-secondary"}`}
+                        text="All"
+                      />
+                      <CustomButton
+                        onClick={() => {
+                          setChatFilter("read");
+                        }}
+                        text="Read"
+                        className={`btn min-width-120 ${chatFilter === "read" ? "btn-primary" : "btn-secondary"}`}
+                      />
+                      <CustomButton
+                        onClick={() => {
+                          setChatFilter("unread");
+                        }}
+                        text="Unread"
+                        className={`btn min-width-120 ${chatFilter === "unread" ? "btn-primary" : "btn-secondary"} `}
+                      />
+                    </div>
+                  </div>
+                  <ul>
+                    {sideData?.map((user, i) => (
+                      <div className={`${Styles.sidebarChat} ${user.isOpen ? `isOpen` : `close`}`} key={i} onClick={() => handleUserClick(user)}>
+                        <div className={`flex-shrink-0`}>
+                          <img src={user["photo-path"]} alt={`asdas`} className={Styles.chatHeaderImg} />
+                        </div>
+                        <div className={`flex-grow-1`}>
+                          <h6 className={`mb-0 text-white`}>{user.name}</h6>
+                          <p className={`mb-0`} style={{color: "#A1A3B0"}}>{user.message}</p>
+

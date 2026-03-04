@@ -6,15 +6,33 @@ import { images } from "../../../Assets";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import CustomTable from "../../../Components/CustomTable";
 import { Select } from "../../../Components/Select";
-import { challengeLogsData, subscriptionLogsData, userBookingLogsData, userManagementData } from "../../../Config/data";
-import { bookingsLogsHeaders, challengeLogsHeaders, subscriptionLogsHeaders } from "../../../Config/TableHeaders";
-import { activeExpiredStatus, bookingTypeStatus, ongoingStatus, statusOptions } from "../../../Config/TableStatus";
+import {
+  challengeLogsData,
+  subscriptionLogsData,
+  userBookingLogsData,
+  userManagementData,
+} from "../../../Config/data";
+import {
+  bookingsLogsHeaders,
+  challengeLogsHeaders,
+  subscriptionLogsHeaders,
+} from "../../../Config/TableHeaders";
+import {
+  activeExpiredStatus,
+  bookingTypeStatus,
+  ongoingStatus,
+  statusOptions,
+} from "../../../Config/TableStatus";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { getCountryFlag, serialNum } from "../../../Utils/helper";
+import { getAll, getDetails, post } from "../../../Services/Api";
+import { usePagination } from "../../../Hooks/usePagination";
 
-const UserDetails = ({ showModal, filters, setFilters, pagination, updatePagination }) => {
+const UserDetails = ({
+  showModal /*, filters, setFilters, pagination, updatePagination */,
+}) => {
   const { id } = useParams();
   const [profileData, setProfileData] = useState({});
   const [bookingLogs, setBookingLogs] = useState([]);
@@ -22,16 +40,61 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
   const [subscriptionLogs, setSubscriptionLogs] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
+  // Separate filters for each table
+  const defaultFilters = {
+    page: 1,
+    per_page: 10,
+    search: "",
+    fromDate: "",
+    toDate: "",
+    status: "",
+  };
+
+  const [bookingFilters, setBookingFilters] = useState({ ...defaultFilters });
+  const [challengeFilters, setChallengeFilters] = useState({
+    ...defaultFilters,
+  });
+  const [subscriptionFilters, setSubscriptionFilters] = useState({
+    ...defaultFilters,
+  });
+
+  // Separate pagination for each table
+  const [bookingPagination, updateBookingPagination] = usePagination(
+    bookingFilters.page,
+    bookingFilters.per_page,
+  );
+  const [challengePagination, updateChallengePagination] = usePagination(
+    challengeFilters.page,
+    challengeFilters.per_page,
+  );
+  const [subscriptionPagination, updateSubscriptionPagination] = usePagination(
+    subscriptionFilters.page,
+    subscriptionFilters.per_page,
+  );
+
+  useEffect(() => {
+    updateBookingPagination({ perPage: bookingFilters.per_page });
+  }, [bookingFilters.per_page, updateBookingPagination]);
+
+  useEffect(() => {
+    updateChallengePagination({ perPage: challengeFilters.per_page });
+  }, [challengeFilters.per_page, updateChallengePagination]);
+
+  useEffect(() => {
+    updateSubscriptionPagination({ perPage: subscriptionFilters.per_page });
+  }, [subscriptionFilters.per_page, updateSubscriptionPagination]);
+
   const fetchBookings = async () => {
     try {
       startSubmitting(true);
-      // const url = `/admin-api/users`;
-      // const response = await getAll(url, filters);
-      const response = userBookingLogsData;
+      const url = `/appointments/${id}`;
+      const response = await getAll(url, bookingFilters);
+      //   const response = userBookingLogsData;
       if (response.status) {
-        const { data, total, per_page, current_page, to } = response.detail;
+        const { data } = response;
+        const { total, per_page, current_page, to } = response?.meta;
         setBookingLogs(data);
-        updatePagination({
+        updateBookingPagination({
           showData: to,
           currentPage: current_page,
           totalRecords: total,
@@ -48,13 +111,14 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
   const fetchChallneges = async () => {
     try {
       startSubmitting(true);
-      // const url = `/admin-api/users`;
-      // const response = await getAll(url, filters);
-      const response = challengeLogsData;
+      const url = `/challenge/${id}/listing`;
+      const response = await getAll(url, challengeFilters);
+      // const response = challengeLogsData;
       if (response.status) {
-        const { data, total, per_page, current_page, to } = response.detail;
+        const { data } = response;
+        const { total, per_page, current_page, to } = response?.meta;
         setChallengeLogs(data);
-        updatePagination({
+        updateChallengePagination({
           showData: to,
           currentPage: current_page,
           totalRecords: total,
@@ -70,13 +134,14 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
   const fetchSubscriptions = async () => {
     try {
       startSubmitting(true);
-      // const url = `/admin-api/users`;
-      // const response = await getAll(url, filters);
-      const response = subscriptionLogsData;
+      const url = `/subscription-logs/${id}`;
+      const response = await getAll(url, subscriptionFilters);
+      // const response = subscriptionLogsData;
       if (response.status) {
-        const { data, total, per_page, current_page, to } = response.detail;
+        const { data } = response;
+        const { total, per_page, current_page, to } = response?.meta;
         setSubscriptionLogs(data);
-        updatePagination({
+        updateSubscriptionPagination({
           showData: to,
           currentPage: current_page,
           totalRecords: total,
@@ -90,42 +155,60 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
     }
   };
 
-  useEffect(() => {
-    const getUser = async () => {
-      const response = userManagementData.detail.data.find((e) => e.id === Number(id));
+  const getUser = async () => {
+    const response = await getDetails(`/user/${id}`);
+    if (response) {
+      setProfileData(response.data);
+    }
+  };
 
-      // const response = await getDetails(`/admin-api/users/${id}`);
-      if (response) {
-        // setProfileData(response.detail);
-        setProfileData(response);
-      }
-    };
+  useEffect(() => {
     getUser();
   }, [id]);
 
+  // Trigger fetches when each table's filters change
   useEffect(() => {
     fetchBookings();
-    fetchChallneges();
-    fetchSubscriptions();
-  }, [filters]);
+  }, [bookingFilters]);
 
-  // Handle status change
+  useEffect(() => {
+    fetchChallneges();
+  }, [challengeFilters]);
+
+  useEffect(() => {
+    fetchSubscriptions();
+  }, [subscriptionFilters]);
+
   const handleStatusChange = (e, userId) => {
     const newStatusValue = e;
-    // Open the modal for confirmation
-    showModal(``, `Are you sure you want to change this user status to ${newStatusValue === "1" ? "Active" : "Inactive"}?`, () =>
-      onConfirmStatusChange(userId, newStatusValue)
+    showModal(
+      `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
+      `Are you sure you want to change this user's status to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
+      }?`,
+      () => onConfirmStatusChange(userId, newStatusValue),
     );
   };
 
-  // Confirm status change and update the state
   const onConfirmStatusChange = async (userId, newStatusValue) => {
-    // Update the status in the appointmentLogs state
-    setProfileData({ ...profileData, status_detail: newStatusValue });
-    showModal("", `User status has been changed to ${newStatusValue === "1" ? "Active" : "Inactive"} successfully.`, null, true);
+    await post(`/user/${userId}/status`, { status: newStatusValue });
+    // setProfileData((prevData) => ({
+    //     ...prevData,
+    //     status: newStatusValue,
+    // }));
+    getUser();
+    showModal(
+      "Successful",
+      `User status has been changed to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
+      } successfully.`,
+      null,
+      true,
+    );
   };
 
-  const { email, phone_number, user_name, date_of_birth, id: user_id } = profileData;
+  const { email, phone, first_name, last_name, dob, status, dialing_code } =
+    profileData;
   return (
     <DashboardLayout pageTitle="User Details">
       <div className="user-details">
@@ -140,12 +223,12 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
                 <div className="profile-status d-flex  align-items-end flex-column gap-3">
                   <div className="status-action">
                     <Select
-                      className={`tabel-select status${profileData?.status_detail}`}
-                      id={`status${profileData?.id}`}
+                      className={`tabel-select status${profileData?.status ? "Active" : "Inactive"}`}
+                      id={`status${id}`}
                       name="status"
-                      label="Status:"
-                      value={profileData?.status_detail}
-                      onChange={(e) => handleStatusChange(e, profileData?.id)}
+                      label=""
+                      value={profileData?.status ? "1" : "0"}
+                      onChange={(e) => handleStatusChange(e, id)}
                       labelclass="me-2 mb-0"
                     >
                       {statusOptions}
@@ -157,25 +240,36 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
           </div>
           <div className="col-12">
             <div className="d-flex align-items-center gap-5 mb-4">
-            <div className="detail-box-img">
-              <img src={profileData?.UserImage ?? images.placeholder} alt="User" />
-            </div>
-            <Link className="btn btn-primary" to={`/admin/user-management/${user_id}/user-post`}>User Post</Link>
+              <div className="detail-box-img">
+                <img
+                  src={profileData?.photo ?? images.placeholder}
+                  alt="User"
+                />
+              </div>
+              <Link
+                className="btn btn-primary"
+                to={`/admin/user-management/${id}/user-post`}
+              >
+                User Post
+              </Link>
             </div>
             <div className="row">
               <div className="col-xxl-9 col-lg-11">
                 <div className="row mb-4">
                   {[
-                    { label: "User Name", value: user_name },
+                    { label: "User Name", value: first_name + " " + last_name },
                     { label: "Email Address", value: email },
-                    { label: "Date Of Birth", value: date_of_birth },
-                    { label: "Phone Number", value: phone_number },
+                    { label: "Date Of Birth", value: dob },
+                    { label: "Phone Number", value: dialing_code + phone },
                   ].map(({ label, value }) => (
                     <div className="col-xl-3 col-md-6 mb-3" key={label}>
                       <div className="detail-box">
                         <h6 className="">{label}</h6>
                         <p className=" mb-0">
-                          {label === "Phone Number" && <span>{getCountryFlag(value)}</span>} {value}
+                          {label === "Phone Number" && (
+                            <span>{getCountryFlag(value)}</span>
+                          )}{" "}
+                          {value}
                         </p>
                       </div>
                     </div>
@@ -191,11 +285,11 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
           </div>
           <div className="col-12">
             <CustomTable
-              filters={filters}
-              setFilters={setFilters}
+              filters={bookingFilters}
+              setFilters={setBookingFilters}
               loading={isSubmitting}
               headers={bookingsLogsHeaders}
-              pagination={pagination}
+              pagination={bookingPagination}
               // if you want multiple date filters
               dateFilters={[
                 {
@@ -217,14 +311,27 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
               <tbody>
                 {bookingLogs?.map((item, index) => (
                   <tr key={item?.id}>
-                    <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
+                    <td>
+                      {serialNum(
+                        (bookingFilters.page - 1) * bookingFilters.per_page +
+                          index +
+                          1,
+                      )}
+                    </td>
                     <td>{item?.booking_id}</td>
-                    <td>{item?.booking_type}</td>
-                    <td>{item?.booking_date}</td>
-                    <td>{item?.amount}</td>
+                    <td>{item?.service?.user?.type}</td>
+                    <td>{item?.appointment_date}</td>
+                    <td>{item?.amount_paid} Yalla Coins</td>
                     <td
                       style={{
-                        color: item.status === "Pending" ? "#FDB332" : item.status === "Upcoming" ? "#FF5C5C" : item.status === "Past" ? "#999999" : "#4CD964",
+                        color:
+                          item.status === "pending"
+                            ? "#FDB332"
+                            : item.status === "upcoming"
+                              ? "#FF5C5C"
+                              : item.status === "past"
+                                ? "#999999"
+                                : "#4CD964",
                       }}
                     >
                       {item?.status}
@@ -241,11 +348,11 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
           </div>
           <div className="col-12">
             <CustomTable
-              filters={filters}
-              setFilters={setFilters}
+              filters={challengeFilters}
+              setFilters={setChallengeFilters}
               loading={isSubmitting}
               headers={challengeLogsHeaders}
-              pagination={pagination}
+              pagination={challengePagination}
               // if you want multiple date filters
               dateFilters={[
                 {
@@ -267,13 +374,27 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
               <tbody>
                 {challnegeLogs?.map((item, index) => (
                   <tr key={item?.id}>
-                    <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                    <td>{item?.challenge_title}</td>
-                    <td>{item?.challenge_type}</td>
+                    <td>
+                      {serialNum(
+                        (challengeFilters.page - 1) *
+                          challengeFilters.per_page +
+                          index +
+                          1,
+                      )}
+                    </td>
+                    <td>{item?.challenge?.title}</td>
+                    <td>{item?.challenge?.type}</td>
                     <td>{item?.start_date}</td>
                     <td
                       style={{
-                        color: item.status === "On Going" ? "#FDB332" : item.status === "Failed" ? "#FF5C5C" : item.status === "Completed" ? "#4CD964" : "",
+                        color:
+                          item.status === "ongoing"
+                            ? "#FDB332"
+                            : item.status === "failed"
+                              ? "#FF5C5C"
+                              : item.status === "completed"
+                                ? "#4CD964"
+                                : "",
                       }}
                     >
                       {item?.status}
@@ -290,17 +411,17 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
           </div>
           <div className="col-12">
             <CustomTable
-              filters={filters}
-              setFilters={setFilters}
+              filters={subscriptionFilters}
+              setFilters={setSubscriptionFilters}
               loading={isSubmitting}
               headers={subscriptionLogsHeaders}
-              pagination={pagination}
+              pagination={subscriptionPagination}
               // if you want multiple date filters
               dateFilters={[
                 {
                   title: "Date",
-                  from: "fromDate",
-                  to: "toDate",
+                  from: "from_payment_date",
+                  to: "to_payment_date",
                   fromTitle: "From",
                   toTitle: "To",
                 },
@@ -316,18 +437,30 @@ const UserDetails = ({ showModal, filters, setFilters, pagination, updatePaginat
               <tbody>
                 {subscriptionLogs?.map((item, index) => (
                   <tr key={item?.id}>
-                    <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                    <td>{item?.subscription_title}</td>
-                    <td>{item?.subscription_duration}</td>
-                    <td>{item?.total_payment}</td>
-                    <td>{item?.payment_date}</td>
-                    <td>{item?.expiry_date}</td>
+                    <td>
+                      {serialNum(
+                        (subscriptionFilters.page - 1) *
+                          subscriptionFilters.per_page +
+                          index +
+                          1,
+                      )}
+                    </td>
+                    <td>{item?.subscription_plan?.title}</td>
+                    <td>{item?.subscription_plan?.duration}</td>
+                    <td>${item?.price_paid}</td>
+                    <td>{item?.subscribed_on}</td>
+                    <td>{item?.expired_on}</td>
                     <td
                       style={{
-                        color: item.status === "Active" ? "#4CD964" : item.status === "Expired" ? "#FF5C5C" : "",
+                        color:
+                          item.is_active == true
+                            ? "#4CD964"
+                            : item.status == false
+                              ? "#FF5C5C"
+                              : "",
                       }}
                     >
-                      {item?.status}
+                      {item?.is_active == true ? "Active" : "Expired"}
                     </td>
                   </tr>
                 ))}

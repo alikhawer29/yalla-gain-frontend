@@ -51,9 +51,6 @@ const CustomModal = (props) => {
               {props?.para && !props?.showReason && (
                 <p className="modalpara">{props.para}</p>
               )}
-              {/* <p className="modalpara">
-                {props?.showReason ? "" : props?.para}
-              </p> */}
 
               {/* Show reason input area if `showReason` is true */}
               {props?.showReason && (
@@ -62,7 +59,7 @@ const CustomModal = (props) => {
                   <h4 className="modalHeading fw-medium">
                     {props?.reasonSubHeading}
                   </h4>
-                  <p className="mb-1 fw-medium ms-1">
+                  <p className="mb-1 fw-medium ms-1 text-light">
                     {props?.reasonLabel} <span className="text-red">*</span>
                   </p>
                   <textarea
@@ -90,13 +87,15 @@ const CustomModal = (props) => {
                   <CustomButton
                     onClick={props?.action}
                     variant="primary"
-                    text={"Submit"}
+                    text={props?.submitText || "Submit"}
                   />
-                  <CustomButton
-                    onClick={props?.close}
-                    variant="secondary"
-                    text={"Cancel"}
-                  />
+                  {!props?.hideCancel && (
+                    <CustomButton
+                      onClick={props?.close}
+                      variant="secondary"
+                      text={props?.cancelText || "Cancel"}
+                    />
+                  )}
                 </div>
               ) : props?.alert ? (
                 <>
