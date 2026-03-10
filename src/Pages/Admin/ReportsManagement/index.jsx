@@ -41,8 +41,15 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                 const endpoint =
                     activeTab === "newsfeed" ? "/reports/feeds" : "/reports/bookings";
 
-                const params = { ...filters };
-                // keep keys as from/to/search/page/per_page
+                // Normalize filters so we always send `from`/`to` (not fromDate/toDate)
+                const params = {
+                    page: filters.page,
+                    per_page: filters.per_page,
+                    search: filters.search,
+                    from: filters.from ?? filters.fromDate ?? "",
+                    to: filters.to ?? filters.toDate ?? "",
+                };
+
                 if (!params.from) delete params.from;
                 if (!params.to) delete params.to;
                 if (!params.search) delete params.search;
@@ -103,10 +110,10 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                     {activeTab === "booking"
                                         ? rows.map((item, index) => {
                                             const appt = item?.appointment || {};
-                                            const user = appt?.user || {};
+                                            const reportUser = item?.user || appt?.user || {};
                                             const provider = appt?.service?.user || {};
                                             const bookingId = appt?.booking_id || "-";
-                                            const name = [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "-";
+                                            const name = [reportUser?.first_name, reportUser?.last_name].filter(Boolean).join(" ") || "-";
                                             const userType = provider?.type ? capitalizeFirstLetter(provider.type) : "-";
                                             const bookingDate = appt?.appointment_date || appt?.created_at || "-";
                                             const reportedOn = item?.created_at || "-";

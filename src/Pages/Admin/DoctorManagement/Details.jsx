@@ -26,6 +26,15 @@ const formatStatusLabel = (value) => {
     return label.charAt(0).toUpperCase() + label.slice(1);
 };
 
+const formatNameField = (field) => {
+    if (!field) return "-";
+
+    const value = typeof field === "string" ? field : field.name || "";
+    if (!value) return "-";
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
 const DoctorDetails = ({ showModal }) => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -40,7 +49,9 @@ const DoctorDetails = ({ showModal }) => {
         try {
             startSubmitting(true);
             const response = await getDetails(`/doctor/${id}`);
-            if (response?.status) setDoctor(response.data);
+            if (response?.status) {
+                setDoctor(response.data || null);
+            }
         } catch (error) {
             console.error("Error fetching doctor details:", error);
         } finally {
@@ -145,12 +156,12 @@ const DoctorDetails = ({ showModal }) => {
 
         return {
             name: [doctor.first_name, doctor.last_name].filter(Boolean).join(" ") || "-",
-            gender: doctor.gender?.name || "-",
+            gender: formatNameField(doctor.gender),
             phone: phoneValue || "-",
             phoneValue,
             email: doctor.email || "-",
-            state: doctor.state?.name || "-",
-            city: doctor.city?.name || "-",
+            state: formatNameField(doctor.state),
+            city: formatNameField(doctor.city),
             bio: doctor.bio || "-",
             language: doctor.language || "-",
             status: doctor.status || "1",

@@ -26,6 +26,15 @@ const formatStatusLabel = (value) => {
     return label.charAt(0).toUpperCase() + label.slice(1);
 };
 
+const formatNameField = (field) => {
+    if (!field) return "-";
+
+    const value = typeof field === "string" ? field : field.name || "";
+    if (!value) return "-";
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
 const TrainerDetails = ({ showModal }) => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -40,7 +49,9 @@ const TrainerDetails = ({ showModal }) => {
         try {
             startSubmitting(true);
             const response = await getDetails(`/doctor/${id}`);
-            if (response?.status) setTrainer(response.data);
+            if (response?.status) {
+                setTrainer(response.data || null);
+            }
         } catch (error) {
             console.error("Error fetching Trainer details:", error);
         } finally {
@@ -145,12 +156,12 @@ const TrainerDetails = ({ showModal }) => {
 
         return {
             name: [Trainer.first_name, Trainer.last_name].filter(Boolean).join(" ") || "-",
-            gender: Trainer.gender?.name || "-",
+            gender: formatNameField(Trainer.gender),
             phone: phoneValue || "-",
             phoneValue,
             email: Trainer.email || "-",
-            state: Trainer.state?.name || "-",
-            city: Trainer.city?.name || "-",
+            state: formatNameField(Trainer.state),
+            city: formatNameField(Trainer.city),
             bio: Trainer.bio || "-",
             language: Trainer.language || "-",
             status: Trainer.status || "1",
