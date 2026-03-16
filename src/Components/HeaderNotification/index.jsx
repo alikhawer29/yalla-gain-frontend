@@ -3,7 +3,7 @@ import { Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { faBell as faBellNoti } from "@fortawesome/free-regular-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { dateFormat, humanReadable } from "../../Utils/helper";
 import { useAuth } from "../../Hooks/useAuth";
@@ -19,6 +19,7 @@ const HeaderNotification = ({
     const [isOpen, setIsOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     // Update local state when notificationData prop changes
     useEffect(() => {
@@ -105,6 +106,55 @@ const HeaderNotification = ({
         }
     };
 
+    const getNotificationTargetPath = (notification) => {
+        const targetType = notification?.target_type;
+        const targetId = notification?.target_id;
+
+        if (!targetType || !targetId) return null;
+
+        switch (targetType) {
+            case "user":
+                return `/admin/user-management/${targetId}`;
+            case "doctor":
+                return `/admin/doctor-management/${targetId}`;
+            case "trainer":
+                return `/admin/trainer-management/${targetId}`;
+            case "appointment":
+                return `/admin/appointments/${targetId}`;
+            case "feedback":
+                return `/admin/query-management/${targetId}`;
+            default:
+                return null;
+        }
+    };
+
+    const handleNotificationClick = async (notification) => {
+        const path = getNotificationTargetPath(notification);
+        if (!path) return;
+
+        const isCurrentlyUnread =
+            (notification.read_at ?? notification.read) === null;
+
+        if (isCurrentlyUnread) {
+            try {
+                await post(`/notification/read`, { uuid: notification.id });
+                setNotifications((prevData) =>
+                    prevData.map((n) =>
+                        n.id === notification.id
+                            ? { ...n, read_at: new Date().toISOString() }
+                            : n
+                    )
+                );
+                fetchUnreadCount();
+            } catch (e) {
+                console.error("Error marking header notification as read:", e);
+            }
+        }
+
+        setIsOpen(false);
+        navigate(path);
+    };
+
     return (
         <Dropdown
             className="notiDropdown me-2 whiteColor"
@@ -144,6 +194,12 @@ const HeaderNotification = ({
                                 className={`singleNoti ${(notification.read_at ?? notification.read) === null ? "unread" : ""
                                     }`}
                                 key={notification.id}
+                                style={
+                                    getNotificationTargetPath(notification)
+                                        ? { cursor: "pointer" }
+                                        : undefined
+                                }
+                                onClick={() => handleNotificationClick(notification)}
                             >
                                 <div className="singleNotiIcon">
                                     <FontAwesomeIcon className="notiIcon" icon={faBellNoti} />

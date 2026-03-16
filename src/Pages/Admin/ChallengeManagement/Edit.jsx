@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomInput from "../../../Components/CustomInput";
@@ -11,6 +11,7 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import ImageDropzone from "../../../Components/ImageDropzone";
 import { challengeKinds } from "../../../Config/TableStatus";
 import { getDetails, post } from "../../../Services/Api";
+import { io } from "socket.io-client";
 import { challengeEditSchema } from "../../../Config/Validations";
 
 const STATIC_CHALLENGES = [
@@ -22,8 +23,65 @@ const EditChallenge = ({ showModal }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
-    // const data = useMemo(() => STATIC_CHALLENGES.find((x) => String(x.id) === String(id)), [id]);
     const [initialValues, setInitialValues] = useState({ title: "", type: "", duration: "", milestone: "", reward: "", description: "", image: "" });
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        const s = io("https://custom-dev.onlinetestingserver.com:2170/", {
+            transports: ["websocket"],
+        });
+
+        s.on("connect", () => {
+            console.log("[Challenge Edit] Socket connected", s.id);
+        });
+
+        s.on("connect_error", (err) => {
+            console.log("[Challenge Edit] Socket connect_error", err?.message || err);
+        });
+
+        s.on("disconnect", (reason) => {
+            console.log("[Challenge Edit] Socket disconnected", reason);
+        });
+
+        setSocket(s);
+
+        return () => {
+            console.log("[Challenge Edit] Cleaning up socket");
+            s.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!socket || !id) return;
+
+        const handler = (payload) => {
+            console.log("[Challenge Edit] Received closeIFrame event", payload);
+            if (payload?.challenge_id && Number(payload.challenge_id) === Number(id)) {
+                console.log("[Challenge Edit] challenge_id matched, redirecting to /admin/challenges");
+                navigate("/admin/challenges");
+            }
+        };
+
+        const baseEvent = "closeIFrame";
+        const dynamicEvent = `${baseEvent}${id}`;
+
+        console.log("[Challenge Edit] Subscribing to socket events", {
+            baseEvent,
+            dynamicEvent,
+        });
+
+        socket.on(baseEvent, handler);
+        socket.on(dynamicEvent, handler);
+
+        return () => {
+            console.log("[Challenge Edit] Unsubscribing from socket events", {
+                baseEvent,
+                dynamicEvent,
+            });
+            socket.off(baseEvent, handler);
+            socket.off(dynamicEvent, handler);
+        };
+    }, [socket, id, navigate]);
 
     useEffect(() => {
         const load = async () => {
@@ -52,7 +110,7 @@ const EditChallenge = ({ showModal }) => {
         }
         const res = await post(`/challenge/${id}/update`, payload);
         if (res?.status) {
-            showModal("Successfully", "Challenge has been updated successfully", () => navigate(`/admin/challenges/${id}`), true);
+            showModal("Successfully", "Challenge has been updated successfully", null, true);
         } else {
             showModal("Error", res?.message ?? "Something went wrong", null, true);
         }
@@ -156,6 +214,21 @@ const EditChallenge = ({ showModal }) => {
                                     </form>
                                 )}
                             </Formik>
+                            {id && (
+                                <div className="mt-4">
+                                    <h3 className="mainTitle mb-3">Set Challenge Avatar</h3>
+                                    <div className="ratio ratio-16x9">
+                                        <iframe
+                                            title="Set Challenge Avatar"
+                                            src={`https://custom-dev.onlinetestingserver.com/yalla-unity-host/YallaGainWebGL/?challenge_id=${id}`}
+                                            width="100%"
+                                            height="600"
+                                            frameBorder="0"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

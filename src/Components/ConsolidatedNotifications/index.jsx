@@ -10,6 +10,7 @@ import "./style.css";
 import { useAuth } from "../../Hooks/useAuth";
 import { getAll, post } from "../../Services/Api";
 import CustomPagination from "../CustomPagination";
+import { useNavigate } from "react-router-dom";
 
 const ConsolidatedNotifications = ({
   apiEndpoint,
@@ -22,6 +23,7 @@ const ConsolidatedNotifications = ({
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState("");
   const { role } = useAuth();
+  const navigate = useNavigate();
 
   const fetchNotifications = async () => {
     try {
@@ -76,6 +78,53 @@ const ConsolidatedNotifications = ({
     } catch (error) {
       console.error("Error handling notification action:", error);
     }
+  };
+
+  const getNotificationTargetPath = (notification) => {
+    const targetType = notification?.target_type;
+    const targetId = notification?.target_id;
+
+    if (!targetType || !targetId) return null;
+
+    switch (targetType) {
+      case "user":
+        return `/admin/user-management/${targetId}`;
+      case "doctor":
+        return `/admin/doctor-management/${targetId}`;
+      case "trainer":
+        return `/admin/trainer-management/${targetId}`;
+      case "appointment":
+        return `/admin/appointments/${targetId}`;
+      case "feedback":
+        return `/admin/query-management/${targetId}`;
+      default:
+        return null;
+    }
+  };
+
+  const handleNotificationNavigate = async (notificationId) => {
+    const notification = notifications.find((n) => n.id === notificationId);
+    if (!notification) return;
+
+    const path = getNotificationTargetPath(notification);
+    if (!path) return;
+
+    // Mark as read if currently unread
+    const isUnread = (notification.read_at ?? notification.read) === null;
+    if (isUnread) {
+      try {
+        await post(`/notification/read`, { uuid: notificationId });
+        setNotifications((prevData) =>
+          prevData.map((n) =>
+            n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n,
+          ),
+        );
+      } catch (e) {
+        console.error("Error marking notification as read on navigate:", e);
+      }
+    }
+
+    navigate(path);
   };
 
   const markAllRead = async () => {
@@ -133,7 +182,7 @@ const ConsolidatedNotifications = ({
                     text={notification?.data?.body || notification?.message}
                     name={notification?.data?.title || notification?.title}
                     date={dateFormat(notification?.created_at)}
-                    time={humanReadable(notification?.created_at)}
+                        time={humanReadable(notification?.created_at)}
                     read={
                       notification?.read_at !== undefined
                         ? notification?.read_at
@@ -144,7 +193,9 @@ const ConsolidatedNotifications = ({
                         ? notification?.read_at
                         : (notification?.read ?? null)
                     }
-                    onClick={handleNotificationAction}
+                    clickable={!!getNotificationTargetPath(notification)}
+                    onToggleRead={handleNotificationAction}
+                    onNavigate={handleNotificationNavigate}
                   />
                 </React.Fragment>
               ))

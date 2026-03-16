@@ -5,8 +5,8 @@ import { Link, useParams } from "react-router-dom";
 import BackButton from "../../../Components/BackButton";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import { userBookingLogsData } from "../../../Config/data";
 import { dateFormat, getCountryFlag, isNullOrEmpty } from "../../../Utils/helper";
+import { getDetails } from "../../../Services/Api";
 import "./style.css";
 
 const AppointmentDetails = () => {
@@ -16,12 +16,13 @@ const AppointmentDetails = () => {
 
   useEffect(() => {
     const getAppointmentDetails = async () => {
-      const response = userBookingLogsData?.detail?.data?.find((app) => app.id === id);
-
-      // const response = await getDetails(`/admin-api/users/${id}`);
-      if (response) {
-        // setServiceProvider(response.detail);
-        setAppointmentDetails(response);
+      try {
+        const res = await getDetails(`/appointment/${id}/detail`);
+        if (res?.status && res?.data) {
+          setAppointmentDetails(res.data);
+        }
+      } catch (error) {
+        console.error("Error fetching appointment details:", error);
       }
     };
     getAppointmentDetails();
@@ -46,6 +47,25 @@ const AppointmentDetails = () => {
       </DashboardLayout>
     );
   }
+
+  const user = appointmentDetails.user || {};
+  const provider = appointmentDetails.service?.user || {};
+  const userName = [user.first_name, user.last_name].filter(Boolean).join(" ") || "-";
+  const providerName = [provider.first_name, provider.last_name].filter(Boolean).join(" ") || "-";
+  const contactNumber = `${appointmentDetails.dialing_code || ""}${appointmentDetails.phone || ""}`;
+  const appointmentTime =
+    appointmentDetails.appointment_start_time && appointmentDetails.appointment_end_time
+      ? `${appointmentDetails.appointment_start_time} - ${appointmentDetails.appointment_end_time}`
+      : "";
+  const statusRaw = appointmentDetails.status || "";
+  const status =
+    statusRaw === "upcoming"
+      ? "Upcoming"
+      : statusRaw === "in-progress"
+      ? "In-Progress"
+      : statusRaw === "past"
+      ? "Past"
+      : statusRaw;
   return (
     <DashboardLayout pageTitle="Appointment Details">
       <div className="container-fluid">
@@ -69,15 +89,27 @@ const AppointmentDetails = () => {
                           <div className="row my-2">
                             {[
                               { label: "Booking ID:", value: appointmentDetails.booking_id },
-                              { label: "Booking Date:", value: dateFormat(appointmentDetails.booking_date) },
-                              { label: "Session Type:", value: appointmentDetails.session_type },
-                              { label: "Category:", value: appointmentDetails.category },
-                              { label: "Appointment Date:", value: dateFormat(appointmentDetails.appointment_date) },
-                              { label: "Appointment Time:", value: appointmentDetails.appointment_time },
-                              { label: "Appointment Charges:", value: appointmentDetails.amount },
-                              { label: "Sub Category:", value: appointmentDetails.category },
-                              { label: "User Name:", value: appointmentDetails.user.name },
-                              { label: "Contact No:", value: appointmentDetails.phone },
+                              { label: "Booking Date:", value: dateFormat(appointmentDetails.created_at) },
+                              {
+                                label: "Session Type:",
+                                value: appointmentDetails.service?.user?.type || "-",
+                              },
+                              {
+                                label: "Category:",
+                                value: appointmentDetails.service?.title || "-",
+                              },
+                              {
+                                label: "Appointment Date:",
+                                value: dateFormat(appointmentDetails.appointment_date),
+                              },
+                              { label: "Appointment Time:", value: appointmentTime },
+                              { label: "Appointment Charges:", value: appointmentDetails.amount_paid },
+                              {
+                                label: "Sub Category:",
+                                value: appointmentDetails.service?.description || "-",
+                              },
+                              { label: "User Name:", value: userName },
+                              { label: "Contact No:", value: contactNumber },
                               { label: "Email Address:", value: appointmentDetails.email },
                             ].map(({ label, value }) => (
                               <div className="col-xxl-3 col-xl-6 mb-3" key={label}>
@@ -101,17 +133,17 @@ const AppointmentDetails = () => {
                         <span
                           style={{
                             color:
-                              appointmentDetails.status === "Upcoming"
+                              status === "Upcoming"
                                 ? "#FDB332"
-                                : appointmentDetails.status === "In-Progress"
+                                : status === "In-Progress"
                                 ? "#D27231"
-                                : appointmentDetails.status === "Past"
+                                : status === "Past"
                                 ? "#0DCF38"
                                 : "",
                           }}
                           className={`ms-3 fw-semibold`}
                         >
-                          {appointmentDetails?.status}
+                          {status}
                         </span>
                       </div>
                     </div>
@@ -126,13 +158,13 @@ const AppointmentDetails = () => {
                       <div className="booking-detail-card">
                         <div className="d-flex align-items-center justify-content-between flex-wrap">
                           <div className="d-flex gap-sm-3 gap-2 align-items-center">
-                            <img className="smallProfileImage" src={appointmentDetails?.user?.photo} alt="user photo" />
+                            <img className="smallProfileImage" src={user?.photo} alt="user photo" />
                             <h4 style={{ fontSize: 18 }} className="mb-0">
-                              {appointmentDetails?.user?.name}
+                              {userName}
                             </h4>
                           </div>
                           <div className="">
-                            <Link style={{ fontSize: 14 }} to={`/admin/user-management/${appointmentDetails?.user?.id}`}>
+                            <Link style={{ fontSize: 14 }} to={`/admin/user-management/${user?.id}`}>
                               View Details
                             </Link>
                           </div>
@@ -144,9 +176,13 @@ const AppointmentDetails = () => {
                       <div className="booking-detail-card">
                         <div className="d-flex align-items-center justify-content-between flex-wrap">
                           <div className="d-flex gap-sm-3 gap-2 align-items-center">
-                            <img className="roundedBorders smallProfileImage" src={appointmentDetails?.consultant?.photo} alt="user photo" />
+                            <img
+                              className="roundedBorders smallProfileImage"
+                              src={provider?.photo}
+                              alt="user photo"
+                            />
                             <h4 style={{ fontSize: 18 }} className="mb-0">
-                              {appointmentDetails?.consultant?.name}
+                              {providerName}
                             </h4>
                           </div>
                           <div className="">

@@ -57,7 +57,7 @@ const SubscriptionLogs = ({ filters, setFilters, pagination, updatePagination })
                                 loading={isSubmitting}
                                 headers={subscriptionAdminLogsHeaders}
                                 pagination={pagination}
-                                dateFilters={[{ title: "Date", from: "from_payment_date", to: "to_payment_date", fromTitle: "From", toTitle: "To" }]}
+                                dateFilters={[{ title: "Date", from: "from_payment_date", to: "to_payment_date", fromTitle: "Created On", toTitle: "Created To" }]}
                                 selectOptions={[{
                                     main_title: "Filter by status", title: "status", options: [
                                         { value: "", text: "All" },

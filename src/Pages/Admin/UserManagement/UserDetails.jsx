@@ -318,7 +318,14 @@ const UserDetails = ({
                           1,
                       )}
                     </td>
-                    <td>{item?.booking_id}</td>
+                    <td>
+                      <Link
+                        className="viewLink booking-link"
+                        to={`/admin/appointments/${item?.id}`}
+                      >
+                        {item?.booking_id}
+                      </Link>
+                    </td>
                     <td>{item?.service?.user?.type}</td>
                     <td>{item?.appointment_date}</td>
                     <td>{item?.amount_paid} Yalla Coins</td>

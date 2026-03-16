@@ -89,7 +89,7 @@ const PlanManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                                 loading={isSubmitting}
                                 headers={subscriptionPlanHeaders}
                                 pagination={pagination}
-                                dateFilters={[{ title: "Date", from: "fromDate", to: "toDate", fromTitle: "From", toTitle: "To" }]}
+                                dateFilters={[{ title: "Date", from: "fromDate", to: "toDate", fromTitle: "Created On", toTitle: "Created To" }]}
                                 selectOptions={[{
                                     main_title: "Filter by status", title: "status", options: [
                                         { value: "", text: "All" },

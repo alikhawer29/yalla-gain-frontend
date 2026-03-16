@@ -104,7 +104,7 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                 loading={isSubmitting}
                                 headers={activeTab === "newsfeed" ? reportsNewsfeedHeaders : reportsBookingHeaders}
                                 pagination={pagination}
-                                dateFilters={[{ title: "Date", from: "from", to: "to", fromTitle: "From", toTitle: "To" }]}
+                                dateFilters={[{ title: "Date", from: "from", to: "to", fromTitle: "Created On", toTitle: "Created To" }]}
                             >
                                 <tbody>
                                     {activeTab === "booking"

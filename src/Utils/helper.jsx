@@ -82,19 +82,35 @@ export const usePasswordToggle3 = () => {
 
 //form builder
 export const buildFormData = (formData, data, parentKey) => {
-    if (
-        data &&
-        typeof data === "object" &&
-        !(data instanceof Date) &&
-        !(data instanceof File)
-    ) {
-        Object.keys(data).forEach((key) => {
-            buildFormData(formData, data[key], key);
-        });
-    } else {
-        const value = data == null ? "" : data;
-        formData.append(parentKey, value);
+    if (data === null || data === undefined) {
+        if (parentKey) {
+            formData.append(parentKey, "");
+        }
+        return;
     }
+
+    if (data instanceof Date || data instanceof File) {
+        formData.append(parentKey, data);
+        return;
+    }
+
+    if (Array.isArray(data)) {
+        data.forEach((value, index) => {
+            const key = parentKey ? `${parentKey}[${index}]` : String(index);
+            buildFormData(formData, value, key);
+        });
+        return;
+    }
+
+    if (typeof data === "object") {
+        Object.keys(data).forEach((key) => {
+            const fullKey = parentKey ? `${parentKey}[${key}]` : key;
+            buildFormData(formData, data[key], fullKey);
+        });
+        return;
+    }
+
+    formData.append(parentKey, data);
 };
 
 //icon function
