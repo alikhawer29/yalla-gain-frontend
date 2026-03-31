@@ -104,10 +104,19 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                 // Normalize for view
                 const normalized = data.map((r, idx) => ({
                     id: r?.id ?? idx,
+                    appointmentId: r?.id ?? null,
                     booking_id: r?.booking_id ?? "-",
                     charges: `${r?.amount_paid ?? r?.service?.charges ?? "-"} Yalla Coins`,
                     commission: `${r?.commission ?? "-"} Yalla Coins`,
                     date: r?.appointment_date ?? r?.created_at ?? "-",
+                    isPaid:
+                        typeof r?.is_paid === "boolean"
+                            ? r.is_paid
+                                ? "Yes"
+                                : "No"
+                            : r?.is_paid
+                            ? "Yes"
+                            : "No",
                 }));
                 setRows(normalized);
 
@@ -169,11 +178,21 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                                             <tr key={`${activeTab}-${index}`}>
                                                 <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
                                                 <td>
-                                                    <Link to="#" className="viewLink">{item.booking_id}</Link>
+                                                    {item.appointmentId ? (
+                                                        <Link
+                                                            to={`/admin/appointments/${item.appointmentId}`}
+                                                            className="viewLink"
+                                                        >
+                                                            {item.booking_id}
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="viewLink">{item.booking_id}</span>
+                                                    )}
                                                 </td>
                                                 <td>{item.charges}</td>
                                                 <td>{item.commission}</td>
                                                 <td>{item.date}</td>
+                                                <td>{item.isPaid}</td>
                                             </tr>
                                         ))
                                         : rows.map((item, index) => (

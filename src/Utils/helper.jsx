@@ -776,24 +776,36 @@ export const statusClassMap2 = {
     Pending: "text-warning",
 };
 
-export const getFlagFromCountryCode = (flag, size = "") => {
-    var countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
-        .map((char) => String.fromCharCode(char - 127397).toLowerCase())
-        .join("");
+export const getFlagFromCountryCode = (countryCode, size = "") => {
+    const normalizedCode = countryCode?.toString()?.trim()?.toLowerCase();
+    if (!normalizedCode) return null;
+
     return (
         <img
-            style={{ display: "inline", width: `${size == "small" ? "32px" : ""}` }}
-            src={`https://www.worldometers.info//img/flags/small/tn_${countryCode}-flag.gif`}
+            style={{ display: "inline", width: `${size == "small" ? "24px" : ""}` }}
+            src={`https://flagcdn.com/24x18/${normalizedCode}.png`}
             alt="flag"
+            loading="lazy"
         />
     );
 };
 
-export const getCountryFlag = (phoneNumber) => {
+export const getCountryFlag = (phoneNumber, countryCode = "") => {
     let flag = null;
+    const normalizedCode = countryCode?.toString()?.trim()?.toUpperCase();
+
+    if (normalizedCode) {
+        const matchedByCode = countriesWithdialingCodesAndFlag?.find(
+            (item) => item.code === normalizedCode
+        );
+        if (matchedByCode) {
+            return getFlagFromCountryCode(matchedByCode.code, "small");
+        }
+    }
+
     countriesWithdialingCodesAndFlag?.forEach((item) => {
         if (phoneNumber && phoneNumber.startsWith(item.phoneCode)) {
-            flag = getFlagFromCountryCode(item.flagEmoji, "small");
+            flag = getFlagFromCountryCode(item.code, "small");
             return;
         }
     });

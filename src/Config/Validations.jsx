@@ -71,7 +71,32 @@ export const subscriptionPlanSchema = Yup.object().shape({
     title: Yup.string().required("Subscription title is required"),
     duration: Yup.string().required("Duration is required"),
     price: Yup.string().required("Price is required"),
-    description: Yup.string().required("Description is required"),
+    description: Yup.string()
+        .trim()
+        .required("Description is required")
+        .min(10, "Description must be at least 10 characters")
+        .test(
+            "valid-description-characters",
+            "Only letters, numbers, spaces, and . , ! ? ' \" ( ) : ; / - _ are allowed",
+            (value) => {
+                if (!value) return true;
+
+                const hasBlockedControlCharacter = Array.from(value).some((char) => {
+                    const code = char.charCodeAt(0);
+                    return (
+                        (code >= 0 && code <= 8) ||
+                        code === 11 ||
+                        code === 12 ||
+                        (code >= 14 && code <= 31) ||
+                        code === 127
+                    );
+                });
+
+                if (hasBlockedControlCharacter) return false;
+
+                return /^[A-Za-z0-9\s.,!?'"():;/_-]+$/.test(value);
+            }
+        ),
     features: Yup.array()
         .of(Yup.string().trim().required("Feature is required"))
         .min(1, "At least one feature is required"),

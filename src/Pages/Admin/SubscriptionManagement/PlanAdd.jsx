@@ -115,6 +115,10 @@ const PlanAdd = ({ showModal }) => {
                                                 onBlur={handleBlur}
                                                 error={touched.description && errors.description}
                                             />
+                                            <small className="text-white d-block mb-3">
+                                                Character specification: only letters, numbers, spaces, and
+                                                ` . , ! ? &apos; &quot; ( ) : ; / - _ ` are allowed.
+                                            </small>
 
                                             {/* Features dynamic list */}
                                             <div className="mb-3">

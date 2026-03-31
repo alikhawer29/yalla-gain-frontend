@@ -10,6 +10,7 @@ import { serialNum, getCountryFlag } from "../../../Utils/helper";
 import { usePagination } from "../../../Hooks/usePagination";
 import { images } from "../../../Assets";
 import { doctorBookingHeaders } from "../../../Config/TableHeaders";
+import { Link } from "react-router-dom";
 import "./style.css";
 import { statusOptions } from "../../../Config/TableStatus";
 import { Select } from "../../../Components/Select";
@@ -342,7 +343,18 @@ const TrainerDetails = ({ showModal }) => {
                                 return (
                                     <tr key={item.id || index}>
                                         <td>{rowIndex}</td>
-                                        <td>{bookingId}</td>
+                                        <td>
+                                            {item.id ? (
+                                                <Link
+                                                    to={`/admin/appointments/${item.id}`}
+                                                    className="viewLink booking-link"
+                                                >
+                                                    {bookingId}
+                                                </Link>
+                                            ) : (
+                                                bookingId
+                                            )}
+                                        </td>
                                         <td>{serviceTitle}</td>
                                         <td>{appointmentDate}</td>
                                         <td>{amountPaid}</td>

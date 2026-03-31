@@ -8,6 +8,9 @@
 }
 .plan-view .detail-value-weak {
   color: #ffffff;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .plan-view .detail-features {
   margin: 0.25rem 0 0 0;
@@ -15,6 +18,9 @@
 }
 .plan-view .detail-features li {
   margin-bottom: 0.35rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .plan-status-color {
   color: #ffffff;

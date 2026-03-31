@@ -9,6 +9,33 @@ import { images } from "../../../Assets";
 import { getCountryFlag } from "../../../Utils/helper";
 import "./style.css";
 
+const formatNameField = (field) => {
+    if (!field) return "-";
+    const value = typeof field === "string" ? field : field.name || "";
+    if (!value) return "-";
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+const formatLanguageField = (field) => {
+    if (!field) return "-";
+
+    const rawValue = typeof field === "string" ? field : field?.name || "";
+    if (!rawValue) return "-";
+
+    return rawValue
+        .split(",")
+        .map((part) =>
+            part
+                .trim()
+                .split(" ")
+                .filter(Boolean)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")
+        )
+        .filter(Boolean)
+        .join(", ") || "-";
+};
+
 const STATUS_MAP = {
     1: "Approved",
     2: "Pending",
@@ -47,6 +74,7 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
                 gender: "-",
                 phone: "-",
                 phoneValue: "-",
+                countryCode: "",
                 email: "-",
                 state: "-",
                 city: "-",
@@ -94,14 +122,15 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
 
         return {
             name: [doctor.first_name, doctor.last_name].filter(Boolean).join(" ") || "-",
-            gender: doctor.gender?.name || "-",
+            gender: formatNameField(doctor.gender),
             phone: phoneValue || "-",
             phoneValue,
+            countryCode: doctor.country_code || "",
             email: doctor.email || "-",
-            state: doctor.state?.name || "-",
-            city: doctor.city?.name || "-",
+            state: formatNameField(doctor.state),
+            city: formatNameField(doctor.city),
             bio: doctor.bio || "-",
-            language: doctor.language || "-",
+            language: formatLanguageField(doctor.language),
             experienceList,
             rejection_reason: doctor.rejection_reason || null,
             certifications,
@@ -226,7 +255,7 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
                                         <h6>{label}</h6>
                                         <p className="mb-0">
                                             {label === "Phone Number" && typeof value === "string" && (
-                                                <span>{getCountryFlag(value)}</span>
+                                                <span>{getCountryFlag(value, details.countryCode)}</span>
                                             )}
                                             {label === "Specialization and Experience" && Array.isArray(value)
                                                 ? value.map((item) => (

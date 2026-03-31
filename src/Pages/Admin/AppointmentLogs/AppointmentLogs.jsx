@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import CustomTable from "../../../Components/CustomTable";
 import { appointmentLogsHeaders } from "../../../Config/TableHeaders";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import { Link } from "react-router-dom";
 import { getAll } from "../../../Services/Api";
 import { usePagination } from "../../../Hooks/usePagination";
 import { serialNum } from "../../../Utils/helper";
@@ -285,6 +286,7 @@ const AppointmentLogs = () => {
 
         return {
           key: item?.id ?? `${bookingId}-${index}`,
+          appointmentId: item?.id,
           index: serialNum(startIndex + index + 1),
           bookingId,
           userName,
@@ -353,7 +355,16 @@ const AppointmentLogs = () => {
                   <tr key={row.key}>
                     <td>{row.index}</td>
                     <td>
-                      <span className="booking-link">{row.bookingId}</span>
+                      {row.appointmentId ? (
+                        <Link
+                          to={`/admin/appointments/${row.appointmentId}`}
+                          className="booking-link"
+                        >
+                          {row.bookingId}
+                        </Link>
+                      ) : (
+                        <span className="booking-link">{row.bookingId}</span>
+                      )}
                     </td>
                     <td>{row.userName}</td>
                     <td>{row.serviceCategory}</td>

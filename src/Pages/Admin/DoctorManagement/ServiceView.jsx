@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -342,7 +342,18 @@ const DoctorServiceView = ({ showModal }) => {
                                 return (
                                     <tr key={item.id || index}>
                                         <td>{rowIndex}</td>
-                                        <td>{bookingId}</td>
+                                        <td>
+                                            {item.id ? (
+                                                <Link
+                                                    to={`/admin/appointments/${item.id}`}
+                                                    className="viewLink booking-link"
+                                                >
+                                                    {bookingId}
+                                                </Link>
+                                            ) : (
+                                                bookingId
+                                            )}
+                                        </td>
                                         <td>{userName}</td>
                                         <td>{appointmentDate}</td>
                                         <td>{charges}</td>

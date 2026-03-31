@@ -123,7 +123,18 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                             return (
                                                 <tr key={item.id}>
                                                     <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                                                    <td>{bookingId}</td>
+                                                    <td>
+                                                        {appt?.id ? (
+                                                            <Link
+                                                                className="viewLink"
+                                                                to={`/admin/appointments/${appt.id}`}
+                                                            >
+                                                                {bookingId}
+                                                            </Link>
+                                                        ) : (
+                                                            bookingId
+                                                        )}
+                                                    </td>
                                                     <td>{name}</td>
                                                     <td>{userType}</td>
                                                     <td>{dateFormat(bookingDate)}</td>

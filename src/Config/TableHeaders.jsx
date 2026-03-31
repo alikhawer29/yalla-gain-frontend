@@ -215,6 +215,7 @@ export const paymentLogsBookingHeaders = [
   { key: "booking_charges", title: "Booking Charges" },
   { key: "commission", title: "Commission" },
   { key: "booking_date", title: "Booking Date" },
+  { key: "is_paid", title: "Is Paid" },
 ];
 
 // Query/Feedback logs table headers

@@ -10,6 +10,7 @@ import { serialNum, getCountryFlag } from "../../../Utils/helper";
 import { usePagination } from "../../../Hooks/usePagination";
 import { images } from "../../../Assets";
 import { doctorBookingHeaders } from "../../../Config/TableHeaders";
+import { Link } from "react-router-dom";
 import "./style.css";
 import { statusOptions } from "../../../Config/TableStatus";
 import { Select } from "../../../Components/Select";
@@ -33,6 +34,26 @@ const formatNameField = (field) => {
     if (!value) return "-";
 
     return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+const formatLanguageField = (field) => {
+    if (!field) return "-";
+
+    const rawValue = typeof field === "string" ? field : field?.name || "";
+    if (!rawValue) return "-";
+
+    return rawValue
+        .split(",")
+        .map((part) =>
+            part
+                .trim()
+                .split(" ")
+                .filter(Boolean)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")
+        )
+        .filter(Boolean)
+        .join(", ") || "-";
 };
 
 const DoctorDetails = ({ showModal }) => {
@@ -109,6 +130,7 @@ const DoctorDetails = ({ showModal }) => {
                 gender: "-",
                 phone: "-",
                 phoneValue: "-",
+                countryCode: "",
                 email: "-",
                 state: "-",
                 city: "-",
@@ -159,11 +181,12 @@ const DoctorDetails = ({ showModal }) => {
             gender: formatNameField(doctor.gender),
             phone: phoneValue || "-",
             phoneValue,
+            countryCode: doctor.country_code || "",
             email: doctor.email || "-",
             state: formatNameField(doctor.state),
             city: formatNameField(doctor.city),
             bio: doctor.bio || "-",
-            language: doctor.language || "-",
+            language: formatLanguageField(doctor.language),
             status: doctor.status || "1",
             experienceList,
             certifications,
@@ -266,7 +289,9 @@ const DoctorDetails = ({ showModal }) => {
                                     <div className="detail-box">
                                         <h6>{label}</h6>
                                         <p className="mb-0">
-                                            {label === "Phone Number" && typeof value === "string" && <span>{getCountryFlag(value)}</span>}
+                                            {label === "Phone Number" && typeof value === "string" && (
+                                                <span>{getCountryFlag(value, details.countryCode)}</span>
+                                            )}
                                             {label === "Specialization and Experience" && Array.isArray(value)
                                                 ? value.map((item) => (
                                                     <div key={item.id}>
@@ -342,7 +367,18 @@ const DoctorDetails = ({ showModal }) => {
                                 return (
                                     <tr key={item.id || index}>
                                         <td>{rowIndex}</td>
-                                        <td>{bookingId}</td>
+                                        <td>
+                                            {item.id ? (
+                                                <Link
+                                                    to={`/admin/appointments/${item.id}`}
+                                                    className="viewLink booking-link"
+                                                >
+                                                    {bookingId}
+                                                </Link>
+                                            ) : (
+                                                bookingId
+                                            )}
+                                        </td>
                                         <td>{serviceTitle}</td>
                                         <td>{appointmentDate}</td>
                                         <td>{amountPaid}</td>
