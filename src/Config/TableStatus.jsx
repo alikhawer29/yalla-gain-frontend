@@ -230,13 +230,69 @@ export const grammaticalGender = [
 ];
 // Exercise keys for workout content
 export const exerciseKeys = [
-  { value: "", text: "Select Exercise" },
-  { value: "push-up", text: "Push up" },
-  { value: "plank", text: "Plank" },
-  { value: "barbell biceps curl", text: "Barbell biceps curl" },
-  { value: "squat", text: "Squat" },
-  { value: "deadlift", text: "Deadlift" },
+  { value: "", text: "Select Muscle" },
+  { value: "chest", text: "Chest" },
+  { value: "back", text: "Back" },
+  { value: "shoulders", text: "Shoulders" },
+  { value: "legs", text: "Legs" },
+  { value: "biceps", text: "Biceps" },
+  { value: "triceps", text: "Triceps" },
+  { value: "trapeze", text: "Trapeze" },
+  { value: "abs", text: "Abs" },
 ];
+
+export const exercisesByMuscle = {
+  chest: [
+    { value: "cable_high_to_low", text: "Cable High to Low" },
+    { value: "chest_butterfly", text: "Chest Butterfly" },
+    { value: "declined_press", text: "Declined Chest Press" },
+    { value: "flat_press", text: "Flat Press" },
+    { value: "inclined_press", text: "Inclined Press" },
+    { value: "pushups", text: "Pushups" },
+  ],
+  back: [
+    { value: "barbell_rows", text: "Barbell Rows" },
+    { value: "deadlift", text: "Deadlift" },
+    { value: "lat_pulldown", text: "Lat Pulldown" },
+    { value: "pull_over", text: "Pull Over" },
+    { value: "seated_cable_rows", text: "Seated Cable Rows" },
+    { value: "tbar_rows", text: "T-Bar Rows" },
+    { value: "pullups", text: "Pull-Ups" },
+  ],
+  shoulders: [
+    { value: "dumbbell_press", text: "Dumbbell Shoulder Press" },
+    { value: "face_pulls", text: "Face Pulls" },
+    { value: "front_raises", text: "Shoulder Front Raises" },
+    { value: "lateral_raises", text: "Shoulder Lateral Raises" },
+  ],
+  legs: [
+    { value: "hip_thrust", text: "Hip Thrust" },
+    { value: "leg_curls", text: "Leg Curls" },
+    { value: "leg_extension", text: "Leg Extension" },
+    { value: "leg_press", text: "Leg Press" },
+    { value: "romanian_deadlift", text: "Romanian Deadlift" },
+    { value: "squats", text: "Squats" },
+    { value: "calf_raises", text: "Calf Raises" },
+  ],
+  biceps: [
+    { value: "biceps_curls", text: "Biceps Curls" },
+    { value: "hammer_curls", text: "Hammer Curls" },
+    { value: "incline_curls", text: "Inclined Biceps Curls" },
+  ],
+  triceps: [
+    { value: "rope_pushdown", text: "Triceps Rope Pushdown" },
+    { value: "dips", text: "Triceps Dips" },
+  ],
+  trapeze: [
+    { value: "shrugs", text: "Shrugs" },
+  ],
+  abs: [
+    { value: "leg_raises", text: "Leg Raises" },
+    { value: "plank", text: "Plank" },
+  ],
+};
+
+
 export const challengeTypes = [
   {
     value: "0",

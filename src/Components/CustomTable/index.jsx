@@ -6,6 +6,12 @@ import "./style.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+const tableSkeletonProps = {
+  height: 20,
+  baseColor: "#6a6666",
+  highlightColor: "#ebebeb",
+};
+
 const CustomTable = (props) => {
   return (
     <>
@@ -25,7 +31,7 @@ const CustomTable = (props) => {
               <tr>
                 {props?.headers.map((header, index) => (
                   <th key={index}>
-                    <Skeleton height={20} />
+                    <Skeleton {...tableSkeletonProps} />
                   </th>
                 ))}
               </tr>
@@ -35,7 +41,7 @@ const CustomTable = (props) => {
                 <tr key={rowIndex}>
                   {props?.headers.map((_, colIndex) => (
                     <td key={colIndex}>
-                      <Skeleton height={20} />
+                      <Skeleton {...tableSkeletonProps} />
                     </td>
                   ))}
                 </tr>

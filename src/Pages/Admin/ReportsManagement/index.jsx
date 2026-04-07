@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum, dateFormat, capitalizeFirstLetter } from "../../../Utils/helper";
+import {
+    clickableTableRowNavProps,
+    serialNum,
+    dateFormat,
+    capitalizeFirstLetter,
+} from "../../../Utils/helper";
 import {
     reportsBookingHeaders,
     reportsNewsfeedHeaders,
@@ -28,6 +33,7 @@ const TABS = [
 
 const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }) => {
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const [rows, setRows] = useState([]);
 
@@ -121,20 +127,15 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                             const statusText = mapStatus(item?.status);
 
                                             return (
-                                                <tr key={item.id}>
+                                                <tr
+                                                    key={item.id}
+                                                    {...clickableTableRowNavProps(
+                                                        navigate,
+                                                        `/admin/reports-management/booking/${item.id}`,
+                                                    )}
+                                                >
                                                     <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                                                    <td>
-                                                        {appt?.id ? (
-                                                            <Link
-                                                                className="viewLink"
-                                                                to={`/admin/appointments/${appt.id}`}
-                                                            >
-                                                                {bookingId}
-                                                            </Link>
-                                                        ) : (
-                                                            bookingId
-                                                        )}
-                                                    </td>
+                                                    <td>{bookingId}</td>
                                                     <td>{name}</td>
                                                     <td>{userType}</td>
                                                     <td>{dateFormat(bookingDate)}</td>
@@ -142,9 +143,6 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                                     <td>{charges}</td>
                                                     <td>
                                                         <span className={`status ${statusText.toLowerCase()}`}>{statusText}</span>
-                                                    </td>
-                                                    <td>
-                                                        <Link className="viewLink" to={`/admin/reports-management/booking/${item.id}`}>View</Link>
                                                     </td>
                                                 </tr>
                                             );
@@ -157,16 +155,19 @@ const ReportsManagement = ({ filters, setFilters, pagination, updatePagination }
                                             const statusText = mapStatus(item?.status);
 
                                             return (
-                                                <tr key={item.id}>
+                                                <tr
+                                                    key={item.id}
+                                                    {...clickableTableRowNavProps(
+                                                        navigate,
+                                                        `/admin/reports-management/newsfeed/${item.id}`,
+                                                    )}
+                                                >
                                                     <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
                                                     <td>{name}</td>
                                                     <td>{email}</td>
                                                     <td>{dateFormat(reportedOn)}</td>
                                                     <td>
                                                         <span className={`status ${statusText.toLowerCase()}`}>{statusText}</span>
-                                                    </td>
-                                                    <td>
-                                                        <Link className="viewLink" to={`/admin/reports-management/newsfeed/${item.id}`}>View</Link>
                                                     </td>
                                                 </tr>
                                             );

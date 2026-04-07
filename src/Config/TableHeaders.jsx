@@ -19,10 +19,6 @@ export const userHeaders = [
     key: "status",
     title: "Status",
   },
-  {
-    key: "actions",
-    title: "Actions",
-  },
 ];
 
 export const appointmentHeader = [
@@ -65,10 +61,6 @@ export const appointmentHeader = [
   {
     key: "status",
     title: "status",
-  },
-  {
-    key: "action",
-    title: "action",
   },
 ];
 
@@ -137,7 +129,6 @@ export const serviceCategoryHeaders = [
   { key: "type", title: "Type" },
   { key: "created_at", title: "Creation Date" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 export const subscriptionLogsHeaders = [
   {
@@ -191,7 +182,6 @@ export const subscriptionPlanHeaders = [
   { key: "created_at", title: "Creation Date" },
   { key: "updated_at", title: "Last modified" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 // Commission logs table headers
@@ -226,7 +216,6 @@ export const queryLogsHeaders = [
   { key: "subject", title: "Subject" },
   { key: "message", title: "Message" },
   { key: "created_at", title: "Date" },
-  { key: "action", title: "Action" },
 ];
 
 export const complaintLogsHeaders = [
@@ -235,7 +224,6 @@ export const complaintLogsHeaders = [
   { key: "email", title: "Email Address" },
   { key: "user_type", title: "User Type" },
   { key: "created_at", title: "Date" },
-  { key: "action", title: "Action" },
 ];
 
 // Reports management
@@ -248,7 +236,6 @@ export const reportsBookingHeaders = [
   { key: "reported_on", title: "Reported On" },
   { key: "charges", title: "Charges" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 export const reportsNewsfeedHeaders = [
@@ -257,7 +244,6 @@ export const reportsNewsfeedHeaders = [
   { key: "email", title: "Email Address" },
   { key: "reported_on", title: "Reported On" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 // Workout Content management table headers
@@ -268,7 +254,6 @@ export const contentHeaders = [
   // { key: "image", title: "Image" },
   { key: "created_at", title: "Created On" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 // Workout Content videos table headers
@@ -280,7 +265,6 @@ export const contentVideoHeaders = [
   // { key: "language", title: "Language" },
   { key: "created_at", title: "Created On" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 // Yalla coin logs (in-app and management)
@@ -307,7 +291,6 @@ export const challengeHeaders = [
   { key: "upload_date", title: "Upload Date" },
   { key: "duration", title: "Duration" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 // Doctor management module headers
@@ -317,7 +300,6 @@ export const doctorManagementHeaders = [
   { key: "email", title: "Email Address" },
   { key: "registrationDate", title: "Registration Date" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 export const doctorBookingHeaders = [
@@ -335,7 +317,6 @@ export const doctorServicesHeaders = [
   { key: "createdOn", title: "Creation Date" },
   { key: "charges", title: "Service Charges" },
   { key: "status", title: "Status" },
-  { key: "action", title: "Action" },
 ];
 
 export const doctorServiceBookingHeaders = [
@@ -352,6 +333,5 @@ export const doctorRequestsHeaders = [
   { key: "doctorName", title: "Doctor Name" },
   { key: "status", title: "Status" },
   { key: "requestedDate", title: "Requested Date" },
-  { key: "action", title: "Action" },
 ];
 

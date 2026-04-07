@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 // import { getDetails } from "../../../Services/Api";
 import { images } from "../../../Assets";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import CustomTable from "../../../Components/CustomTable";
 import { Select } from "../../../Components/Select";
-import {
-  challengeLogsData,
-  subscriptionLogsData,
-  userBookingLogsData,
-  userManagementData,
-} from "../../../Config/data";
 import {
   bookingsLogsHeaders,
   challengeLogsHeaders,
@@ -26,15 +22,26 @@ import {
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { getCountryFlag, serialNum } from "../../../Utils/helper";
-import { getAll, getDetails, post } from "../../../Services/Api";
 import { usePagination } from "../../../Hooks/usePagination";
+import { getAll, getDetails, post } from "../../../Services/Api";
+import {
+  clickableTableRowNavProps,
+  getCountryFlag,
+  serialNum,
+} from "../../../Utils/helper";
+
+const profileSkeletonProps = {
+  baseColor: "#e8e8e8",
+  highlightColor: "#f0f0f0",
+};
 
 const UserDetails = ({
   showModal /*, filters, setFilters, pagination, updatePagination */,
 }) => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [profileData, setProfileData] = useState({});
+  const [profileLoading, setProfileLoading] = useState(true);
   const [bookingLogs, setBookingLogs] = useState([]);
   const [challnegeLogs, setChallengeLogs] = useState([]);
   const [subscriptionLogs, setSubscriptionLogs] = useState([]);
@@ -156,9 +163,20 @@ const UserDetails = ({
   };
 
   const getUser = async () => {
-    const response = await getDetails(`/user/${id}`);
-    if (response) {
-      setProfileData(response.data);
+    setProfileLoading(true);
+    try {
+      const response = await getDetails(`/user/${id}`);
+      const payload = response?.data;
+      setProfileData(
+        payload && typeof payload === "object" && !Array.isArray(payload)
+          ? payload
+          : {},
+      );
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setProfileData({});
+    } finally {
+      setProfileLoading(false);
     }
   };
 
@@ -183,8 +201,7 @@ const UserDetails = ({
     const newStatusValue = e;
     showModal(
       `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this user's status to ${newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -199,16 +216,24 @@ const UserDetails = ({
     getUser();
     showModal(
       "Successful",
-      `User status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `User status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
     );
   };
 
-  const { email, phone, first_name, last_name, dob, status, dialing_code } =
+  const { email, phone, first_name, last_name, dob, dialing_code } =
     profileData;
+  const displayName = [first_name, last_name].filter(Boolean).join(" ").trim();
+  const displayPhone = [dialing_code, phone].filter(Boolean).join("");
+  const detailFields = [
+    { label: "User Name", value: displayName || "—" },
+    { label: "Email Address", value: email ?? "—" },
+    { label: "Date Of Birth", value: dob ?? "—" },
+    { label: "Phone Number", value: displayPhone || "—", isPhone: true },
+  ];
+
   return (
     <DashboardLayout pageTitle="User Details">
       <div className="user-details">
@@ -221,62 +246,112 @@ const UserDetails = ({
               </div>
               <div className="d-flex justify-content-start justify-content-sm-end">
                 <div className="profile-status d-flex  align-items-end flex-column gap-3">
-                  <div className="status-action">
-                    <Select
-                      className={`tabel-select status${profileData?.status ? "Active" : "Inactive"}`}
-                      id={`status${id}`}
-                      name="status"
-                      label=""
-                      value={profileData?.status ? "1" : "0"}
-                      onChange={(e) => handleStatusChange(e, id)}
-                      labelclass="me-2 mb-0"
-                    >
-                      {statusOptions}
-                    </Select>
-                  </div>
+                  {profileLoading ? (
+                    <Skeleton
+                      width={160}
+                      height={44}
+                      borderRadius={8}
+                      {...profileSkeletonProps}
+                    />
+                  ) : (
+                    <div className="status-action">
+                      <Select
+                        className={`tabel-select status${profileData?.status ? "Active" : "Inactive"}`}
+                        id={`status${id}`}
+                        name="status"
+                        label=""
+                        value={profileData?.status ? "1" : "0"}
+                        onChange={(e) => handleStatusChange(e, id)}
+                        labelclass="me-2 mb-0"
+                      >
+                        {statusOptions}
+                      </Select>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
           <div className="col-12">
-            <div className="d-flex align-items-center gap-5 mb-4">
-              <div className="detail-box-img">
-                <img
-                  src={profileData?.photo ?? images.placeholder}
-                  alt="User"
-                />
-              </div>
-              <Link
-                className="btn btn-primary"
-                to={`/admin/user-management/${id}/user-post`}
-              >
-                User Post
-              </Link>
-            </div>
-            <div className="row">
-              <div className="col-xxl-9 col-lg-11">
-                <div className="row mb-4">
-                  {[
-                    { label: "User Name", value: first_name + " " + last_name },
-                    { label: "Email Address", value: email },
-                    { label: "Date Of Birth", value: dob },
-                    { label: "Phone Number", value: dialing_code + phone },
-                  ].map(({ label, value }) => (
-                    <div className="col-xl-3 col-md-6 mb-3" key={label}>
-                      <div className="detail-box">
-                        <h6 className="">{label}</h6>
-                        <p className=" mb-0">
-                          {label === "Phone Number" && (
-                            <span>{getCountryFlag(value)}</span>
-                          )}{" "}
-                          {value}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+            {profileLoading ? (
+              <>
+                <div className="d-flex align-items-center gap-5 mb-4 flex-wrap">
+                  <Skeleton
+                    circle
+                    width={120}
+                    height={120}
+                    {...profileSkeletonProps}
+                  />
+                  <Skeleton
+                    width={140}
+                    height={42}
+                    borderRadius={8}
+                    {...profileSkeletonProps}
+                  />
                 </div>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-xxl-9 col-lg-11">
+                    <div className="row mb-4">
+                      {detailFields.map(({ label }) => (
+                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                          <div className="detail-box">
+                            <Skeleton
+                              width="55%"
+                              height={16}
+                              {...profileSkeletonProps}
+                              className="mb-2"
+                            />
+                            <Skeleton
+                              width="90%"
+                              height={22}
+                              {...profileSkeletonProps}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="d-flex align-items-center gap-5 mb-4">
+                  <div className="detail-box-img">
+                    <img
+                      src={profileData?.photo ?? images.placeholder}
+                      alt="User"
+                    />
+                  </div>
+                  <Link
+                    className="btn btn-primary"
+                    to={`/admin/user-management/${id}/user-post`}
+                  >
+                    User Post
+                  </Link>
+                </div>
+                <div className="row">
+                  <div className="col-xxl-9 col-lg-11">
+                    <div className="row mb-4">
+                      {detailFields.map(({ label, value, isPhone }) => (
+                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                          <div className="detail-box">
+                            <h6 className="">{label}</h6>
+                            <p className=" mb-0">
+                              {isPhone &&
+                                value &&
+                                value !== "—" && (
+                                  <span>{getCountryFlag(value)}</span>
+                                )}{" "}
+                              {value}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="row dashCard mb-3">
@@ -310,25 +385,30 @@ const UserDetails = ({
             >
               <tbody>
                 {bookingLogs?.map((item, index) => (
-                  <tr key={item?.id}>
+                  <tr
+                    key={item?.id}
+                    {...(item?.id
+                      ? clickableTableRowNavProps(
+                        navigate,
+                        `/admin/appointments/${item.id}`,
+                      )
+                      : {})}
+                  >
                     <td>
                       {serialNum(
                         (bookingFilters.page - 1) * bookingFilters.per_page +
-                          index +
-                          1,
+                        index +
+                        1,
                       )}
                     </td>
-                    <td>
-                      <Link
-                        className="viewLink booking-link"
-                        to={`/admin/appointments/${item?.id}`}
-                      >
-                        {item?.booking_id}
-                      </Link>
-                    </td>
+                    <td>{item?.booking_id}</td>
                     <td>{item?.service?.user?.type}</td>
                     <td>{item?.appointment_date}</td>
-                    <td>{item?.amount_paid} Yalla Coins</td>
+                    <td>
+                      {item?.amount_paid != null && item?.amount_paid !== ""
+                        ? `${item.amount_paid} Yalla Coins`
+                        : "—"}
+                    </td>
                     <td
                       style={{
                         color:
@@ -384,9 +464,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (challengeFilters.page - 1) *
-                          challengeFilters.per_page +
-                          index +
-                          1,
+                        challengeFilters.per_page +
+                        index +
+                        1,
                       )}
                     </td>
                     <td>{item?.challenge?.title}</td>
@@ -447,14 +527,18 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (subscriptionFilters.page - 1) *
-                          subscriptionFilters.per_page +
-                          index +
-                          1,
+                        subscriptionFilters.per_page +
+                        index +
+                        1,
                       )}
                     </td>
                     <td>{item?.subscription_plan?.title}</td>
                     <td>{item?.subscription_plan?.duration}</td>
-                    <td>${item?.price_paid}</td>
+                    <td>
+                      {item?.price_paid != null && item?.price_paid !== ""
+                        ? `$${item.price_paid}`
+                        : "—"}
+                    </td>
                     <td>{item?.subscribed_on}</td>
                     <td>{item?.expired_on}</td>
                     <td

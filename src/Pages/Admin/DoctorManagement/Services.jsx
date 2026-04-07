@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { doctorDetailsMap, doctorServices } from "./doctorData";
 import { doctorServicesHeaders } from "../../../Config/TableHeaders";
 import { usePagination } from "../../../Hooks/usePagination";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import "./style.css";
 import { getAll, post } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
@@ -15,6 +15,7 @@ import { Select } from "../../../Components/Select";
 import withModal from "../../../HOC/withModal";
 
 const DoctorServices = ({ showModal }) => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const doctor = useMemo(
     () => doctorDetailsMap[id] ?? doctorDetailsMap["01"],
@@ -173,7 +174,13 @@ const DoctorServices = ({ showModal }) => {
           >
             <tbody>
               {rows.map((service, index) => (
-                <tr key={service.id}>
+                <tr
+                  key={service.id}
+                  {...clickableTableRowNavProps(
+                    navigate,
+                    `/admin/doctor-management/${id}/services/${service.id}`,
+                  )}
+                >
                   <td>{serialNum(startIndex + index + 1)}</td>
                   <td>{service.title}</td>
                   <td>{service.created_at}</td>
@@ -181,7 +188,7 @@ const DoctorServices = ({ showModal }) => {
                   {/* <td>
                                         <span className={`statusChip status${service.status}`}>{service.status ? "Active" : "Inactive"}</span>
                                     </td> */}
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <Select
                       className={`tabel-select status${service?.status ? "Active" : "Inactive"}`}
                       required
@@ -193,14 +200,6 @@ const DoctorServices = ({ showModal }) => {
                     >
                       {statusOptions}
                     </Select>
-                  </td>
-                  <td>
-                    <Link
-                      className="viewLink"
-                      to={`/admin/doctor-management/${id}/services/${service.id}`}
-                    >
-                      View
-                    </Link>
                   </td>
                 </tr>
               ))}

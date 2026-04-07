@@ -2341,6 +2341,17 @@ export const replaceUnderscoreWithSpace = (str) => {
     return str;
 };
 
-
-
+/** Spread onto <tr> for row-click navigation (.clickableDataRow in CustomTable styles). */
+export const clickableTableRowNavProps = (navigate, to) => ({
+    className: "clickableDataRow",
+    role: "button",
+    tabIndex: 0,
+    onClick: () => navigate(to),
+    onKeyDown: (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            navigate(to);
+        }
+    },
+});
 

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { doctorRequestsHeaders } from "../../../Config/TableHeaders";
 import withFilters from "../../../HOC/withFilters";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { getAll } from "../../../Services/Api";
 import "./style.css";
@@ -24,6 +24,7 @@ const statusFilterOptions = [
 ];
 
 const TrainerRequests = ({ filters, setFilters, pagination, updatePagination }) => {
+    const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
@@ -121,16 +122,19 @@ const TrainerRequests = ({ filters, setFilters, pagination, updatePagination }) 
                                 const statusKey = String(request?.status ?? "");
                                 const statusLabel = STATUS_MAP[statusKey] || "-";
                                 return (
-                                    <tr key={request?.id ?? index}>
+                                    <tr
+                                        key={request?.id ?? index}
+                                        {...clickableTableRowNavProps(
+                                            navigate,
+                                            `/admin/trainer-management/requests/${request?.id}`,
+                                        )}
+                                    >
                                         <td>{serialNum(startIndex + index + 1)}</td>
                                         <td>{[request?.first_name, request?.last_name].filter(Boolean).join(" ") || request?.trainerName || request?.doctorName || "-"}</td>
                                         <td>
                                             <span className={`statusChip status${statusLabel}`}>{statusLabel}</span>
                                         </td>
                                         <td>{request?.created_at || request?.requestedDate || "-"}</td>
-                                        <td>
-                                            <Link className="viewLink" to={`/admin/trainer-management/requests/${request?.id}`}>View</Link>
-                                        </td>
                                     </tr>
                                 );
                             })}

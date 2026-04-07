@@ -1,24 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withModal from "../../../HOC/withModal";
 import { getDetails, getAll, post } from "../../../Services/Api";
-import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum, getCountryFlag } from "../../../Utils/helper";
+import {
+    clickableTableRowNavProps,
+    serialNum,
+    getCountryFlag,
+} from "../../../Utils/helper";
 import { usePagination } from "../../../Hooks/usePagination";
 import { images } from "../../../Assets";
 import { doctorBookingHeaders } from "../../../Config/TableHeaders";
-import { Link } from "react-router-dom";
 import "./style.css";
 import { statusOptions } from "../../../Config/TableStatus";
 import { Select } from "../../../Components/Select";
 
-const STATUS_MAP = {
-    1: "Approved",
-    2: "Pending",
-    3: "Rejected",
+const trainerProfileSkeletonProps = {
+    baseColor: "rgba(255, 255, 255, 0.12)",
+    highlightColor: "rgba(255, 255, 255, 0.2)",
 };
 
 const formatStatusLabel = (value) => {
@@ -28,18 +31,43 @@ const formatStatusLabel = (value) => {
 };
 
 const formatNameField = (field) => {
+    if (field == null || field === "") return "-";
+    if (typeof field === "string") {
+        const t = field.trim();
+        return t ? t.charAt(0).toUpperCase() + t.slice(1) : "-";
+    }
+    if (typeof field === "object") {
+        const n = field.name ?? field.title ?? field.label;
+        if (n != null && String(n).trim()) {
+            const s = String(n).trim();
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+    }
+    return "-";
+};
+
+const formatLanguageField = (field) => {
     if (!field) return "-";
-
-    const value = typeof field === "string" ? field : field.name || "";
-    if (!value) return "-";
-
-    return value.charAt(0).toUpperCase() + value.slice(1);
+    const rawValue = typeof field === "string" ? field : field?.name || "";
+    if (!rawValue) return "-";
+    return rawValue
+        .split(",")
+        .map((part) =>
+            part
+                .trim()
+                .split(" ")
+                .filter(Boolean)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")
+        )
+        .filter(Boolean)
+        .join(", ") || "-";
 };
 
 const TrainerDetails = ({ showModal }) => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+    const [trainerProfileLoading, setTrainerProfileLoading] = useState(true);
     const [Trainer, setTrainer] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [bookingLoading, setBookingLoading] = useState(false);
@@ -47,16 +75,19 @@ const TrainerDetails = ({ showModal }) => {
     const [pagination, updatePagination] = usePagination(1, 10);
 
     const fetchTrainer = async () => {
+        setTrainerProfileLoading(true);
         try {
-            startSubmitting(true);
             const response = await getDetails(`/doctor/${id}`);
             if (response?.status) {
                 setTrainer(response.data || null);
+            } else {
+                setTrainer(null);
             }
         } catch (error) {
             console.error("Error fetching Trainer details:", error);
+            setTrainer(null);
         } finally {
-            stopSubmitting(false);
+            setTrainerProfileLoading(false);
         }
     };
 
@@ -100,9 +131,6 @@ const TrainerDetails = ({ showModal }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, id]);
 
-    const statusLabel = useMemo(() => STATUS_MAP[Trainer?.status] || "Pending", [Trainer]);
-    const statusClassName = `status${statusLabel}`;
-
     const details = useMemo(() => {
         if (!Trainer) {
             return {
@@ -110,6 +138,7 @@ const TrainerDetails = ({ showModal }) => {
                 gender: "-",
                 phone: "-",
                 phoneValue: "-",
+                countryCode: "",
                 email: "-",
                 state: "-",
                 city: "-",
@@ -160,11 +189,12 @@ const TrainerDetails = ({ showModal }) => {
             gender: formatNameField(Trainer.gender),
             phone: phoneValue || "-",
             phoneValue,
+            countryCode: Trainer.country_code || "",
             email: Trainer.email || "-",
             state: formatNameField(Trainer.state),
             city: formatNameField(Trainer.city),
             bio: Trainer.bio || "-",
-            language: Trainer.language || "-",
+            language: formatLanguageField(Trainer.language),
             status: Trainer.status || "1",
             experienceList,
             certifications,
@@ -229,81 +259,189 @@ const TrainerDetails = ({ showModal }) => {
                                 <h2 className="mainTitle mb-1">Trainer Details</h2>
                             </div>
                         </div>
-                        {/* <span className={`statusChip ${statusClassName}`}>{statusLabel}</span>
-                         */}
-                        <div className="status-action">
-                            <Select
-                                className={`tabel-select status${Trainer?.status ? "Active" : "Inactive"}`}
-                                id={`status${id}`}
-                                name="status"
-                                label=""
-                                value={Trainer?.status ? "1" : "0"}
-                                onChange={(e) => handleStatusChange(e, id)}
-                                labelclass="me-2 mb-0"
-                            >
-                                {statusOptions}
-                            </Select>
-                        </div>
-                    </div>
-
-                    <div className="Trainer-request-summary">
-                        <div className="d-flex align-items-center gap-5 mb-4">
-                            <div className="detail-box-img">
-                                <img src={details.photo} alt={details.name} />
+                        {trainerProfileLoading ? (
+                            <Skeleton
+                                width={160}
+                                height={44}
+                                borderRadius={8}
+                                {...trainerProfileSkeletonProps}
+                            />
+                        ) : (
+                            <div className="status-action">
+                                <Select
+                                    className={`tabel-select status${Trainer?.status ? "Active" : "Inactive"}`}
+                                    id={`status${id}`}
+                                    name="status"
+                                    label=""
+                                    value={Trainer?.status ? "1" : "0"}
+                                    onChange={(e) => handleStatusChange(e, id)}
+                                    labelclass="me-2 mb-0"
+                                >
+                                    {statusOptions}
+                                </Select>
                             </div>
-                            <div className="d-flex flex-wrap gap-2">
-                                <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/services`)}>View Services</button>
-                                <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/reviews`)}>Rating & Reviews</button>
-                                <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/dashboard`)}>Dashboard</button>
-                                <button className="btn btn-primary" onClick={() => navigate(`/admin/chat`)}>Chat With Trainer</button>
-                            </div>
-                        </div>
+                        )}
                     </div>
 
-                    <div className="Trainer-info-grid">
-                        <div className="row">
-                            {infoItems.map(({ label, value }) => (
-                                <div className="col-xl-3 col-md-6 mb-3" key={label}>
-                                    <div className="detail-box">
-                                        <h6>{label}</h6>
-                                        <p className="mb-0">
-                                            {label === "Phone Number" && typeof value === "string" && <span>{getCountryFlag(value)}</span>}
-                                            {label === "Specialization and Experience" && Array.isArray(value)
-                                                ? value.map((item) => (
-                                                    <div key={item.id}>
-                                                        {item.specialization} ({item.experience} years)
-                                                    </div>
-                                                ))
-                                                : value}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="Trainer-certification mt-5 detail-box">
-                        <h3 className="section-title mb-3">Certification Detail</h3>
-                        {details.certifications.map((cert, index) => (
-                            <div className="row g-4 align-items-center" key={cert.id || index}>
-                                <div className="col-xl-5">
-                                    <div className="detail-box mb-3">
-                                        <h6>Institute Name</h6>
-                                        <p className="mb-0">{cert.institute_name}</p>
-                                    </div>
-                                    <div className="detail-box">
-                                        <h6>Certificate Title</h6>
-                                        <p className="mb-0">{cert.certificate_title}</p>
-                                    </div>
-                                </div>
-                                <div className="col-xl-7">
-                                    <div>
-                                        <img src={cert.certificate_picture} alt="Certificate" className="img-fluid" />
+                    {trainerProfileLoading ? (
+                        <>
+                            <div className="Trainer-request-summary">
+                                <div className="d-flex align-items-center gap-5 mb-4 flex-wrap">
+                                    <Skeleton
+                                        circle
+                                        width={120}
+                                        height={120}
+                                        {...trainerProfileSkeletonProps}
+                                    />
+                                    <div className="d-flex flex-wrap gap-2">
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <Skeleton
+                                                key={i}
+                                                width={150}
+                                                height={42}
+                                                borderRadius={8}
+                                                {...trainerProfileSkeletonProps}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                            <div className="Trainer-info-grid">
+                                <div className="row">
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <div className="col-xl-3 col-md-6 mb-3" key={`sk-info-${i}`}>
+                                            <div className="detail-box">
+                                                <Skeleton
+                                                    width="55%"
+                                                    height={16}
+                                                    {...trainerProfileSkeletonProps}
+                                                    className="mb-2"
+                                                />
+                                                <Skeleton
+                                                    width="90%"
+                                                    height={22}
+                                                    {...trainerProfileSkeletonProps}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="Trainer-certification mt-5 detail-box">
+                                <Skeleton
+                                    width={220}
+                                    height={28}
+                                    {...trainerProfileSkeletonProps}
+                                    className="mb-3"
+                                />
+                                <div className="row g-4 align-items-center">
+                                    <div className="col-xl-5">
+                                        <div className="detail-box mb-3">
+                                            <Skeleton
+                                                width="50%"
+                                                height={16}
+                                                {...trainerProfileSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width="85%"
+                                                height={20}
+                                                {...trainerProfileSkeletonProps}
+                                            />
+                                        </div>
+                                        <div className="detail-box">
+                                            <Skeleton
+                                                width="45%"
+                                                height={16}
+                                                {...trainerProfileSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width="75%"
+                                                height={20}
+                                                {...trainerProfileSkeletonProps}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-7">
+                                        <div className="certificate-preview doctor-certificate-preview">
+                                            <Skeleton
+                                                height={280}
+                                                {...trainerProfileSkeletonProps}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="Trainer-request-summary">
+                                <div className="d-flex align-items-center gap-5 mb-4">
+                                    <div className="detail-box-img">
+                                        <img src={details.photo} alt={details.name} />
+                                    </div>
+                                    <div className="d-flex flex-wrap gap-2">
+                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/services`)}>View Services</button>
+                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/reviews`)}>Rating & Reviews</button>
+                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/trainer-management/${id}/dashboard`)}>Dashboard</button>
+                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/chat`)}>Chat With Trainer</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="Trainer-info-grid">
+                                <div className="row">
+                                    {infoItems.map(({ label, value }) => (
+                                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                                            <div className="detail-box">
+                                                <h6>{label}</h6>
+                                                <p className="mb-0">
+                                                    {label === "Phone Number" && typeof value === "string" && (
+                                                        <span>{getCountryFlag(value, details.countryCode)}</span>
+                                                    )}
+                                                    {label === "Specialization and Experience" && Array.isArray(value)
+                                                        ? value.map((item) => (
+                                                            <div key={item.id}>
+                                                                {item.specialization} ({item.experience} years)
+                                                            </div>
+                                                        ))
+                                                        : value}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="Trainer-certification mt-5 detail-box">
+                                <h3 className="section-title mb-3">Certification Detail</h3>
+                                {details.certifications.map((cert, index) => (
+                                    <div className="row g-4 align-items-center" key={cert.id || index}>
+                                        <div className="col-xl-5">
+                                            <div className="detail-box mb-3">
+                                                <h6>Institute Name</h6>
+                                                <p className="mb-0">{cert.institute_name}</p>
+                                            </div>
+                                            <div className="detail-box">
+                                                <h6>Certificate Title</h6>
+                                                <p className="mb-0">{cert.certificate_title}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-xl-7">
+                                            <div className="certificate-preview doctor-certificate-preview">
+                                                <img
+                                                    src={cert.certificate_picture}
+                                                    alt="Certificate"
+                                                    className="img-fluid doctor-certificate-image"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="dashCard mt-4">
@@ -341,20 +479,17 @@ const TrainerDetails = ({ showModal }) => {
                                 const statusClass = `status${label.replace(/\s+/g, "")}`;
 
                                 return (
-                                    <tr key={item.id || index}>
+                                    <tr
+                                        key={item.id || index}
+                                        {...(item.id
+                                            ? clickableTableRowNavProps(
+                                                  navigate,
+                                                  `/admin/appointments/${item.id}`,
+                                              )
+                                            : {})}
+                                    >
                                         <td>{rowIndex}</td>
-                                        <td>
-                                            {item.id ? (
-                                                <Link
-                                                    to={`/admin/appointments/${item.id}`}
-                                                    className="viewLink booking-link"
-                                                >
-                                                    {bookingId}
-                                                </Link>
-                                            ) : (
-                                                bookingId
-                                            )}
-                                        </td>
+                                        <td>{bookingId}</td>
                                         <td>{serviceTitle}</td>
                                         <td>{appointmentDate}</td>
                                         <td>{amountPaid}</td>

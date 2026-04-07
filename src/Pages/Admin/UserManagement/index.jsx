@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { Select } from "../../../Components/Select";
@@ -10,7 +9,7 @@ import { normalStatus, statusOptions } from "../../../Config/TableStatus"; // Im
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { dateFormat, serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import "./style.css";
 import { getAll, post } from "../../../Services/Api";
 
@@ -21,6 +20,7 @@ const UserManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
@@ -119,7 +119,13 @@ const UserManagement = ({
                   >
                     <tbody>
                       {userData?.map((item, index) => (
-                        <tr key={item?.id}>
+                        <tr
+                          key={item?.id}
+                          {...clickableTableRowNavProps(
+                            navigate,
+                            String(item.id),
+                          )}
+                        >
                           <td>
                             {serialNum(
                               (filters.page - 1) * filters.per_page + index + 1,
@@ -130,8 +136,7 @@ const UserManagement = ({
                           </td>
                           <td>{item?.email}</td>
                           <td>{item?.created_at}</td>
-                          {/* Status column with Select dropdown */}
-                          <td>
+                          <td onClick={(e) => e.stopPropagation()}>
                             <Select
                               className={`tabel-select status${item?.status ? "Active" : "Inactive"}`}
                               required
@@ -143,11 +148,6 @@ const UserManagement = ({
                             >
                               {statusOptions}
                             </Select>
-                          </td>
-                          <td>
-                            <Link className="viewLink" to={`${item.id}`}>
-                              View
-                            </Link>
                           </td>
                         </tr>
                       ))}

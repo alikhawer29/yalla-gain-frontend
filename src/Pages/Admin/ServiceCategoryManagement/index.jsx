@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import { serviceCategoryHeaders } from "../../../Config/TableHeaders";
@@ -201,14 +201,20 @@ const ServiceCategoryManagement = ({
               {rows.map((item, index) => {
                 const statusValue = normalizeStatus(item?.status);
                 return (
-                  <tr key={item?.id || index}>
+                  <tr
+                    key={item?.id || index}
+                    {...clickableTableRowNavProps(
+                      navigate,
+                      `/admin/service-category-management/${item?.id}`,
+                    )}
+                  >
                     <td>
                       {serialNum((currentPage - 1) * perPage + index + 1)}
                     </td>
                     <td>{item?.title || item?.name || "-"}</td>
                     <td>{formatType(item?.type)}</td>
                     <td>{item?.created_at || "-"}</td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <Select
                         className={`tabel-select status${statusValue === "1" ? "Active" : "Inactive"}`}
                         id={`category-status-${item?.id}`}
@@ -225,14 +231,6 @@ const ServiceCategoryManagement = ({
                       >
                         {statusOptions}
                       </Select>
-                    </td>
-                    <td>
-                      <Link
-                        className="viewLink"
-                        to={`/admin/service-category-management/${item?.id}`}
-                      >
-                        View
-                      </Link>
                     </td>
                   </tr>
                 );

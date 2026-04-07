@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { doctorManagementHeaders } from "../../../Config/TableHeaders";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
@@ -170,7 +170,13 @@ const TrainerManagement = ({
                       trainer?.name ||
                       "-";
                     return (
-                      <tr key={trainer?.id ?? index}>
+                      <tr
+                        key={trainer?.id ?? index}
+                        {...clickableTableRowNavProps(
+                          navigate,
+                          `/admin/trainer-management/${trainer?.id}`,
+                        )}
+                      >
                         <td>{serialNum(startIndex + index + 1)}</td>
                         <td>{trainerName}</td>
                         <td>{trainer?.email || "-"}</td>
@@ -179,7 +185,7 @@ const TrainerManagement = ({
                             trainer?.registrationDate ||
                             "-"}
                         </td>
-                        <td>
+                        <td onClick={(e) => e.stopPropagation()}>
                           <Select
                             className={`tabel-select status${isActive ? "Active" : "Inactive"}`}
                             required
@@ -193,14 +199,6 @@ const TrainerManagement = ({
                           >
                             {statusOptions}
                           </Select>
-                        </td>
-                        <td>
-                          <Link
-                            className="viewLink"
-                            to={`/admin/trainer-management/${trainer?.id}`}
-                          >
-                            View
-                          </Link>
                         </td>
                       </tr>
                     );

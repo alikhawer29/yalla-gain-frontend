@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { doctorServiceBookingHeaders } from "../../../Config/TableHeaders";
 import { usePagination } from "../../../Hooks/usePagination";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { getAll, post } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { images } from "../../../Assets";
@@ -340,20 +340,17 @@ const TrainerServiceView = ({ showModal }) => {
                                 const statusClass = `status${statusLabel.replace(/\s+/g, "")}`;
 
                                 return (
-                                    <tr key={item.id || index}>
+                                    <tr
+                                        key={item.id || index}
+                                        {...(item.id
+                                            ? clickableTableRowNavProps(
+                                                  navigate,
+                                                  `/admin/appointments/${item.id}`,
+                                              )
+                                            : {})}
+                                    >
                                         <td>{rowIndex}</td>
-                                        <td>
-                                            {item.id ? (
-                                                <Link
-                                                    to={`/admin/appointments/${item.id}`}
-                                                    className="viewLink booking-link"
-                                                >
-                                                    {bookingId}
-                                                </Link>
-                                            ) : (
-                                                bookingId
-                                            )}
-                                        </td>
+                                        <td>{bookingId}</td>
                                         <td>{userName}</td>
                                         <td>{appointmentDate}</td>
                                         <td>{charges}</td>

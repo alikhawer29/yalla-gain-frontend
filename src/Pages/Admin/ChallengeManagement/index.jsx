@@ -1,54 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import withModal from "../../../HOC/withModal";
 import { challengeHeaders } from "../../../Config/TableHeaders";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import { getAll, post } from "../../../Services/Api";
-
-const STATIC_CHALLENGES = [
-  {
-    id: 1,
-    title: "Abc",
-    type: "run",
-    upload_date: "12/03/2024",
-    duration: "1 Day",
-    flow_status: "Upcoming",
-    status: 1,
-  },
-  {
-    id: 2,
-    title: "Xyz",
-    type: "workout",
-    upload_date: "12/03/2024",
-    duration: "10 Day",
-    flow_status: "Ongoing",
-    status: 0,
-  },
-  {
-    id: 3,
-    title: "Abc",
-    type: "run",
-    upload_date: "12/03/2024",
-    duration: "20 Day",
-    flow_status: "Upcoming",
-    status: 1,
-  },
-  {
-    id: 4,
-    title: "Abc",
-    type: "workout",
-    upload_date: "12/03/2024",
-    duration: "10 Day",
-    flow_status: "Past",
-    status: 0,
-  },
-];
 
 const ChallengeManagement = ({
   showModal,
@@ -164,7 +125,13 @@ const ChallengeManagement = ({
           >
             <tbody>
               {rows.map((item, index) => (
-                <tr key={item.id}>
+                <tr
+                  key={item.id}
+                  {...clickableTableRowNavProps(
+                    navigate,
+                    `/admin/challenges/${item.id}`,
+                  )}
+                >
                   <td>
                     {serialNum(
                       (filters.page - 1) * filters.per_page + index + 1,
@@ -174,7 +141,7 @@ const ChallengeManagement = ({
                   <td>{labelType(item?.type)}</td>
                   <td>{item?.created_at}</td>
                   <td>{item?.duration} hours</td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <Select
                       className={`tabel-select status${item?.status ? "Active" : "Inactive"}`}
                       id={`status-ch-${item?.id}`}
@@ -185,14 +152,6 @@ const ChallengeManagement = ({
                     >
                       {statusOptions}
                     </Select>
-                  </td>
-                  <td>
-                    <Link
-                      className="viewLink"
-                      to={`/admin/challenges/${item.id}`}
-                    >
-                      View
-                    </Link>
                   </td>
                 </tr>
               ))}

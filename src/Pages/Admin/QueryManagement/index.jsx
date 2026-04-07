@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { getAll } from "../../../Services/Api";
 import { queryLogsHeaders } from "../../../Config/TableHeaders";
 
 const QueryManagement = ({ filters, setFilters, pagination, updatePagination }) => {
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
@@ -65,16 +66,19 @@ const QueryManagement = ({ filters, setFilters, pagination, updatePagination }) 
               >
                 <tbody>
                   {rows.map((item, index) => (
-                    <tr key={item.id}>
+                    <tr
+                      key={item.id}
+                      {...clickableTableRowNavProps(
+                        navigate,
+                        `/admin/query-management/${item.id}`,
+                      )}
+                    >
                       <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
                       <td>{item?.name}</td>
                       <td>{item?.email}</td>
                       <td>{item?.subject}</td>
                       <td>{item?.message}</td>
                       <td>{item?.created_at}</td>
-                      <td>
-                        <Link className="viewLink" to={`/admin/query-management/${item.id}`}>View</Link>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

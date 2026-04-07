@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -8,6 +10,11 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { images } from "../../../Assets";
 import { getCountryFlag } from "../../../Utils/helper";
 import "./style.css";
+
+const requestProfileSkeletonProps = {
+    baseColor: "rgba(255, 255, 255, 0.12)",
+    highlightColor: "rgba(255, 255, 255, 0.2)",
+};
 
 const formatNameField = (field) => {
     if (!field) return "-";
@@ -46,16 +53,22 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
     const { id } = useParams();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
     const [doctor, setDoctor] = useState(null);
+    const [requestProfileLoading, setRequestProfileLoading] = useState(true);
 
     const fetchDoctor = async () => {
+        setRequestProfileLoading(true);
         try {
-            startSubmitting(true);
             const response = await getDetails(`/doctor/${id}`);
-            if (response?.status) setDoctor(response.data);
+            if (response?.status) {
+                setDoctor(response.data || null);
+            } else {
+                setDoctor(null);
+            }
         } catch (error) {
             console.error("Error fetching doctor request details:", error);
+            setDoctor(null);
         } finally {
-            stopSubmitting(false);
+            setRequestProfileLoading(false);
         }
     };
 
@@ -215,104 +228,209 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
                                 <h2 className="mainTitle mb-1">Doctor Details</h2>
                             </div>
                         </div>
-                        <span className={statusClassName}>{statusLabel}</span>
-                    </div>
-
-                    <div className="doctor-request-summary">
-                        <div className="d-flex align-items-center gap-5 mb-4">
-                            <div className="detail-box-img">
-                                <img src={details.photo} alt={details.name} />
-                            </div>
-                        </div>
-                        {/* check if status is 2 */}
-
-                        {statusLabel === "Pending" && (
-                            <div className="doctor-request-actions">
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={handleApprove}
-                                    disabled={isSubmitting || statusLabel === "Approved"}
-                                >
-                                    Approve
-                                </button>
-                                <button
-                                    className="btn btn-outline-danger"
-                                    onClick={handleReject}
-                                    disabled={isSubmitting || statusLabel === "Rejected"}
-                                >
-                                    Reject
-                                </button>
-                            </div>
+                        {requestProfileLoading ? (
+                            <Skeleton
+                                width={110}
+                                height={32}
+                                borderRadius={999}
+                                {...requestProfileSkeletonProps}
+                            />
+                        ) : (
+                            <span className={`statusChip ${statusClassName}`}>{statusLabel}</span>
                         )}
-
                     </div>
 
-                    <div className="doctor-info-grid">
-                        <div className="row">
-                            {infoItems.map(({ label, value }) => (
-                                <div className="col-xl-3 col-md-6 mb-3" key={label}>
-                                    <div className="detail-box">
-                                        <h6>{label}</h6>
-                                        <p className="mb-0">
-                                            {label === "Phone Number" && typeof value === "string" && (
-                                                <span>{getCountryFlag(value, details.countryCode)}</span>
-                                            )}
-                                            {label === "Specialization and Experience" && Array.isArray(value)
-                                                ? value.map((item) => (
-                                                    <div key={item.id}>
-                                                        {item.specialization} ({item.experience} years)
-                                                    </div>
-                                                ))
-                                                : value}
-                                        </p>
-                                    </div>
+                    {requestProfileLoading ? (
+                        <>
+                            <div className="doctor-request-summary">
+                                <div className="d-flex align-items-center gap-5 mb-4 flex-wrap">
+                                    <Skeleton
+                                        circle
+                                        width={120}
+                                        height={120}
+                                        {...requestProfileSkeletonProps}
+                                    />
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="doctor-certification mt-5 detail-box">
-                        <h3 className="section-title mb-3">Certification Detail</h3>
-                        {details.certifications.map((cert, index) => (
-                            <div className="row g-4 align-items-center" key={cert.id || index}>
-                                <div className="col-xl-5">
-                                    <div className="detail-box mb-3">
-                                        <h6>Institute Name</h6>
-                                        <p className="mb-0">{cert.institute_name}</p>
-                                    </div>
-                                    <div className="detail-box">
-                                        <h6>Certificate Title</h6>
-                                        <p className="mb-0">{cert.certificate_title}</p>
-                                    </div>
+                                <div className="doctor-request-actions d-flex flex-wrap gap-2">
+                                    <Skeleton
+                                        width={120}
+                                        height={42}
+                                        borderRadius={8}
+                                        {...requestProfileSkeletonProps}
+                                    />
+                                    <Skeleton
+                                        width={120}
+                                        height={42}
+                                        borderRadius={8}
+                                        {...requestProfileSkeletonProps}
+                                    />
                                 </div>
-                                <div className="col-xl-7">
-                                    <div>
-                                        <img src={cert.certificate_picture} alt="Certificate" className="img-fluid" />
+                            </div>
+                            <div className="doctor-info-grid">
+                                <div className="row">
+                                    {Array.from({ length: 8 }, (_, i) => (
+                                        <div className="col-xl-3 col-md-6 mb-3" key={`sk-info-${i}`}>
+                                            <div className="detail-box">
+                                                <Skeleton
+                                                    width="55%"
+                                                    height={16}
+                                                    {...requestProfileSkeletonProps}
+                                                    className="mb-2"
+                                                />
+                                                <Skeleton
+                                                    width="90%"
+                                                    height={22}
+                                                    {...requestProfileSkeletonProps}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="doctor-certification mt-5 detail-box">
+                                <Skeleton
+                                    width={220}
+                                    height={28}
+                                    {...requestProfileSkeletonProps}
+                                    className="mb-3"
+                                />
+                                <div className="row g-4 align-items-center">
+                                    <div className="col-xl-5">
+                                        <div className="detail-box mb-3">
+                                            <Skeleton
+                                                width="50%"
+                                                height={16}
+                                                {...requestProfileSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width="85%"
+                                                height={20}
+                                                {...requestProfileSkeletonProps}
+                                            />
+                                        </div>
+                                        <div className="detail-box">
+                                            <Skeleton
+                                                width="45%"
+                                                height={16}
+                                                {...requestProfileSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width="75%"
+                                                height={20}
+                                                {...requestProfileSkeletonProps}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-7">
+                                        <div className="certificate-preview doctor-certificate-preview">
+                                            <Skeleton
+                                                height={280}
+                                                {...requestProfileSkeletonProps}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                    {details?.rejection_reason && (
-                        <div className="doctor-info-grid">
-                            <div className="row">
-
-                                <div className="col-xl-3 col-md-6 mb-3" key="Rejection Reason">
-                                    <div className="detail-box">
-                                        <h6>Rejection Reason</h6>
-                                        <p className="mb-0">
-                                            {details?.rejection_reason}
-                                        </p>
+                        </>
+                    ) : (
+                        <>
+                            <div className="doctor-request-summary">
+                                <div className="d-flex align-items-center gap-5 mb-4">
+                                    <div className="detail-box-img">
+                                        <img src={details.photo} alt={details.name} />
                                     </div>
                                 </div>
 
+                                {statusLabel === "Pending" && (
+                                    <div className="doctor-request-actions">
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={handleApprove}
+                                            disabled={isSubmitting || statusLabel === "Approved"}
+                                        >
+                                            Approve
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-danger"
+                                            onClick={handleReject}
+                                            disabled={isSubmitting || statusLabel === "Rejected"}
+                                        >
+                                            Reject
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        </div>
+
+                            <div className="doctor-info-grid">
+                                <div className="row">
+                                    {infoItems.map(({ label, value }) => (
+                                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                                            <div className="detail-box">
+                                                <h6>{label}</h6>
+                                                <p className="mb-0">
+                                                    {label === "Phone Number" && typeof value === "string" && (
+                                                        <span>{getCountryFlag(value, details.countryCode)}</span>
+                                                    )}
+                                                    {label === "Specialization and Experience" && Array.isArray(value)
+                                                        ? value.map((item) => (
+                                                            <div key={item.id}>
+                                                                {item.specialization} ({item.experience} years)
+                                                            </div>
+                                                        ))
+                                                        : value}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="doctor-certification mt-5 detail-box">
+                                <h3 className="section-title mb-3">Certification Detail</h3>
+                                {details.certifications.map((cert, index) => (
+                                    <div className="row g-4 align-items-center" key={cert.id || index}>
+                                        <div className="col-xl-5">
+                                            <div className="detail-box mb-3">
+                                                <h6>Institute Name</h6>
+                                                <p className="mb-0">{cert.institute_name}</p>
+                                            </div>
+                                            <div className="detail-box">
+                                                <h6>Certificate Title</h6>
+                                                <p className="mb-0">{cert.certificate_title}</p>
+                                            </div>
+                                        </div>
+                                        <div className="col-xl-7">
+                                            <div className="certificate-preview doctor-certificate-preview">
+                                                <img
+                                                    src={cert.certificate_picture}
+                                                    alt="Certificate"
+                                                    className="img-fluid doctor-certificate-image"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {details?.rejection_reason && (
+                                <div className="doctor-info-grid">
+                                    <div className="row">
+                                        <div className="col-xl-3 col-md-6 mb-3" key="Rejection Reason">
+                                            <div className="detail-box">
+                                                <h6>Rejection Reason</h6>
+                                                <p className="mb-0">{details?.rejection_reason}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
 
                 </div>
             </div>
-        </DashboardLayout >
+        </DashboardLayout>
     );
 };
 

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { paymentLogsBookingHeaders, subscriptionAdminLogsHeaders } from "../../../Config/TableHeaders";
 import { getAll } from "../../../Services/Api";
 import "../ReportsManagement/style.css";
@@ -33,6 +33,7 @@ const tabs = [
 ];
 
 const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("doctor");
     const [rows, setRows] = useState([]);
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -175,20 +176,17 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                                 <tbody>
                                     {activeTab !== "subscription"
                                         ? rows.map((item, index) => (
-                                            <tr key={`${activeTab}-${index}`}>
+                                            <tr
+                                                key={`${activeTab}-${index}`}
+                                                {...(item.appointmentId
+                                                    ? clickableTableRowNavProps(
+                                                          navigate,
+                                                          `/admin/appointments/${item.appointmentId}`,
+                                                      )
+                                                    : {})}
+                                            >
                                                 <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                                                <td>
-                                                    {item.appointmentId ? (
-                                                        <Link
-                                                            to={`/admin/appointments/${item.appointmentId}`}
-                                                            className="viewLink"
-                                                        >
-                                                            {item.booking_id}
-                                                        </Link>
-                                                    ) : (
-                                                        <span className="viewLink">{item.booking_id}</span>
-                                                    )}
-                                                </td>
+                                                <td>{item.booking_id}</td>
                                                 <td>{item.charges}</td>
                                                 <td>{item.commission}</td>
                                                 <td>{item.date}</td>

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { subscriptionPlanHeaders } from "../../../Config/TableHeaders";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import { getAll, post } from "../../../Services/Api";
@@ -100,14 +100,20 @@ const PlanManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                             >
                                 <tbody>
                                     {rows.map((item, index) => (
-                                        <tr key={item.id}>
+                                        <tr
+                                            key={item.id}
+                                            {...clickableTableRowNavProps(
+                                                navigate,
+                                                `/admin/subscriptions/plans/${item.id}`,
+                                            )}
+                                        >
                                             <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
                                             <td>{item?.title}</td>
                                             <td>{item?.duration}</td>
                                             <td>$ {item?.price}</td>
                                             <td>{item?.created_at}</td>
                                             <td>{item?.last_modified_on}</td>
-                                            <td>
+                                            <td onClick={(e) => e.stopPropagation()}>
                                                 <Select
                                                     className={`tabel-select status${item?.status ? "Active" : "Inactive"}`}
                                                     required
@@ -119,9 +125,6 @@ const PlanManagement = ({ showModal, filters, setFilters, pagination, updatePagi
                                                 >
                                                     {statusOptions}
                                                 </Select>
-                                            </td>
-                                            <td>
-                                                <Link className="viewLink" to={`/admin/subscriptions/plans/${item.id}`}>View</Link>
                                             </td>
                                         </tr>
                                     ))}

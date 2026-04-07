@@ -148,7 +148,8 @@ export const branchValidation = Yup.object().shape({
 // Workout Content Management – Add/Edit
 export const workoutContentAddSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    exercise_key: Yup.string().required("Exercise key is required"),
+    muscle: Yup.string().required("Muscle is required"),
+    exercise_key: Yup.string().required("Exercise is required"),
     image: createImageValidation("Please upload a valid image (jpg, jpeg, png, webp, gif)"),
     description: Yup.string().required("Description is required"),
     language: Yup.string().required("Language is required"),
@@ -167,7 +168,8 @@ export const challengeAddSchema = Yup.object().shape({
 // For edit, image is optional; if provided, validate type
 export const workoutContentEditSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    exercise_key: Yup.string().required("Exercise key is required"),
+    muscle: Yup.string().required("Muscle is required"),
+    exercise_key: Yup.string().required("Exercise is required"),
     image: Yup.mixed().test(
         "is-valid-images-optional",
         "Invalid image file type",

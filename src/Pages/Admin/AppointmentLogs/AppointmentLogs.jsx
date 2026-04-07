@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import CustomTable from "../../../Components/CustomTable";
 import { appointmentLogsHeaders } from "../../../Config/TableHeaders";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAll } from "../../../Services/Api";
 import { usePagination } from "../../../Hooks/usePagination";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { userBookingLogsData } from "../../../Config/data";
 import "./style.css";
 
@@ -67,6 +67,7 @@ const hasFiltersChanged = (prev, next) => {
 };
 
 const AppointmentLogs = () => {
+  const navigate = useNavigate();
   const [filters, setFiltersState] = useState(DEFAULT_FILTERS);
   const [refreshTick, setRefreshTick] = useState(0);
   const [records, setRecords] = useState([]);
@@ -352,20 +353,17 @@ const AppointmentLogs = () => {
             <tbody>
               {hasRecords ? (
                 tableRows.map((row) => (
-                  <tr key={row.key}>
+                  <tr
+                    key={row.key}
+                    {...(row.appointmentId
+                      ? clickableTableRowNavProps(
+                          navigate,
+                          `/admin/appointments/${row.appointmentId}`,
+                        )
+                      : {})}
+                  >
                     <td>{row.index}</td>
-                    <td>
-                      {row.appointmentId ? (
-                        <Link
-                          to={`/admin/appointments/${row.appointmentId}`}
-                          className="booking-link"
-                        >
-                          {row.bookingId}
-                        </Link>
-                      ) : (
-                        <span className="booking-link">{row.bookingId}</span>
-                      )}
-                    </td>
+                    <td>{row.bookingId}</td>
                     <td>{row.userName}</td>
                     <td>{row.serviceCategory}</td>
                     <td>{row.providerName}</td>

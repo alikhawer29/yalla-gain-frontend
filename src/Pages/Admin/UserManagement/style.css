@@ -56,17 +56,6 @@
   border-radius: 10px;
 }
 
-.viewLink {
-  text-decoration: none;
-  color: #118076 !important;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-
 .user-details .status1,
 .user-details .status1+.chevron-icon {
   color: #00B612 !important;

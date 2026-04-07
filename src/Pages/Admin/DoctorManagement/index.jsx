@@ -1,10 +1,10 @@
 ﻿import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { doctorManagementHeaders } from "../../../Config/TableHeaders";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
@@ -162,7 +162,13 @@ const DoctorManagement = ({
                       doctor?.name ||
                       "-";
                     return (
-                      <tr key={doctor?.id ?? index}>
+                      <tr
+                        key={doctor?.id ?? index}
+                        {...clickableTableRowNavProps(
+                          navigate,
+                          `/admin/doctor-management/${doctor?.id}`,
+                        )}
+                      >
                         <td>{serialNum(startIndex + index + 1)}</td>
                         <td>{doctorName}</td>
                         <td>{doctor?.email || "-"}</td>
@@ -171,7 +177,7 @@ const DoctorManagement = ({
                             doctor?.registrationDate ||
                             "-"}
                         </td>
-                        <td>
+                        <td onClick={(e) => e.stopPropagation()}>
                           <Select
                             className={`tabel-select status${isActive ? "Active" : "Inactive"}`}
                             required
@@ -185,14 +191,6 @@ const DoctorManagement = ({
                           >
                             {statusOptions}
                           </Select>
-                        </td>
-                        <td>
-                          <Link
-                            className="viewLink"
-                            to={`/admin/doctor-management/${doctor?.id}`}
-                          >
-                            View
-                          </Link>
                         </td>
                       </tr>
                     );

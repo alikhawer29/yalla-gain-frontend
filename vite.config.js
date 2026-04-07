@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': env
     },
-    plugins: [react(),svgr()],
+    plugins: [react(), svgr()],
     build: {
       outDir: 'dist',  // Default output directory
       assetsDir: 'assets',  // Directory for assets (js, css, etc.)
@@ -25,3 +25,5 @@ export default defineConfig(({ mode }) => {
     }
   }
 });
+
+

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { Select } from "../../../Components/Select";
@@ -12,7 +12,7 @@ import { contentVideoHeaders } from "../../../Config/TableHeaders";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { usePagination } from "../../../Hooks/usePagination";
 import { getAll } from "../../../Services/Api";
-import { serialNum } from "../../../Utils/helper";
+import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 
 const ContentView = ({ showModal }) => {
   const { id } = useParams();
@@ -242,7 +242,13 @@ const ContentView = ({ showModal }) => {
               >
                 <tbody>
                   {videos.map((item, index) => (
-                    <tr key={item.id}>
+                    <tr
+                      key={item.id}
+                      {...clickableTableRowNavProps(
+                        navigate,
+                        `/admin/content-management/videos/${item.id}`,
+                      )}
+                    >
                       <td>
                         {serialNum(
                           (filters.page - 1) * filters.per_page + index + 1,
@@ -253,7 +259,7 @@ const ContentView = ({ showModal }) => {
                       <td>{item?.rest_time} minutes</td>
                       {/* <td>{item?.language}</td> */}
                       <td>{item?.created_at}</td>
-                      <td>
+                      <td onClick={(e) => e.stopPropagation()}>
                         <Select
                           className={`tabel-select w-50 status${item?.status ? "Active" : "Inactive"}`}
                           id={`status-video-${item?.id}`}
@@ -264,14 +270,6 @@ const ContentView = ({ showModal }) => {
                         >
                           {statusOptions}
                         </Select>
-                      </td>
-                      <td>
-                        <Link
-                          className="viewLink"
-                          to={`/admin/content-management/videos/${item.id}`}
-                        >
-                          View
-                        </Link>
                       </td>
                     </tr>
                   ))}
