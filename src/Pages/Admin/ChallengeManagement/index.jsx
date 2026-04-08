@@ -76,7 +76,7 @@ const ChallengeManagement = ({
     const newStatusValue = e;
     showModal(
       null,
-      `Are you sure you want to change this challenge's status to ${newStatusValue == "1" ? "Active" : "Inactive"}?`,
+      `Are you sure you want to ${newStatusValue == "1" ? "Active" : "Inactive"} Challenge?`,
       () => onConfirmStatusChange(id, newStatusValue),
     );
   };
@@ -86,7 +86,7 @@ const ChallengeManagement = ({
     fetchRows();
     showModal(
       null,
-      `Challenge status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"} successfully.`,
+      `Challenge has been ${newStatusValue == "1" ? "Activeted" : "Deactivated"} successfully.`,
       null,
       true,
     );

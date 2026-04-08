@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
+import { images } from "../../Assets";
 
 // Simple drag & drop video uploader with preview
 // Props: { label, required, initialUrl, onChange }
-const VideoDropzone = ({ label = "Upload Video", required = false, initialUrl = "", onChange }) => {
+const VideoDropzone = ({
+  label = "Upload Video",
+  required = false,
+  initialUrl = "",
+  onChange,
+}) => {
   const [preview, setPreview] = useState("");
   const [file, setFile] = useState(null);
   const inputRef = useRef(null);
@@ -21,9 +27,21 @@ const VideoDropzone = ({ label = "Upload Video", required = false, initialUrl = 
   };
 
   const onInputChange = (e) => onSelect(e.target.files?.[0]);
-  const onDrop = (e) => { e.preventDefault(); onSelect(e.dataTransfer.files?.[0]); };
-  const onDragOver = (e) => { e.preventDefault(); };
-  const removeVideo = () => { setFile(null); setPreview(""); if (inputRef.current) inputRef.current.value = ""; onChange && onChange(null); };
+  const onDrop = (e) => {
+    e.preventDefault();
+    onSelect(e.dataTransfer.files?.[0]);
+  };
+  const onDragOver = (e) => {
+    e.preventDefault();
+  };
+  const removeVideo = () => {
+    setFile(null);
+    setPreview("");
+    if (inputRef.current) inputRef.current.value = "";
+    onChange && onChange(null);
+  };
+
+  const videoIcon = images.VideoIcon;
 
   return (
     <div className="video-dropzone mb-3">
@@ -33,24 +51,44 @@ const VideoDropzone = ({ label = "Upload Video", required = false, initialUrl = 
           {required ? <span className="text-danger">*</span> : null}
         </label>
       )}
-      <div className={`dropzone-box ${preview ? "has-video" : ""}`} onClick={() => inputRef.current?.click()} onDrop={onDrop} onDragOver={onDragOver}>
+      <div
+        className={`dropzone-box ${preview ? "has-video" : ""}`}
+        onClick={() => inputRef.current?.click()}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+      >
         {!preview ? (
           <div className="dropzone-placeholder">
-            <div className="icon" />
+            {/* <div className="icon" /> */}
+            <img src={videoIcon} alt="video" />
             <p className="title">Upload Video</p>
             <p className="muted">Or Drag & Drop Video</p>
           </div>
         ) : (
           <div className="dropzone-preview">
             <video src={preview} controls />
-            <button type="button" className="dropzone-remove" onClick={(e) => { e.stopPropagation(); removeVideo(); }}>✕</button>
+            <button
+              type="button"
+              className="dropzone-remove"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeVideo();
+              }}
+            >
+              ✕
+            </button>
           </div>
         )}
-        <input ref={inputRef} type="file" accept="video/*" onChange={onInputChange} hidden />
+        <input
+          ref={inputRef}
+          type="file"
+          accept="video/*"
+          onChange={onInputChange}
+          hidden
+        />
       </div>
     </div>
   );
 };
 
 export default VideoDropzone;
-

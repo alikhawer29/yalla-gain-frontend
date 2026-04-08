@@ -147,14 +147,18 @@ const ContentView = ({ showModal }) => {
                     <h5 className="detail-label">Title:</h5>
                     <p className="detail-value mb-0">{content?.title ?? "-"}</p>
                   </div>
+
                   <div className="row mb-4">
+                    <div className="mb-4">
+                      <h5 className="detail-label">Muscle:</h5>
+                      <p className="detail-value mb-0">
+                        {content?.muscle_title ?? "-"}
+                      </p>
+                    </div>
                     <div className="col-md-4">
                       <h5 className="detail-label">Exercise Type:</h5>
                       <p className="detail-value mb-0">
-                        {content?.exercise_key
-                          ? content?.exercise_key.charAt(0).toUpperCase() +
-                            content?.exercise_key.slice(1)
-                          : "-"}
+                        {content?.exercise_title ?? "-"}
                       </p>
                     </div>
                     <div className="col-md-4">

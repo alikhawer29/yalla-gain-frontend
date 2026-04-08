@@ -134,14 +134,8 @@ const ContentManagement = ({
                         )}
                       </td>
                       <td>{item?.title}</td>
-                      <td>{item?.exercise_key}</td>
-                      {/* <td>
-                                                {item?.image ? (
-                                                    <img src={item.image} alt={item.title} style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 6 }} />
-                                                ) : (
-                                                    "-"
-                                                )}
-                                            </td> */}
+                      <td>{item?.muscle_title}</td>
+                      <td>{item?.exercise_title}</td>
                       <td>{item?.created_at}</td>
                       <td onClick={(e) => e.stopPropagation()}>
                         <Select

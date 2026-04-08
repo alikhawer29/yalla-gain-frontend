@@ -2,6 +2,7 @@
 import Check from "./images/check.png";
 import Question from "./images/question.png";
 import UserImage from "./images/user-img.png";
+import VideoIcon from "../Assets/images/send-square.png";
 
 import BellIcon from "../Assets/images/svg/bellIcon.svg?react";
 import CameraIconOutline from "../Assets/images/svg/camera-icon-outline.svg?react";
@@ -44,7 +45,7 @@ import Graph from "../Assets/images/svg/Graph.svg?react";
 export const images = {
   Check,
   Question,
-
+  VideoIcon,
   UserImage,
 
   HeartIcon,

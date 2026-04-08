@@ -1,241 +1,339 @@
-import { Formik } from "formik";
 import { useEffect, useState } from "react";
+import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
-import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import CustomInput from "../../../Components/CustomInput";
-import { Select } from "../../../Components/Select";
-import CustomButton from "../../../Components/CustomButton";
-import withModal from "../../../HOC/withModal";
-import BackButton2 from "../../../Components/BackButton/BackButton2";
-import { useFormStatus } from "../../../Hooks/useFormStatus";
-import ImageDropzone from "../../../Components/ImageDropzone";
-import { challengeKinds } from "../../../Config/TableStatus";
-import { getDetails, post } from "../../../Services/Api";
 import { io } from "socket.io-client";
+import BackButton2 from "../../../Components/BackButton/BackButton2";
+import CustomButton from "../../../Components/CustomButton";
+import CustomInput from "../../../Components/CustomInput";
+import ImageDropzone from "../../../Components/ImageDropzone";
+import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import { Select } from "../../../Components/Select";
+import { challengeKinds, generalStatus } from "../../../Config/TableStatus";
 import { challengeEditSchema } from "../../../Config/Validations";
-
-const STATIC_CHALLENGES = [
-    { id: 1, title: "Abc", type: "run", duration: "1 Day", milestone: "Run 1 hour daily", reward: "10 Yalla Coin", description: "Lorem ipsum", image: "" },
-    { id: 2, title: "Xyz", type: "workout", duration: "10 Day", milestone: "10 pushups daily", reward: "5 Yalla Coin", description: "Lorem ipsum", image: "" },
-];
+import withModal from "../../../HOC/withModal";
+import { useFormStatus } from "../../../Hooks/useFormStatus";
+import { getDetails, post } from "../../../Services/Api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import "./style.css";
 
 const EditChallenge = ({ showModal }) => {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
-    const [initialValues, setInitialValues] = useState({ title: "", type: "", duration: "", milestone: "", reward: "", description: "", image: "" });
-    const [socket, setSocket] = useState(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+  const [initialValues, setInitialValues] = useState({
+    title: "",
+    type: "",
+    duration: 1,
+    milestone: "",
+    reward: 1,
+    description: "",
+    image: "",
+    status: "",
+  });
+  const [socket, setSocket] = useState(null);
 
-    useEffect(() => {
-        const s = io("https://custom-dev.onlinetestingserver.com:2170/", {
-            transports: ["websocket"],
-        });
+  useEffect(() => {
+    const s = io("https://custom-dev.onlinetestingserver.com:2170/", {
+      transports: ["websocket"],
+    });
 
-        s.on("connect", () => {
-            console.log("[Challenge Edit] Socket connected", s.id);
-        });
+    s.on("connect", () => {
+      console.log("[Challenge Edit] Socket connected", s.id);
+    });
 
-        s.on("connect_error", (err) => {
-            console.log("[Challenge Edit] Socket connect_error", err?.message || err);
-        });
+    s.on("connect_error", (err) => {
+      console.log("[Challenge Edit] Socket connect_error", err?.message || err);
+    });
 
-        s.on("disconnect", (reason) => {
-            console.log("[Challenge Edit] Socket disconnected", reason);
-        });
+    s.on("disconnect", (reason) => {
+      console.log("[Challenge Edit] Socket disconnected", reason);
+    });
 
-        setSocket(s);
+    setSocket(s);
 
-        return () => {
-            console.log("[Challenge Edit] Cleaning up socket");
-            s.disconnect();
-        };
-    }, []);
+    return () => {
+      console.log("[Challenge Edit] Cleaning up socket");
+      s.disconnect();
+    };
+  }, []);
 
-    useEffect(() => {
-        if (!socket || !id) return;
+  useEffect(() => {
+    if (!socket || !id) return;
 
-        const handler = (payload) => {
-            console.log("[Challenge Edit] Received closeIFrame event", payload);
-            if (payload?.challenge_id && Number(payload.challenge_id) === Number(id)) {
-                console.log("[Challenge Edit] challenge_id matched, redirecting to /admin/challenges");
-                navigate("/admin/challenges");
-            }
-        };
-
-        const baseEvent = "closeIFrame";
-        const dynamicEvent = `${baseEvent}${id}`;
-
-        console.log("[Challenge Edit] Subscribing to socket events", {
-            baseEvent,
-            dynamicEvent,
-        });
-
-        socket.on(baseEvent, handler);
-        socket.on(dynamicEvent, handler);
-
-        return () => {
-            console.log("[Challenge Edit] Unsubscribing from socket events", {
-                baseEvent,
-                dynamicEvent,
-            });
-            socket.off(baseEvent, handler);
-            socket.off(dynamicEvent, handler);
-        };
-    }, [socket, id, navigate]);
-
-    useEffect(() => {
-        const load = async () => {
-            const res = await getDetails(`/challenge/${id}`);
-            if (res?.status) {
-                const d = res?.data || {};
-                setInitialValues({
-                    title: d.title || "",
-                    type: d.type || "",
-                    image: d.image || "",
-                    description: d.description || "",
-                    duration: d.duration || "",
-                    milestone: d.milestone || "",
-                    reward: d.reward || "",
-                });
-            }
-        };
-        load();
-    }, [id]);
-
-    const handleSubmit = async (values) => {
-        startSubmitting();
-        const payload = { ...values };
-        if (typeof values.image === "string" || values.image === null || values.image === undefined) {
-            delete payload.image;
-        }
-        const res = await post(`/challenge/${id}/update`, payload);
-        if (res?.status) {
-            showModal("Successfully", "Challenge has been updated successfully", null, true);
-        } else {
-            showModal("Error", res?.message ?? "Something went wrong", null, true);
-        }
-        stopSubmitting();
+    const handler = (payload) => {
+      console.log("[Challenge Edit] Received closeIFrame event", payload);
+      if (
+        payload?.challenge_id &&
+        Number(payload.challenge_id) === Number(id)
+      ) {
+        console.log(
+          "[Challenge Edit] challenge_id matched, redirecting to /admin/challenges",
+        );
+        navigate("/admin/challenges");
+      }
     };
 
-    return (
-        <DashboardLayout pageTitle="Challenge Management">
-            <div className="container-fluid">
-                <div className="dashCard">
-                    <div className="row">
-                        <div className="col-12">
-                            <h2 className="mainTitle mb-4"><BackButton2 />Edit Challenge</h2>
-                            <Formik enableReinitialize initialValues={initialValues} validationSchema={challengeEditSchema} onSubmit={handleSubmit}>
-                                {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
-                                    <form className="row" onSubmit={handleSubmit}>
-                                        <div className="col-12 col-xl-6 col-xxl-5">
-                                            <CustomInput
-                                                wrapperClass="mb-3"
-                                                label="Challenge Title"
-                                                placeholder="Enter Challenge Title"
-                                                name="title"
-                                                value={values.title}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.title && errors.title}
-                                                required
-                                            />
+    const baseEvent = "closeIFrame";
+    const dynamicEvent = `${baseEvent}${id}`;
 
-                                            <Select
-                                                wrapperClass="mb-3"
-                                                label="Type Of Challenge"
-                                                className="mainInput w-100"
-                                                name="type"
-                                                required
-                                                value={values.type}
-                                                onChange={(v) => setFieldValue("type", v)}
-                                                onBlur={handleBlur}
-                                                error={touched.type && errors.type}
-                                            >
-                                                {challengeKinds}
-                                            </Select>
+    console.log("[Challenge Edit] Subscribing to socket events", {
+      baseEvent,
+      dynamicEvent,
+    });
 
-                                            <CustomInput
-                                                wrapperClass="mb-3"
-                                                label="Duration"
-                                                placeholder="e.g., 10 Days"
-                                                name="duration"
-                                                value={values.duration}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.duration && errors.duration}
-                                                required
-                                            />
+    socket.on(baseEvent, handler);
+    socket.on(dynamicEvent, handler);
 
-                                            <CustomInput
-                                                wrapperClass="mb-3"
-                                                label="Add Milestone To Be Achieved"
-                                                placeholder="Write milestone to be achieved"
-                                                name="milestone"
-                                                value={values.milestone}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.milestone && errors.milestone}
-                                                required
-                                            />
+    return () => {
+      console.log("[Challenge Edit] Unsubscribing from socket events", {
+        baseEvent,
+        dynamicEvent,
+      });
+      socket.off(baseEvent, handler);
+      socket.off(dynamicEvent, handler);
+    };
+  }, [socket, id, navigate]);
 
-                                            <CustomInput
-                                                wrapperClass="mb-3"
-                                                label="Reward"
-                                                placeholder="e.g., 10 Yalla Coins"
-                                                name="reward"
-                                                value={values.reward}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.reward && errors.reward}
-                                                required
-                                            />
+  useEffect(() => {
+    const load = async () => {
+      const res = await getDetails(`/challenge/${id}`);
+      if (res?.status) {
+        const d = res?.data || {};
+        const statusVal = d.status;
+        const statusStr =
+          statusVal === 0 || statusVal === 1
+            ? String(statusVal)
+            : statusVal === "0" || statusVal === "1"
+              ? statusVal
+              : "";
+        setInitialValues({
+          title: d.title || "",
+          type: d.type || "",
+          image: d.image || "",
+          description: d.description || "",
+          duration: Number(d.duration) || 1,
+          milestone: d.milestone || "",
+          reward: Number(d.reward) || 1,
+          status: statusStr,
+        });
+      }
+    };
+    load();
+  }, [id]);
 
-                                            <CustomInput
-                                                wrapperClass="mb-3"
-                                                label="Description"
-                                                placeholder="Enter Description"
-                                                name="description"
-                                                type="textarea"
-                                                rows={4}
-                                                value={values.description}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.description && errors.description}
-                                                required
-                                            />
+  const handleSubmit = async (values) => {
+    startSubmitting();
+    const payload = { ...values };
+    if (
+      typeof values.image === "string" ||
+      values.image === null ||
+      values.image === undefined
+    ) {
+      delete payload.image;
+    }
+    const res = await post(`/challenge/${id}/update`, payload);
+    if (res?.status) {
+      showModal(
+        "Successfully",
+        "Challenge has been updated successfully",
+        () => navigate("/admin/challenges"),
+        true,
+      );
+    } else {
+      showModal("Error", res?.message ?? "Something went wrong", null, true);
+    }
+    stopSubmitting();
+  };
 
-                                            <ImageDropzone label="Upload Image" initialUrl={typeof values.image === 'string' ? values.image : ''} onChange={(file) => setFieldValue("image", file)} />
-                                            {touched.image && errors.image ? (
-                                                <div className="red-text">{errors.image}</div>
-                                            ) : null}
-
-                                            <CustomButton type="submit" variant="primary" text="Update" isPending={isSubmitting} />
-                                        </div>
-                                    </form>
-                                )}
-                            </Formik>
-                            {id && (
-                                <div className="mt-4">
-                                    <h3 className="mainTitle mb-3">Set Challenge Avatar</h3>
-                                    <div className="ratio ratio-16x9">
-                                        <iframe
-                                            title="Set Challenge Avatar"
-                                            src={`https://custom-dev.onlinetestingserver.com/yalla-unity-host/YallaGainWebGL/?challenge_id=${id}`}
-                                            width="100%"
-                                            height="600"
-                                            frameBorder="0"
-                                            allowFullScreen
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+  return (
+    <DashboardLayout pageTitle="Challenge Management">
+      <div className="container-fluid">
+        <div className="dashCard">
+          <div className="row">
+            <div className="col-12">
+              <h2 className="mainTitle mb-5">
+                <BackButton2 />
+                Edit Challenge
+              </h2>
+              <Formik
+                enableReinitialize
+                initialValues={initialValues}
+                validationSchema={challengeEditSchema}
+                onSubmit={handleSubmit}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  setFieldValue,
+                }) => (
+                  <form className="row" onSubmit={handleSubmit}>
+                    <div className="col-md-6 mb-4">
+                      <CustomInput
+                        label="Challenge Title"
+                        placeholder="Enter Challenge Title"
+                        name="title"
+                        value={values.title}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.title && errors.title}
+                        required
+                      />
                     </div>
-                </div>
+
+                    <div className="col-md-6 mb-4">
+                      <Select
+                        label="Status"
+                        name="status"
+                        value={values.status}
+                        onChange={(v) => setFieldValue("status", v)}
+                        onBlur={handleBlur}
+                        error={touched.status && errors.status}
+                        required
+                      >
+                        {generalStatus}
+                      </Select>
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <Select
+                        label="Type Of Challenge"
+                        name="type"
+                        required
+                        value={values.type}
+                        onChange={(v) => setFieldValue("type", v)}
+                        onBlur={handleBlur}
+                        error={touched.type && errors.type}
+                        mainLabel="Select"
+                      >
+                        {challengeKinds}
+                      </Select>
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <CustomInput
+                        label="Add Milestone To Be Achieved"
+                        placeholder="Write Milestone To Be Achieved In This Challenge"
+                        name="milestone"
+                        value={values.milestone}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.milestone && errors.milestone}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <label className="form-label">
+                        Duration<span className="text-danger">*</span>
+                      </label>
+                      <div className="counter-input">
+                        <button
+                          type="button"
+                          className="counter-btn plus-btn"
+                          onClick={() => setFieldValue("duration", values.duration + 1)}
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                        <span className="counter-value">
+                          {values.duration} {values.duration > 1 ? "Days" : "Day"}
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-btn minus-btn"
+                          onClick={() =>
+                            setFieldValue("duration", Math.max(1, values.duration - 1))
+                          }
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                      </div>
+                      {touched.duration && errors.duration && (
+                        <div className="error-message red-text">{errors.duration}</div>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <label className="form-label">
+                        Reward<span className="text-danger">*</span>
+                      </label>
+                      <div className="counter-input">
+                        <button
+                          type="button"
+                          className="counter-btn plus-btn"
+                          onClick={() => setFieldValue("reward", values.reward + 1)}
+                        >
+                          <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                        <span className="counter-value">
+                          {values.reward} {values.reward > 1 ? "Yalla Coins" : "Yalla Coin"}
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-btn minus-btn"
+                          onClick={() =>
+                            setFieldValue("reward", Math.max(1, values.reward - 1))
+                          }
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                      </div>
+                      {touched.reward && errors.reward && (
+                        <div className="error-message red-text">{errors.reward}</div>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <ImageDropzone
+                        label="Upload Image"
+                        required
+                        initialUrl={
+                          typeof values.image === "string" ? values.image : ""
+                        }
+                        onChange={(file) => setFieldValue("image", file)}
+                      />
+                      {touched.image && errors.image ? (
+                        <div className="error-message red-text">{errors.image}</div>
+                      ) : null}
+                    </div>
+
+                    <div className="col-md-6 mb-4">
+                      <CustomInput
+                        label="Description"
+                        placeholder="Enter Description"
+                        name="description"
+                        type="textarea"
+                        rows={7}
+                        value={values.description}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.description && errors.description}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-12 mt-4">
+                      <CustomButton
+                        type="submit"
+                        variant="primary"
+                        text="Update"
+                        isPending={isSubmitting}
+                        className="add-btn"
+                      />
+                    </div>
+                  </form>
+                )}
+              </Formik>
             </div>
-        </DashboardLayout>
-    );
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
 };
 
 export default withModal(EditChallenge);
-

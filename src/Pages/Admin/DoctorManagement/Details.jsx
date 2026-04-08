@@ -380,7 +380,7 @@ const DoctorDetails = ({ showModal }) => {
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/services`)}>View Services</button>
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/reviews`)}>Rating & Reviews</button>
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/dashboard`)}>Dashboard</button>
-                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/chat`)}>Chat With Doctor</button>
+                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/chat?doctorId=${id}`)}>Chat With Doctor</button>
                                     </div>
                                 </div>
                             </div>

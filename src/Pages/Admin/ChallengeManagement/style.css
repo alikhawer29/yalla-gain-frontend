@@ -16,3 +16,103 @@
   display: block;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
+
+.counter-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: 1px solid #4a4a4a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  height: 56px;
+}
+
+.counter-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plus-btn {
+  background-color: #118076;
+  color: #fff;
+}
+
+.plus-btn:hover {
+  background-color: #0d6b63;
+}
+
+.minus-btn {
+  background-color: #262626;
+  color: #fff;
+  border: 1px solid #3c3c3c;
+}
+
+.minus-btn:hover {
+  background-color: #333;
+}
+
+.counter-value {
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.add-btn {
+  background-color: #118076 !important;
+  border: none !important;
+  color: #fff !important;
+  padding: 14px 60px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.add-btn:hover {
+  background-color: #0d6b63 !important;
+}
+
+.form-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #fff !important;
+  margin-bottom: 10px !important;
+  display: block;
+}
+
+.dashCard {
+  border: none !important;
+  background: #141414 !important; /* Premium dark background */
+  border-radius: 30px !important;
+  padding: 40px !important;
+}
+
+.mainTitle {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  margin-bottom: 40px !important;
+}
+
+/* Custom styles for Select to match dark theme better */
+.select-container select {
+  background-color: transparent !important;
+  border: 1px solid #4a4a4a !important;
+  color: #fff !important;
+  height: 56px !important;
+  border-radius: 8px !important;
+}
+
+/* Override CustomInput border */
+.inputWrapper input, .inputWrapper textarea {
+  border: 1px solid #4a4a4a !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+}

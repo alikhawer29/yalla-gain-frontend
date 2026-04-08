@@ -250,6 +250,7 @@ export const reportsNewsfeedHeaders = [
 export const contentHeaders = [
   { key: "id", title: "S.No" },
   { key: "title", title: "Title" },
+  { key: "muscle_title", title: "Muscle" },
   { key: "exercise_key", title: "Exercise Type" },
   // { key: "image", title: "Image" },
   { key: "created_at", title: "Created On" },
@@ -334,4 +335,3 @@ export const doctorRequestsHeaders = [
   { key: "status", title: "Status" },
   { key: "requestedDate", title: "Requested Date" },
 ];
-
