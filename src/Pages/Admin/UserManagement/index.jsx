@@ -13,6 +13,10 @@ import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import "./style.css";
 import { getAll, post } from "../../../Services/Api";
 
+/** API may return 1, "1", true for active — note: string "0" is truthy in JS. */
+const isRowActiveStatus = (status) =>
+  status === 1 || status === true || status === "1";
+
 const UserManagement = ({
   showModal,
   filters,
@@ -138,11 +142,11 @@ const UserManagement = ({
                           <td>{item?.created_at}</td>
                           <td onClick={(e) => e.stopPropagation()}>
                             <Select
-                              className={`tabel-select status${item?.status ? "Active" : "Inactive"}`}
+                              className={`tabel-select status${isRowActiveStatus(item?.status) ? "1" : "0"}`}
                               required
                               id={`status${item?.id}`}
                               name="status"
-                              value={item?.status ? "1" : "0"}
+                              value={isRowActiveStatus(item?.status) ? "1" : "0"}
                               onChange={(e) => handleStatusChange(e, item?.id)}
                               isInputNeeded={false}
                             >

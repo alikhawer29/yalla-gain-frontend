@@ -4,102 +4,118 @@
   width: 100%;
 }
 
-.tabel-select+.chevron-icon {
-  right: 0px;
-  left: 90%;
-  top: 4px;
-}
-
-.admin-layout .tabel-select {
-  background-color: unset;
-  appearance: none !important;
-  border: none;
-  height: auto;
-  padding: 0px 22px 0px 3px;
-  box-shadow: none;
-}
-
-.status1,
-.status1+.chevron-icon {
-  color: #00B612 !important;
-  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300B612' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-
-}
-
-.status0,
-.status0+.chevron-icon {
-  color: #D10000 !important;
-  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23D10000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-
-}
-
-.tabel-select:focus-visible {
-  outline: none;
-}
-
-/* 
-.selectInput {
-  width: 100%;
-  padding-right: 30px;
-} */
-
-/* .chevron-icon {
-  position: absolute;
-  right: 10px;
-  top: 16px;
-  color: #878787;
-  pointer-events: none;
-} */
-
-.selectInput {
-  /* appearance: none !important; */
-}
-
+/* Base styles for all selects */
 select,
 .form-select {
-  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23118076' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   font-size: 15px;
-  background: transparent;
-  color: #fff !important;
+  background-color: transparent;
+  color: #fff;
   font-weight: 400;
-  transition: all .6s ease 0s;
-  padding: 15px 30px 15px 20px;
+  transition: all 0.3s ease;
+  padding: 12px 35px 12px 15px;
   line-height: 1.1;
   width: 100%;
   outline: none;
-  box-shadow: 0 0 5px #0000000d;
-  height: 50px;
-  border: 1px solid #dbdbdb;
-  border-radius: 5px;
-  background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-image: var(--bs-form-select-bg-img, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e"));
   background-repeat: no-repeat;
-  background-position: right .8rem center;
-  background-size: 19px 15px;
-}
-
-/* Keep pill style for compact status selects inside tables */
-.tabel-select {
-  border-radius: 50px !important;
-}
-
-.form-select option,
-select option {
-  color: var(--bs-black);
-  padding: 10px 5px;
-  background-color: transparent;
-}
-
-.form-select:focus {
-  outline-offset: -2px;
+  background-position: right 1rem center;
+  background-size: 14px;
+  appearance: none;
   -webkit-appearance: none;
-  box-shadow: 0px 0px 10px rgb(0 0 0 / 10%);
-  outline: none;
-  border: 1px solid #118076;
-  color: var(--bs-black);
-  background-color: transparent;
+  cursor: pointer;
 }
 
-.form-select:focus,
-select:focus {
-  color: var(--bs-black)
+select:focus,
+.form-select:focus {
+  border-color: #00d2c1;
+  box-shadow: 0 0 0 2px rgba(0, 210, 193, 0.2);
+}
+
+/* Active = green */
+.status1,
+.statusActive {
+  color: #00b612 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300B612' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* Inactive = red */
+.status0,
+.statusInactive {
+  color: #d10000 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23D10000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* TABLE-SPECIFIC MINIMALIST SELECT */
+select.tabel-select,
+.form-select.tabel-select {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  background-color: transparent !important;
+  padding: 0 25px 0 0 !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: 80px !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-position: right center !important;
+  background-size: 12px !important;
+}
+
+select.tabel-select:focus,
+select.tabel-select:focus-visible,
+.form-select.tabel-select:focus,
+.form-select.tabel-select:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/*
+ * High-specificity: admin table + Bootstrap load order can override .status1 color.
+ * data-table-status is set from the real select value ("1" / "0") in Select.jsx.
+ */
+.admin-layout .customTable .select-container select.tabel-select[data-table-status="active"],
+.admin-layout .customTable .select-container select.tabel-select.status1,
+.admin-layout .customTable .select-container select.tabel-select.statusActive,
+select.tabel-select[data-table-status="active"] {
+  color: #00b612 !important;
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  -webkit-text-fill-color: #00b612 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300B612' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+.admin-layout .customTable .select-container select.tabel-select[data-table-status="inactive"],
+.admin-layout .customTable .select-container select.tabel-select.status0,
+.admin-layout .customTable .select-container select.tabel-select.statusInactive,
+select.tabel-select[data-table-status="inactive"] {
+  color: #d10000 !important;
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  -webkit-text-fill-color: #d10000 !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23D10000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* Option styling */
+select option {
+  background-color: #222 !important;
+  color: #fff !important;
+  padding: 10px;
+}
+
+/* Error message */
+.error-message {
+  font-size: 12px;
+  margin-top: 4px;
 }

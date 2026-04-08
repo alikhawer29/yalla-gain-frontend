@@ -179,7 +179,7 @@ const DoctorManagement = ({
                         </td>
                         <td onClick={(e) => e.stopPropagation()}>
                           <Select
-                            className={`tabel-select status${isActive ? "Active" : "Inactive"}`}
+                            className={`tabel-select status${isActive ? "1" : "0"}`}
                             required
                             id={`status${doctor?.id}`}
                             name="status"

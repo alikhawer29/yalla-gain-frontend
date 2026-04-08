@@ -7,18 +7,28 @@ export const Select = (props) => {
   const [selectedValue, setSelectedValue] = useState("");
 
   useEffect(() => {
-    setSelectedValue(props.value || "");
+    setSelectedValue(props.value ?? "");
   }, [props.value]);
 
   const handleChange = (event) => {
     const value = event.target.value;
-
-    // setSelectedValue(value);
-
+    setSelectedValue(value);
     if (props?.onChange) {
       props.onChange(value);
     }
   };
+
+  const cn = props.className || "";
+  const isTableStatusSelect = cn.includes("tabel-select");
+  let tableStatusTone = undefined;
+  if (isTableStatusSelect) {
+    if (selectedValue === "1") tableStatusTone = "active";
+    else if (selectedValue === "0") tableStatusTone = "inactive";
+    else if (cn.includes("status1") || cn.includes("statusActive"))
+      tableStatusTone = "active";
+    else if (cn.includes("status0") || cn.includes("statusInactive"))
+      tableStatusTone = "inactive";
+  }
 
   return (
     <>
@@ -41,7 +51,8 @@ export const Select = (props) => {
           onChange={handleChange}
           className={`${props.isInputNeeded === false ? "" : "form-select"} ${
             props?.className || ""
-          }`}
+          }`.trim()}
+          data-table-status={tableStatusTone}
           style={props?.style}
           onBlur={props?.onBlur}
         >
