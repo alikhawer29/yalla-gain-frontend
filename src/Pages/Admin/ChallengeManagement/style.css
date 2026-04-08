@@ -94,6 +94,13 @@
   padding: 40px !important;
 }
 
+.adminDashCard {
+  border: none !important;
+  background: #141414 !important; /* Premium dark background */
+  /* border-radius: 30px !important; */
+  /* padding: 40px !important; */
+}
+
 .mainTitle {
   font-size: 36px !important;
   font-weight: 700 !important;

@@ -201,7 +201,8 @@ const UserDetails = ({
     const newStatusValue = e;
     showModal(
       `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this user's status to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -216,7 +217,8 @@ const UserDetails = ({
     getUser();
     showModal(
       "Successful",
-      `User status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
+      `User status has been changed to ${
+        newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
@@ -320,6 +322,11 @@ const UserDetails = ({
                     <img
                       src={profileData?.photo ?? images.placeholder}
                       alt="User"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = images.adminProfileImg;
+                        e.target.alt = "User";
+                      }}
                     />
                   </div>
                   <Link
@@ -337,11 +344,9 @@ const UserDetails = ({
                           <div className="detail-box">
                             <h6 className="">{label}</h6>
                             <p className=" mb-0">
-                              {isPhone &&
-                                value &&
-                                value !== "—" && (
-                                  <span>{getCountryFlag(value)}</span>
-                                )}{" "}
+                              {isPhone && value && value !== "—" && (
+                                <span>{getCountryFlag(value)}</span>
+                              )}{" "}
                               {value}
                             </p>
                           </div>
@@ -389,16 +394,16 @@ const UserDetails = ({
                     key={item?.id}
                     {...(item?.id
                       ? clickableTableRowNavProps(
-                        navigate,
-                        `/admin/appointments/${item.id}`,
-                      )
+                          navigate,
+                          `/admin/appointments/${item.id}`,
+                        )
                       : {})}
                   >
                     <td>
                       {serialNum(
                         (bookingFilters.page - 1) * bookingFilters.per_page +
-                        index +
-                        1,
+                          index +
+                          1,
                       )}
                     </td>
                     <td>{item?.booking_id}</td>
@@ -464,9 +469,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (challengeFilters.page - 1) *
-                        challengeFilters.per_page +
-                        index +
-                        1,
+                          challengeFilters.per_page +
+                          index +
+                          1,
                       )}
                     </td>
                     <td>{item?.challenge?.title}</td>
@@ -527,9 +532,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (subscriptionFilters.page - 1) *
-                        subscriptionFilters.per_page +
-                        index +
-                        1,
+                          subscriptionFilters.per_page +
+                          index +
+                          1,
                       )}
                     </td>
                     <td>{item?.subscription_plan?.title}</td>

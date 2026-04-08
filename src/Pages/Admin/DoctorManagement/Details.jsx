@@ -380,7 +380,17 @@ const DoctorDetails = ({ showModal }) => {
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/services`)}>View Services</button>
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/reviews`)}>Rating & Reviews</button>
                                         <button className="btn btn-primary" onClick={() => navigate(`/admin/doctor-management/${id}/dashboard`)}>Dashboard</button>
-                                        <button className="btn btn-primary" onClick={() => navigate(`/admin/chat?doctorId=${id}`)}>Chat With Doctor</button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            onClick={() => {
+                                                const q = new URLSearchParams({ doctorId: String(id) });
+                                                if (details?.name) q.set("doctorName", details.name);
+                                                navigate(`/admin/chat?${q.toString()}`);
+                                            }}
+                                        >
+                                            Chat With Doctor
+                                        </button>
                                     </div>
                                 </div>
                             </div>

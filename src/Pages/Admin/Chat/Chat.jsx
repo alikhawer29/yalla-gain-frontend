@@ -114,10 +114,27 @@ const Chat = ({ showModal }) => {
   const [imageFiles, setImageFiles] = useState([]); // For images
   const [documentFiles, setDocumentFiles] = useState([]); // For Word, Excel, PDF
   const [chatFilter, setChatFilter] = useState("all");
+  /** Deep link: doctor has no thread yet (could not open / create chat). */
+  const [pendingDoctorProfile, setPendingDoctorProfile] = useState(null);
 
   const socketRef = useRef(null);
   const activeChatIdRef = useRef(null);
   const fetchChatListRef = useRef(null);
+  const pendingDoctorProfileRef = useRef(null);
+  pendingDoctorProfileRef.current = pendingDoctorProfile;
+
+  const clearChatDeepLinkParams = () => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("doctorId");
+        next.delete("chatId");
+        next.delete("doctorName");
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   // Load chat list and messages
   const fetchChatList = async () => {
@@ -131,6 +148,8 @@ const Chat = ({ showModal }) => {
 
       const doctorId = searchParams.get("doctorId");
       const chatIdParam = searchParams.get("chatId");
+      const doctorName = searchParams.get("doctorName") || "";
+
       let preferred = null;
       if (chatIdParam) {
         preferred = list.find((c) => String(c.id) === String(chatIdParam));
@@ -140,18 +159,56 @@ const Chat = ({ showModal }) => {
 
       if (preferred) {
         setActiveChat(preferred);
-        setSearchParams(
-          (prev) => {
-            const next = new URLSearchParams(prev);
-            next.delete("doctorId");
-            next.delete("chatId");
-            return next;
-          },
-          { replace: true },
-        );
-      } else {
-        setActiveChat((current) => current ?? list[0] ?? null);
+        setPendingDoctorProfile(null);
+        clearChatDeepLinkParams();
+        return;
       }
+
+      if (doctorId || chatIdParam) {
+        clearChatDeepLinkParams();
+
+        let resolvedFromApi = null;
+        if (doctorId) {
+          try {
+            const createRes = await post(`/chat/get-or-create`, {
+              doctor_id: doctorId,
+            });
+            const raw = createRes?.data;
+            const row = raw?.chat ?? raw?.data ?? raw;
+            if (row?.id) resolvedFromApi = row;
+          } catch (e) {
+            /* backend may not expose this route yet */
+          }
+        }
+
+        if (resolvedFromApi) {
+          setSideData((prev) => {
+            if (prev.some((c) => String(c.id) === String(resolvedFromApi.id)))
+              return prev;
+            return [resolvedFromApi, ...prev];
+          });
+          setActiveChat(resolvedFromApi);
+          setPendingDoctorProfile(null);
+          setChatBox([]);
+          return;
+        }
+
+        setActiveChat(null);
+        setChatBox([]);
+        if (doctorId) {
+          setPendingDoctorProfile({ doctorId, doctorName });
+        } else {
+          setPendingDoctorProfile(null);
+        }
+        return;
+      }
+
+      setActiveChat((current) => {
+        if (current) return current;
+        if (pendingDoctorProfileRef.current) return null;
+        return list[0] ?? null;
+      });
+      if (!pendingDoctorProfileRef.current) setPendingDoctorProfile(null);
     } catch (e) {
       setSideData([]);
     }
@@ -219,6 +276,7 @@ const Chat = ({ showModal }) => {
 
   usePageTitle("Chat");
   const handleUserClick = (chat) => {
+    setPendingDoctorProfile(null);
     setActiveChat(chat);
     setIsSidebarOpen(false);
   };
@@ -333,9 +391,9 @@ const Chat = ({ showModal }) => {
 
   return (
     <DashboardLayout>
-      <section className={"dashCard"}>
-        <Container fluid className="px-sm-2 px-0">
-          <div className=" px-sm-0">
+      <section className={"adminDashCard"}>
+        <Container fluid className="">
+          <div className="">
             <div className="site_card p-0 ">
               <h2 className="fw-bold pt-3 mb-3 mainTitle">Chats</h2>
               <div
@@ -444,7 +502,7 @@ const Chat = ({ showModal }) => {
                 </div>
 
                 <div className={`${Styles["chat-area"]}`}>
-                  {chatBox ? (
+                  {activeChat ? (
                     <div className={`${Styles["chat-window"]}`}>
                       <header
                         className={`${Styles.chatHeader} gap-3 ps-4 py-3`}
@@ -786,6 +844,16 @@ const Chat = ({ showModal }) => {
                           </button>
                         </div>
                       </div>
+                    </div>
+                  ) : pendingDoctorProfile ? (
+                    <div
+                      className={`${Styles["no-chat-selected"]} d-flex flex-column align-items-center justify-content-center text-center px-4`}
+                    >
+                      <h4 className="fw-medium mb-3">
+                        {pendingDoctorProfile.doctorName
+                          ? `No chat with ${pendingDoctorProfile.doctorName} yet`
+                          : "No chat with this doctor yet"}
+                      </h4>
                     </div>
                   ) : (
                     <div className={`${Styles["no-chat-selected"]}`}>

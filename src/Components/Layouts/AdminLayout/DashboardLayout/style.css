@@ -8,6 +8,11 @@
   padding: 7.5rem 1.5rem 2rem;
 }
 
+
+.admin-dashboardBody-inner{
+  padding: 7.5rem 1.5rem 2rem;
+}
+
 .dashboardBody.expanded {
   margin-left: 60px;
 }

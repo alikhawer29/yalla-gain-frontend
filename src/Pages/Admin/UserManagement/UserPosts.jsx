@@ -142,16 +142,15 @@ const UserPosts = () => {
                 {!loading && posts?.length === 0 && <p className="text-white">No posts found.</p>}
 
                 {posts?.map((p) => (
-                    <div key={p.postId} style={{ borderBottom: "2px solid #fff" }}>
-                        <SocialMediaPost
-                            postId={p.postId}
-                            postData={p}
-                            onConfirmDeletePost={() => onDeletePost(p.postId)}
-                            onConfirmDeleteComment={(commentId) => onDeleteComment(commentId, p.postId)}
-                            onFetchReactions={fetchReactions}
-                            onFetchComments={fetchComments}
-                        />
-                    </div>
+                    <SocialMediaPost
+                        key={p.postId}
+                        postId={p.postId}
+                        postData={p}
+                        onConfirmDeletePost={() => onDeletePost(p.postId)}
+                        onConfirmDeleteComment={(commentId) => onDeleteComment(commentId, p.postId)}
+                        onFetchReactions={fetchReactions}
+                        onFetchComments={fetchComments}
+                    />
                 ))}
             </div>
         </DashboardLayout>
