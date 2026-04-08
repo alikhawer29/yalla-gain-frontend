@@ -437,7 +437,13 @@ export const getImageType = (extension) => {
 };
 
 export const capitalizeFirstLetter = (string) => {
+    if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const capitalizeStatus = (status) => {
+    if (!status) return "";
+    return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
 export const getFileType = (fileName) => {

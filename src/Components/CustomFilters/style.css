@@ -149,6 +149,17 @@
   padding: 20px 15px;
 }
 
+/* Date input calendar icon styling */
+.fiter-main input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.fiter-main input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
 .select-inner-wrapper {
   padding: 0px;
 }

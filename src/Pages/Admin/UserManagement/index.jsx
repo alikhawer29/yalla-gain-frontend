@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import { Select } from "../../../Components/Select";
-import { userManagementData } from "../../../Config/data";
-import { userHeaders } from "../../../Config/TableHeaders"; // Table Headers
-import { normalStatus, statusOptions } from "../../../Config/TableStatus"; // Import statusOptions
+import { userHeaders } from "../../../Config/TableHeaders";
+import { normalStatus, statusOptions } from "../../../Config/TableStatus";
 import withFilters from "../../../HOC/withFilters";
 import withModal from "../../../HOC/withModal";
-import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import "./style.css";
 import { getAll, post } from "../../../Services/Api";
@@ -25,83 +24,113 @@ const UserManagement = ({
   updatePagination,
 }) => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState([]);
-  const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+  const [statusLoading, setStatusLoading] = useState({});
+  const queryClient = useQueryClient();
 
-  const fetchUsers = async () => {
-    try {
-      startSubmitting(true);
-      // const response = userManagementData;
-      const response = await getAll(`/users`, filters);
+  const { data: usersResponse, isLoading, error, refetch } = useQuery({
+    queryKey: ['users', filters],
+    queryFn: () => getAll(`/users`, filters),
+  });
 
-      if (response.status) {
-        const { data } = response;
-        const { total, per_page, current_page, to } = response.meta;
-        setUserData(data);
-        updatePagination({
-          showData: to,
-          currentPage: current_page,
-          totalRecords: total,
-          totalPages: Math.ceil(total / per_page),
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      stopSubmitting(false);
+  // Update pagination when data changes
+  useEffect(() => {
+    if (usersResponse?.status) {
+      const { data } = usersResponse;
+      const { total, per_page, current_page, to } = usersResponse.meta;
+      updatePagination({
+        showData: to,
+        currentPage: current_page,
+        totalRecords: total,
+        totalPages: Math.ceil(total / per_page),
+      });
     }
-  };
+  }, [usersResponse, updatePagination]);
 
-  const handleStatusChange = (e, userId) => {
+  const statusMutation = useMutation({
+    mutationFn: ({ userId, status }) => post(`/user/${userId}/status`, { status }),
+    onMutate: async ({ userId }) => {
+      setStatusLoading(prev => ({ ...prev, [userId]: true }));
+    },
+    onSuccess: (response, variables) => {
+      if (response.status) {
+        // Optimistically update the cache
+        queryClient.setQueryData(['users', filters], (oldData) => {
+          if (!oldData?.data) return oldData;
+          return {
+            ...oldData,
+            data: oldData.data.map(user =>
+              user.id === variables.userId ? { ...user, status: variables.status } : user
+            )
+          };
+        });
+        
+        showModal(
+          null,
+          `User status has been changed to ${
+            variables.status === "1" ? "Active" : "Inactive"
+          } successfully.`,
+          null,
+          true,
+        );
+      } else {
+        throw new Error(response.message || 'Failed to update status');
+      }
+    },
+    onError: (error, variables) => {
+      console.error("Error updating user status:", error);
+      showModal(
+        null,
+        `Failed to update user status: ${error.message}`,
+        null,
+        true,
+      );
+      // Refetch data on error
+      refetch();
+    },
+    onSettled: (_, __, variables) => {
+      setStatusLoading(prev => ({ ...prev, [variables.userId]: false }));
+    },
+  });
+
+  const handleStatusChange = useCallback((e, userId) => {
     const newStatusValue = e;
     showModal(
       null,
       `Are you sure you want to change this user's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+        newStatusValue === "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
+  }, [showModal]);
+
+  const onConfirmStatusChange = (userId, newStatusValue) => {
+    statusMutation.mutate({ userId, status: newStatusValue });
   };
 
-  const onConfirmStatusChange = async (userId, newStatusValue) => {
-    const response = await post(`/user/${userId}/status`);
-    // setUserData((prevData) =>
-    //     prevData.map((user) =>
-    //         user.id == userId ? { ...user, status: newStatusValue } : user
-    //     )
-    // );
-    fetchUsers();
-    showModal(
-      null,
-      `User status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
-      } successfully.`,
-      null,
-      true,
-    );
-  };
+  const memoizedUserData = useMemo(() => usersResponse?.data || [], [usersResponse]);
 
+  // Handle query errors
   useEffect(() => {
-    fetchUsers();
-  }, [filters]);
+    if (error) {
+      console.error("Error fetching users:", error);
+    }
+  }, [error]);
 
   return (
     <DashboardLayout pageTitle="User Management">
       <div className="container-fluid">
         <div className="dashCard">
-          <div className="row">
+          <div className="row mb-2">
             <div className="col-12">
-              <div className="row mb-2">
-                <div className="col-12">
-                  <h2 className="mainTitle mb-0">User Management</h2>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-12">
-                  <CustomTable
+              <h2 className="mainTitle mb-0">User Management</h2>
+            </div>
+          </div>
+          <div className="row mb-3">
+            <div className="col-12">
+              <CustomTable
                     filters={filters}
                     setFilters={setFilters}
-                    loading={isSubmitting}
+                    loading={isLoading}
                     headers={userHeaders}
                     pagination={pagination}
                     dateFilters={[
@@ -122,7 +151,7 @@ const UserManagement = ({
                     ]}
                   >
                     <tbody>
-                      {userData?.map((item, index) => (
+                      {memoizedUserData?.map((item, index) => (
                         <tr
                           key={item?.id}
                           {...clickableTableRowNavProps(
@@ -149,16 +178,18 @@ const UserManagement = ({
                               value={isRowActiveStatus(item?.status) ? "1" : "0"}
                               onChange={(e) => handleStatusChange(e, item?.id)}
                               isInputNeeded={false}
+                              disabled={statusLoading[item?.id]}
                             >
                               {statusOptions}
                             </Select>
+                            {statusLoading[item?.id] && (
+                              <span className="status-loading">Updating...</span>
+                            )}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </CustomTable>
-                </div>
-              </div>
             </div>
           </div>
         </div>
