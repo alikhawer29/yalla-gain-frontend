@@ -152,19 +152,11 @@ const TrainerReviews = () => {
             <div className="container-fluid">
                 <div className="dashCard doctor-reviews-section">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <div className="d-flex align-items-center gap-3">
+
+                        <h2 className="mainTitle mb-4">
                             <BackButton2 />
-                            <div>
-                                <h2 className="mainTitle mb-1">Rate & Reviews</h2>
-                                {/* <p className="detail-subtitle mb-0">Feedback received for {trainerName}</p> */}
-                            </div>
-                        </div>
-                        {/* <button
-                            className="btn btn-outline-primary"
-                            onClick={() => navigate(`/admin/trainer-management/${id}`)}
-                        >
-                            Back to Profile
-                        </button> */}
+                            Rate & Reviews
+                        </h2>
                     </div>
 
                     <div className="rating-summary-card">

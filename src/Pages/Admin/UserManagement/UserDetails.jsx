@@ -241,10 +241,10 @@ const UserDetails = ({
         <div className="row dashCard mb-5">
           <div className="col-12 mb-4">
             <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-              <div className="d-flex">
+              <h2 className="mainTitle mb-4">
                 <BackButton2 />
-                <h2 className="mainTitle mb-0">User Details</h2>
-              </div>
+                User Details
+              </h2>
               <div className="d-flex justify-content-start justify-content-sm-end">
                 <div className="profile-status d-flex  align-items-end flex-column gap-3">
                   {profileLoading ? (
@@ -322,8 +322,8 @@ const UserDetails = ({
                       <Skeleton
                         {...profileSkeletonProps}
                         className="detail-box-img-skeleton"
-                        height={200}
-                        width={200}
+                        height={150}
+                        width={150}
                         circle
                       />
                     )}

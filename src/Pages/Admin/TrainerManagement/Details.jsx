@@ -253,12 +253,11 @@ const TrainerDetails = ({ showModal }) => {
             <div className="container-fluid">
                 <div className="dashCard Trainer-request-view Trainer-details-section">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <div className="d-flex align-items-center gap-3">
+
+                        <h2 className="mainTitle mb-4">
                             <BackButton2 />
-                            <div>
-                                <h2 className="mainTitle mb-1">Trainer Details</h2>
-                            </div>
-                        </div>
+                            Trainer Details
+                        </h2>
                         {trainerProfileLoading ? (
                             <Skeleton
                                 width={160}
@@ -483,9 +482,9 @@ const TrainerDetails = ({ showModal }) => {
                                         key={item.id || index}
                                         {...(item.id
                                             ? clickableTableRowNavProps(
-                                                  navigate,
-                                                  `/admin/appointments/${item.id}`,
-                                              )
+                                                navigate,
+                                                `/admin/appointments/${item.id}`,
+                                            )
                                             : {})}
                                     >
                                         <td>{rowIndex}</td>

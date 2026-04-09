@@ -248,12 +248,11 @@ const DoctorDetails = ({ showModal }) => {
             <div className="container-fluid">
                 <div className="dashCard doctor-request-view doctor-details-section">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <div className="d-flex align-items-center gap-3">
+
+                        <h2 className="mainTitle mb-4">
                             <BackButton2 />
-                            <div>
-                                <h2 className="mainTitle mb-1">Doctor Details</h2>
-                            </div>
-                        </div>
+                            Doctor Details
+                        </h2>
                         {doctorProfileLoading ? (
                             <Skeleton
                                 width={160}
@@ -488,9 +487,9 @@ const DoctorDetails = ({ showModal }) => {
                                         key={item.id || index}
                                         {...(item.id
                                             ? clickableTableRowNavProps(
-                                                  navigate,
-                                                  `/admin/appointments/${item.id}`,
-                                              )
+                                                navigate,
+                                                `/admin/appointments/${item.id}`,
+                                            )
                                             : {})}
                                     >
                                         <td>{rowIndex}</td>

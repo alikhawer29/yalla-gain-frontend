@@ -40,10 +40,10 @@ const AppointmentDetails = () => {
           <div className="row">
             <div className="col-12 ">
               <div className="row my-4">
-                <div className="col-12 d-flex">
-                  <BackButton />
-                  <h2 className="mainTitle mb-0">Appointment Details</h2>
-                </div>
+                <h2 className="mainTitle mb-4">
+                  <BackButton2 />
+                  Appointment Details
+                </h2>
               </div>
             </div>
           </div>
@@ -62,7 +62,7 @@ const AppointmentDetails = () => {
   const contactNumber = `${appointmentDetails.dialing_code || ""}${appointmentDetails.phone || ""}`;
   const appointmentTime =
     appointmentDetails.appointment_start_time &&
-    appointmentDetails.appointment_end_time
+      appointmentDetails.appointment_end_time
       ? `${appointmentDetails.appointment_start_time} - ${appointmentDetails.appointment_end_time}`
       : "";
   const statusRaw = appointmentDetails.status || "";
@@ -82,10 +82,10 @@ const AppointmentDetails = () => {
             <div className="dashCard">
               <div className="row mb-4">
                 <div className="col-12">
-                  <div className="d-flex align-items-center">
+                  <h2 className="mainTitle mb-4">
                     <BackButton2 />
-                    <h2 className="mainTitle mb-0">Booking Details</h2>
-                  </div>
+                    Booking Details
+                  </h2>
                 </div>
               </div>
               <div className="row ">

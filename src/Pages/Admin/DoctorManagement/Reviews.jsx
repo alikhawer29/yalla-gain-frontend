@@ -152,13 +152,10 @@ const DoctorReviews = () => {
             <div className="container-fluid">
                 <div className="dashCard doctor-reviews-section">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <div className="d-flex align-items-center gap-3">
+                        <h2 className="mainTitle mb-4">
                             <BackButton2 />
-                            <div>
-                                <h2 className="mainTitle mb-1">Rate & Reviews</h2>
-                                {/* <p className="detail-subtitle mb-0">Feedback received for {doctorName}</p> */}
-                            </div>
-                        </div>
+                            Rate & Reviews
+                        </h2>
                         {/* <button
                             className="btn btn-outline-primary"
                             onClick={() => navigate(`/admin/doctor-management/${id}`)}
@@ -226,7 +223,8 @@ const DoctorReviews = () => {
                                     <div className="review-card" key={review.id}>
                                         <div className="d-flex flex-column flex-md-row gap-3">
                                             <div className="reviewer-info">
-                                                <img src={reviewerAvatar} alt={reviewerName} className="review-avatar" />
+                                                <img src={reviewerAvatar} alt={reviewerName} className="review-avatar"
+                                                    onError={(e) => e.target.src = images.placeholder} />
                                                 <div>
                                                     <div className="review-stars">
                                                         {Array.from({ length: 5 }).map((_, index) => (

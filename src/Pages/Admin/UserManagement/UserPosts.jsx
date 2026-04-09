@@ -26,11 +26,11 @@ const mapApiPostToUI = (apiPost) => {
                 isPoll: Boolean(apiPost?.is_poll),
                 options: Array.isArray(apiPost?.poll_options)
                     ? apiPost.poll_options.map((o) => ({
-                          id: o?.id,
-                          text: o?.option_text,
-                          votes: Number(o?.votes) || 0,
-                          isSelected: Boolean(o?.is_selected),
-                      }))
+                        id: o?.id,
+                        text: o?.option_text,
+                        votes: Number(o?.votes) || 0,
+                        isSelected: Boolean(o?.is_selected),
+                    }))
                     : [],
             },
         },
@@ -132,10 +132,10 @@ const UserPosts = () => {
         <DashboardLayout pageTitle="Post">
             <div className="container-fluid dashCard">
                 <div className="row my-4">
-                    <div className="col-12 d-flex">
+                    <h2 className="mainTitle mb-4">
                         <BackButton2 />
-                        <h2 className="mainTitle mb-0">User Post</h2>
-                    </div>
+                        User Posts
+                    </h2>
                 </div>
 
                 {loading && <p className="text-white">Loading posts...</p>}

@@ -109,8 +109,7 @@ const DoctorServices = ({ showModal }) => {
     const newStatusValue = e;
     showModal(
       null,
-      `Are you sure you want to change this service's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this service's status to ${newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -128,8 +127,7 @@ const DoctorServices = ({ showModal }) => {
     fetchServices();
     showModal(
       null,
-      `Service status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Service status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
@@ -145,13 +143,10 @@ const DoctorServices = ({ showModal }) => {
       <div className="container-fluid">
         <div className="dashCard doctor-services-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-            <div className="d-flex align-items-center gap-3">
+            <h2 className="mainTitle mb-4">
               <BackButton2 />
-              <div>
-                <h2 className="mainTitle mb-1">Doctor Services</h2>
-                {/* <p className="detail-subtitle mb-0">Services offered by {doctor.name}</p> */}
-              </div>
-            </div>
+              Doctor Services
+            </h2>
           </div>
 
           <CustomTable

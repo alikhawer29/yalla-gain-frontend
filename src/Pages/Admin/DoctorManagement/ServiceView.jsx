@@ -204,13 +204,10 @@ const DoctorServiceView = ({ showModal }) => {
             <div className="container-fluid">
                 <div className="dashCard doctor-service-view">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <div className="d-flex align-items-center gap-3">
+                        <h2 className="mainTitle mb-4">
                             <BackButton2 />
-                            <div>
-                                <h2 className="mainTitle mb-1">View Service</h2>
-                                {/* <p className="detail-subtitle mb-0">Detailed view of service {serviceDetails.title}</p> */}
-                            </div>
-                        </div>
+                            View Service
+                        </h2>
                         <div className="d-flex flex-column align-items-end gap-2">
                             {/* <span className={`statusChip ${statusClassName}`}>{serviceDetails.statusLabel}</span> */}
                             <div className="status-action">
@@ -344,9 +341,9 @@ const DoctorServiceView = ({ showModal }) => {
                                         key={item.id || index}
                                         {...(item.id
                                             ? clickableTableRowNavProps(
-                                                  navigate,
-                                                  `/admin/appointments/${item.id}`,
-                                              )
+                                                navigate,
+                                                `/admin/appointments/${item.id}`,
+                                            )
                                             : {})}
                                     >
                                         <td>{rowIndex}</td>
