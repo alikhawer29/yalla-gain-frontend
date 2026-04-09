@@ -25,8 +25,8 @@ import { images } from "../../../Assets";
 import CustomButton from "../../../Components/CustomButton";
 import CustomInput from "../../../Components/CustomInput/index";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import { loginCredentials } from "../../../Config/data";
 import { getAll, post } from "../../../Services/Api";
+import { useAuth } from "../../../Hooks/useAuth";
 import withModal from "../../../HOC/withModal";
 import { usePageTitle } from "../../../Utils/helper";
 import Styles from "./chat.module.css";
@@ -87,6 +87,78 @@ function mergeChatMessage(prev, incoming) {
   return [...prev, incoming];
 }
 
+function pickFirstId(obj, keys) {
+  if (!obj || typeof obj !== "object") return null;
+  for (const k of keys) {
+    const v = obj[k];
+    if (v != null && v !== "") return v;
+  }
+  return null;
+}
+
+/** Sender id from socket/API payloads (field names vary by emitter). */
+function getMessageSenderId(message) {
+  if (!message || typeof message !== "object") return null;
+  const direct = pickFirstId(message, [
+    "sender_id",
+    "senderId",
+    "sendable_id",
+    "user_id",
+    "user-id",
+    "from_id",
+    "from_user_id",
+    "sender_user_id",
+  ]);
+  if (direct != null) return direct;
+  const nested =
+    message.sender?.id ??
+    message.user?.id ??
+    message.from?.id ??
+    message.sender?.user_id;
+  if (nested != null) return nested;
+  return null;
+}
+
+function getLoggedInUserId(user) {
+  if (!user || typeof user !== "object") return null;
+  return pickFirstId(user, ["id", "user_id", "user-id", "userId"]);
+}
+
+function getOtherPartyUserId(chat) {
+  if (!chat || typeof chat !== "object") return null;
+  return pickFirstId(chat, [
+    "doctor_id",
+    "user_id",
+    "receiver_id",
+    "doctorId",
+    "participant_id",
+    "other_user_id",
+  ]);
+}
+
+/**
+ * Socket events often omit or mis-set `is_mine`. Prefer comparing sender id to
+ * the admin user, or to the chat's other party (doctor), matching `/chat/getChat` behavior.
+ */
+function normalizeSocketChatMessage(message, adminUser, activeChat) {
+  if (!message || typeof message !== "object") return message;
+  const senderId = getMessageSenderId(message);
+  if (senderId == null) {
+    return { ...message, is_mine: Boolean(message.is_mine) };
+  }
+  const adminId = getLoggedInUserId(adminUser);
+  if (adminId != null && adminId !== "") {
+    const isMine = Number(senderId) === Number(adminId);
+    return { ...message, is_mine: isMine };
+  }
+  const otherId = getOtherPartyUserId(activeChat);
+  if (otherId != null && otherId !== "") {
+    const isMine = Number(senderId) !== Number(otherId);
+    return { ...message, is_mine: isMine };
+  }
+  return { ...message, is_mine: Boolean(message.is_mine) };
+}
+
 /** Match chat list row to admin doctor id (API field names vary). */
 function chatMatchesDoctor(chat, doctorId) {
   if (chat == null || doctorId == null || doctorId === "") return false;
@@ -103,13 +175,13 @@ function chatMatchesDoctor(chat, doctorId) {
 }
 
 const Chat = ({ showModal }) => {
+  const { user: authUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [sideData, setSideData] = useState([]);
   const [chatBox, setChatBox] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
-  const [currentUserData, setCurrentUserData] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [imageFiles, setImageFiles] = useState([]); // For images
   const [documentFiles, setDocumentFiles] = useState([]); // For Word, Excel, PDF
@@ -119,9 +191,13 @@ const Chat = ({ showModal }) => {
 
   const socketRef = useRef(null);
   const activeChatIdRef = useRef(null);
+  const activeChatRef = useRef(null);
+  const authUserRef = useRef(null);
   const fetchChatListRef = useRef(null);
   const pendingDoctorProfileRef = useRef(null);
   pendingDoctorProfileRef.current = pendingDoctorProfile;
+  activeChatRef.current = activeChat;
+  authUserRef.current = authUser;
 
   const clearChatDeepLinkParams = () => {
     setSearchParams(
@@ -227,7 +303,6 @@ const Chat = ({ showModal }) => {
   };
 
   useEffect(() => {
-    setCurrentUserData(loginCredentials);
     fetchChatList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -256,7 +331,12 @@ const Chat = ({ showModal }) => {
       const chatId = data?.chat_id ?? data?.chatId;
       if (chatId == null || Number(chatId) !== Number(activeChatIdRef.current))
         return;
-      setChatBox((prev) => mergeChatMessage(prev, data));
+      const normalized = normalizeSocketChatMessage(
+        data,
+        authUserRef.current,
+        activeChatRef.current,
+      );
+      setChatBox((prev) => mergeChatMessage(prev, normalized));
     };
 
     const onUpdateChatList = () => {
