@@ -40,14 +40,14 @@ const EditContent = ({ showModal }) => {
       if (res?.status) {
         const d = res?.data || {};
         setInitialValues({
-          title: d.title || "",
+          // title: d.title || "",
           muscle_key: d.muscle_key || "",
           muscle_title: d.muscle_title || "",
-          exercise_key: d.exercise_key || "",
-          exercise_title: d.exercise_title || "",
+          // exercise_key: d.exercise_key || "",
+          // exercise_title: d.exercise_title || "",
           image: d.image || "",
           description: d.description || "",
-          language: d.language || "",
+          // language: d.language || "",
         });
       }
     };
@@ -118,7 +118,7 @@ const EditContent = ({ showModal }) => {
                   return (
                     <form className="row" onSubmit={handleSubmit}>
                       <div className="col-12 col-xl-6 col-xxl-5">
-                        <CustomInput
+                        {/* <CustomInput
                           wrapperClass="mb-3"
                           label="Title"
                           placeholder="Enter title"
@@ -128,7 +128,7 @@ const EditContent = ({ showModal }) => {
                           onBlur={handleBlur}
                           error={touched.title && errors.title}
                           required
-                        />
+                        /> */}
 
                         <Select
                           wrapperClass="mb-3"
@@ -155,7 +155,7 @@ const EditContent = ({ showModal }) => {
                           {exerciseKeys}
                         </Select>
 
-                        <Select
+                        {/* <Select
                           wrapperClass="mb-3"
                           label="Exercise"
                           labelclass="mb-2"
@@ -177,7 +177,7 @@ const EditContent = ({ showModal }) => {
                           error={touched.exercise_key && errors.exercise_key}
                         >
                           {exerciseOptions}
-                        </Select>
+                        </Select> */}
 
                         <CustomInput
                           wrapperClass="mb-3"
@@ -193,7 +193,7 @@ const EditContent = ({ showModal }) => {
                           required
                         />
 
-                        <Select
+                        {/* <Select
                           wrapperClass="mb-3"
                           label="Language"
                           labelclass="mb-2"
@@ -205,7 +205,7 @@ const EditContent = ({ showModal }) => {
                           error={touched.language && errors.language}
                         >
                           {language}
-                        </Select>
+                        </Select> */}
 
                         <ImageDropzone
                           label="Upload Image"

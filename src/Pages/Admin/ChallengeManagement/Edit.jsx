@@ -7,6 +7,7 @@ import CustomButton from "../../../Components/CustomButton";
 import CustomInput from "../../../Components/CustomInput";
 import ImageDropzone from "../../../Components/ImageDropzone";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import MultiSelect from "../../../Components/MultiSelect";
 import { Select } from "../../../Components/Select";
 import { challengeKinds, generalStatus } from "../../../Config/TableStatus";
 import { challengeEditSchema } from "../../../Config/Validations";
@@ -16,6 +17,23 @@ import { getDetails, post } from "../../../Services/Api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import "./style.css";
+
+const bodyPartOptions = [
+  { value: "arms", text: "Arms" },
+  { value: "biceps", text: "Biceps" },
+  { value: "triceps", text: "Triceps" },
+  { value: "shoulders", text: "Shoulders" },
+  { value: "chest", text: "Chest" },
+  { value: "belly", text: "Belly" },
+  { value: "back", text: "Back" },
+  { value: "neck", text: "Neck" },
+  { value: "face", text: "Face" },
+  { value: "waist", text: "Waist" },
+  { value: "glutes", text: "Glutes" },
+  { value: "quads", text: "Quads" },
+  { value: "hamstrings", text: "Hamstrings" },
+  { value: "calves", text: "Calves" },
+];
 
 const EditChallenge = ({ showModal }) => {
   const navigate = useNavigate();
@@ -30,6 +48,7 @@ const EditChallenge = ({ showModal }) => {
     description: "",
     image: "",
     status: "",
+    body_parts: [],
   });
   const [socket, setSocket] = useState(null);
 
@@ -116,6 +135,17 @@ const EditChallenge = ({ showModal }) => {
           milestone: d.milestone || "",
           reward: Number(d.reward) || 1,
           status: statusStr,
+          body_parts:
+            d.body_parts?.map((bp) => {
+              const option = bodyPartOptions.find(
+                (opt) => opt.value === bp.body_part_id || opt.value === bp.id,
+              );
+              return {
+                value: option?.value || bp.id,
+                text: option?.text || bp.name,
+                percentage: bp.percentage || "",
+              };
+            }) || [],
         });
       }
     };
@@ -314,6 +344,41 @@ const EditChallenge = ({ showModal }) => {
                         error={touched.description && errors.description}
                         required
                       />
+                    </div>
+                    <div className="col-6 mb-4">
+                      <MultiSelect
+                        label="Body Part"
+                        name="body_parts"
+                        options={bodyPartOptions}
+                        value={values.body_parts}
+                        onChange={(v) => setFieldValue("body_parts", v)}
+                        error={touched.body_parts && errors.body_parts}
+                        placeholder="Select"
+                      />
+                    </div>
+
+                    <div className="col-12">
+                      <div className="row">
+                        {values.body_parts.map((item, index) => (
+                          <div className="col-6 mb-4" key={item.value}>
+                            <CustomInput
+                              label={item.text}
+                              placeholder="Enter Percentage"
+                              name={`body_parts[${index}].percentage`}
+                              value={item.percentage}
+                              onChange={(e) => {
+                                const newBodyParts = [...values.body_parts];
+                                newBodyParts[index].percentage = e.target.value;
+                                setFieldValue("body_parts", newBodyParts);
+                              }}
+                              onBlur={handleBlur}
+                              required
+                              type="number"
+                              rightText="%"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="col-12 mt-4">

@@ -133,9 +133,9 @@ const ContentManagement = ({
                           (filters.page - 1) * filters.per_page + index + 1,
                         )}
                       </td>
-                      <td>{item?.title}</td>
+                      {/* <td>{item?.title}</td> */}
                       <td>{item?.muscle_title}</td>
-                      <td>{item?.exercise_title}</td>
+                      {/* <td>{item?.exercise_title}</td> */}
                       <td>{item?.created_at}</td>
                       <td onClick={(e) => e.stopPropagation()}>
                         <Select

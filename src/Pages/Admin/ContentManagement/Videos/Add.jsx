@@ -1,31 +1,33 @@
 import { Formik } from "formik";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DashboardLayout } from "../../../../Components/Layouts/AdminLayout/DashboardLayout";
-import CustomInput from "../../../../Components/CustomInput";
-import { Select } from "../../../../Components/Select";
-import CustomButton from "../../../../Components/CustomButton";
-import withModal from "../../../../HOC/withModal";
 import BackButton2 from "../../../../Components/BackButton/BackButton2";
-import { useFormStatus } from "../../../../Hooks/useFormStatus";
-import { language } from "../../../../Config/TableStatus";
-import { post } from "../../../../Services/Api";
+import CustomButton from "../../../../Components/CustomButton";
+import CustomInput from "../../../../Components/CustomInput";
 import ImageDropzone from "../../../../Components/ImageDropzone";
+import { DashboardLayout } from "../../../../Components/Layouts/AdminLayout/DashboardLayout";
+import { Select } from "../../../../Components/Select";
 import VideoDropzone from "../../../../Components/VideoDropzone";
 import { workoutVideoAddSchema } from "../../../../Config/Validations";
+import withModal from "../../../../HOC/withModal";
+import { useFormStatus } from "../../../../Hooks/useFormStatus";
+import { getDetails, post } from "../../../../Services/Api";
 
 const AddVideo = ({ showModal }) => {
   const navigate = useNavigate();
   const { id: contentId } = useParams();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+  const [muscleTitle, setMuscleTitle] = useState("");
+  const [exerciseOptions, setExerciseOptions] = useState([]);
+  const [muscleId, setMuscleId] = useState(null);
 
   const initialValues = {
-    title: "",
-    language: "",
     sets: "",
     rest_time: "",
     description: "",
     video: "",
     thumbnail: "",
+    exercise_id: "",
   };
 
   const handleSubmit = async (values) => {
@@ -45,6 +47,34 @@ const AddVideo = ({ showModal }) => {
     stopSubmitting();
   };
 
+  useEffect(() => {
+    const load = async () => {
+      const res = await getDetails(`/workout-content/${contentId}`);
+      if (res?.status) {
+        const d = res?.data || {};
+        setMuscleTitle(d.muscle_title || "");
+        setMuscleId(d?.muscle?.id);
+        // Load exercises for this muscle
+        if (d?.muscle?.id) {
+          const exerciseRes = await getDetails(
+            `/muscles/${d?.muscle?.id}/exercises`,
+          );
+          if (exerciseRes?.status && exerciseRes?.data) {
+            const options = [
+              { value: "", text: "Select Exercise" },
+              ...exerciseRes.data.map((item) => ({
+                value: item.id,
+                text: item.text,
+              })),
+            ];
+            setExerciseOptions(options);
+          }
+        }
+      }
+    };
+    load();
+  }, [contentId]);
+
   return (
     <DashboardLayout pageTitle="Content Management">
       <div className="container-fluid">
@@ -53,7 +83,7 @@ const AddVideo = ({ showModal }) => {
             <div className="col-12">
               <h2 className="mainTitle mb-4">
                 <BackButton2 />
-                Add Video Content
+                Add Video Content - {muscleTitle}
               </h2>
               <Formik
                 initialValues={initialValues}
@@ -71,30 +101,18 @@ const AddVideo = ({ showModal }) => {
                 }) => (
                   <form className="row" onSubmit={handleSubmit}>
                     <div className="col-12 col-xl-6 col-xxl-5">
-                      <CustomInput
-                        wrapperClass="mb-3"
-                        label="Title"
-                        placeholder="Enter title"
-                        name="title"
-                        value={values.title}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={touched.title && errors.title}
-                        required
-                      />
-
                       <Select
                         wrapperClass="mb-3"
-                        label="Language"
-                        className="mainInput w-100"
-                        name="language"
-                        required
-                        value={values.language}
-                        onChange={(v) => setFieldValue("language", v)}
-                        onBlur={handleBlur}
-                        error={touched.language && errors.language}
+                        label="Exercise"
+                        name="exercise_id"
+                        value={values.exercise_id}
+                        onChange={(v) => {
+                          console.log("Exercise ID:", v);
+                          setFieldValue("exercise_id", v);
+                        }}
+                        error={touched.exercise_id && errors.exercise_id}
                       >
-                        {language}
+                        {exerciseOptions}
                       </Select>
 
                       <CustomInput
@@ -103,6 +121,7 @@ const AddVideo = ({ showModal }) => {
                         placeholder="Enter sets"
                         name="sets"
                         type="number"
+                        min="0"
                         value={values.sets}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -113,9 +132,10 @@ const AddVideo = ({ showModal }) => {
                       <CustomInput
                         wrapperClass="mb-3"
                         label="Rest Time"
-                        placeholder="Enter rest time (in minutes)"
+                        placeholder="Enter rest time (in seconds)"
                         name="rest_time"
                         type="number"
+                        min="0"
                         value={values.rest_time}
                         onChange={handleChange}
                         onBlur={handleBlur}

@@ -143,10 +143,10 @@ const ContentView = ({ showModal }) => {
               </div>
               <div className="row content-view">
                 <div className="col-12 col-xxl-8">
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                     <h5 className="detail-label">Title:</h5>
                     <p className="detail-value mb-0">{content?.title ?? "-"}</p>
-                  </div>
+                  </div> */}
 
                   <div className="row mb-4">
                     <div className="mb-4">
@@ -155,13 +155,13 @@ const ContentView = ({ showModal }) => {
                         {content?.muscle_title ?? "-"}
                       </p>
                     </div>
-                    <div className="col-md-4">
+                    {/* <div className="col-md-4">
                       <h5 className="detail-label">Exercise Type:</h5>
                       <p className="detail-value mb-0">
                         {content?.exercise_title ?? "-"}
                       </p>
-                    </div>
-                    <div className="col-md-4">
+                    </div> */}
+                    {/* <div className="col-md-4">
                       <h5 className="detail-label">Language:</h5>
                       <p className="detail-value mb-0">
                         {content?.language
@@ -169,7 +169,7 @@ const ContentView = ({ showModal }) => {
                             content?.language.slice(1)
                           : "-"}
                       </p>
-                    </div>
+                    </div> */}
                     <div className="col-md-4">
                       <h5 className="detail-label">Created On:</h5>
                       <p className="detail-value mb-0">
@@ -258,9 +258,9 @@ const ContentView = ({ showModal }) => {
                           (filters.page - 1) * filters.per_page + index + 1,
                         )}
                       </td>
-                      <td>{item?.title}</td>
+                      <td>{item?.exercise?.text}</td>
                       <td>{item?.sets}</td>
-                      <td>{item?.rest_time} minutes</td>
+                      <td>{item?.rest_time} seconds</td>
                       {/* <td>{item?.language}</td> */}
                       <td>{item?.created_at}</td>
                       <td onClick={(e) => e.stopPropagation()}>

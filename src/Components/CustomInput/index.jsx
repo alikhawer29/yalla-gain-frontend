@@ -9,6 +9,8 @@ const CustomInput = (props) => {
   const IconToBeUsed = props?.rightIcon;
   const TextTobeUsed = props?.rightText;
 
+  const width = props?.width || "100%";
+
   const togglePassType = () => {
     setTypePass(!typePass);
   };
@@ -49,7 +51,7 @@ const CustomInput = (props) => {
               />
             </>
           ) : (
-            <div style={{ position: "relative", width: "100%" }}>
+            <div style={{ position: "relative", width: width }}>
               <input type={type} {...inputProps} className={`form-control ${props.inputclass && props.inputclass}`} />
               {IconToBeUsed ? (
                 <div className={`right-icon`}>

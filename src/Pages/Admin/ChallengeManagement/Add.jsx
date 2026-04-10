@@ -1,89 +1,43 @@
-import { useEffect, useState } from "react";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Formik } from "formik";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
-import CustomInput from "../../../Components/CustomInput";
-import { Select } from "../../../Components/Select";
-import CustomButton from "../../../Components/CustomButton";
-import withModal from "../../../HOC/withModal";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
-import { useFormStatus } from "../../../Hooks/useFormStatus";
+import CustomButton from "../../../Components/CustomButton";
+import CustomInput from "../../../Components/CustomInput";
 import ImageDropzone from "../../../Components/ImageDropzone";
+import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import MultiSelect from "../../../Components/MultiSelect";
+import { Select } from "../../../Components/Select";
 import { challengeKinds, generalStatus } from "../../../Config/TableStatus";
 import { challengeAddSchema } from "../../../Config/Validations";
+import withModal from "../../../HOC/withModal";
+import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { post } from "../../../Services/Api";
-import { io } from "socket.io-client";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import "./style.css";
+
+const bodyPartOptions = [
+  { value: "arms", text: "Arms" },
+  { value: "biceps", text: "Biceps" },
+  { value: "triceps", text: "Triceps" },
+  { value: "shoulders", text: "Shoulders" },
+  { value: "chest", text: "Chest" },
+  { value: "belly", text: "Belly" },
+  { value: "back", text: "Back" },
+  { value: "neck", text: "Neck" },
+  { value: "face", text: "Face" },
+  { value: "waist", text: "Waist" },
+  { value: "glutes", text: "Glutes" },
+  { value: "quads", text: "Quads" },
+  { value: "hamstrings", text: "Hamstrings" },
+  { value: "calves", text: "Calves" },
+];
 
 const AddChallenge = ({ showModal }) => {
   const navigate = useNavigate();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [unityChallengeId, setUnityChallengeId] = useState(null);
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-    const s = io("https://custom-dev.onlinetestingserver.com:2170/", {
-      transports: ["websocket"],
-    });
-
-    s.on("connect", () => {
-      console.log("[Challenge Add] Socket connected", s.id);
-    });
-
-    s.on("connect_error", (err) => {
-      console.log("[Challenge Add] Socket connect_error", err?.message || err);
-    });
-
-    s.on("disconnect", (reason) => {
-      console.log("[Challenge Add] Socket disconnected", reason);
-    });
-
-    setSocket(s);
-
-    return () => {
-      console.log("[Challenge Add] Cleaning up socket");
-      s.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!socket || !unityChallengeId) return;
-
-    const handler = (payload) => {
-      console.log("[Challenge Add] Received closeIFrame event", payload);
-      if (
-        payload?.challenge_id &&
-        Number(payload.challenge_id) === Number(unityChallengeId)
-      ) {
-        console.log(
-          "[Challenge Add] challenge_id matched, redirecting to /admin/challenges",
-        );
-        navigate("/admin/challenges");
-      }
-    };
-
-    const baseEvent = "closeIFrame";
-    const dynamicEvent = `${baseEvent}${unityChallengeId}`;
-
-    console.log("[Challenge Add] Subscribing to socket events", {
-      baseEvent,
-      dynamicEvent,
-    });
-
-    socket.on(baseEvent, handler);
-    socket.on(dynamicEvent, handler);
-
-    return () => {
-      console.log("[Challenge Add] Unsubscribing from socket events", {
-        baseEvent,
-        dynamicEvent,
-      });
-      socket.off(baseEvent, handler);
-      socket.off(dynamicEvent, handler);
-    };
-  }, [socket, unityChallengeId, navigate]);
 
   const initialValues = {
     title: "",
@@ -94,6 +48,7 @@ const AddChallenge = ({ showModal }) => {
     description: "",
     image: "",
     status: "",
+    body_parts: [],
   };
 
   const handleSubmit = async (values) => {
@@ -180,7 +135,6 @@ const AddChallenge = ({ showModal }) => {
                         onChange={(v) => setFieldValue("type", v)}
                         onBlur={handleBlur}
                         error={touched.type && errors.type}
-                        mainLabel="Select"
                       >
                         {challengeKinds}
                       </Select>
@@ -200,79 +154,33 @@ const AddChallenge = ({ showModal }) => {
                     </div>
 
                     <div className="col-md-6 mb-4">
-                      <label className="form-label">
-                        Duration<span className="text-danger">*</span>
-                      </label>
-                      <div className="counter-input">
-                        <button
-                          type="button"
-                          className="counter-btn plus-btn"
-                          onClick={() =>
-                            setFieldValue("duration", values.duration + 1)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faPlus} />
-                        </button>
-                        <span className="counter-value">
-                          {values.duration}{" "}
-                          {values.duration > 1 ? "Days" : "Day"}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-btn minus-btn"
-                          onClick={() =>
-                            setFieldValue(
-                              "duration",
-                              Math.max(1, values.duration - 1),
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon icon={faMinus} />
-                        </button>
-                      </div>
-                      {touched.duration && errors.duration && (
-                        <div className="error-message red-text">
-                          {errors.duration}
-                        </div>
-                      )}
+                      <CustomInput
+                        label="Duration"
+                        placeholder="Enter Duration"
+                        name="duration"
+                        value={values.duration}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.duration && errors.duration}
+                        required
+                        type="number"
+                        min="0"
+                      />
                     </div>
 
                     <div className="col-md-6 mb-4">
-                      <label className="form-label">
-                        Reward<span className="text-danger">*</span>
-                      </label>
-                      <div className="counter-input">
-                        <button
-                          type="button"
-                          className="counter-btn plus-btn"
-                          onClick={() =>
-                            setFieldValue("reward", values.reward + 1)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faPlus} />
-                        </button>
-                        <span className="counter-value">
-                          {values.reward}{" "}
-                          {values.reward > 1 ? "Yalla Coins" : "Yalla Coin"}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-btn minus-btn"
-                          onClick={() =>
-                            setFieldValue(
-                              "reward",
-                              Math.max(1, values.reward - 1),
-                            )
-                          }
-                        >
-                          <FontAwesomeIcon icon={faMinus} />
-                        </button>
-                      </div>
-                      {touched.reward && errors.reward && (
-                        <div className="error-message red-text">
-                          {errors.reward}
-                        </div>
-                      )}
+                      <CustomInput
+                        label="Reward"
+                        placeholder="Enter Reward"
+                        name="reward"
+                        value={values.reward}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        error={touched.reward && errors.reward}
+                        required
+                        type="number"
+                        min="0"
+                      />
                     </div>
 
                     <div className="col-md-6 mb-4">
@@ -301,6 +209,43 @@ const AddChallenge = ({ showModal }) => {
                         error={touched.description && errors.description}
                         required
                       />
+                    </div>
+
+                    <div className="col-6 mb-4">
+                      <MultiSelect
+                        label="Body Part"
+                        name="body_parts"
+                        options={bodyPartOptions}
+                        value={values.body_parts}
+                        onChange={(v) => setFieldValue("body_parts", v)}
+                        error={touched.body_parts && errors.body_parts}
+                        placeholder="Select"
+                      />
+                    </div>
+
+                    <div className="col-12">
+                      <div className="row">
+                        {values.body_parts.map((item, index) => (
+                          <div className="col-6 mb-4" key={item.value}>
+                            <CustomInput
+                            width={"50%"}
+                              label={item.text}
+                              placeholder="Enter Percentage"
+                              name={`body_parts[${index}].percentage`}
+                              value={item.percentage}
+                              onChange={(e) => {
+                                const newBodyParts = [...values.body_parts];
+                                newBodyParts[index].percentage = e.target.value;
+                                setFieldValue("body_parts", newBodyParts);
+                              }}
+                              onBlur={handleBlur}
+                              required
+                              type="number"
+                              rightText="%"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="col-12 mt-4">

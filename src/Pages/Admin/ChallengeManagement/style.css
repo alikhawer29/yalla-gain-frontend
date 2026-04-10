@@ -92,6 +92,7 @@
   background: #141414 !important; /* Premium dark background */
   border-radius: 30px !important;
   padding: 40px !important;
+  min-height: 700px; /* Ensures dark background covers the open dropdown */
 }
 
 .adminDashCard {

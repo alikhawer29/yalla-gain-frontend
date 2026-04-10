@@ -147,37 +147,20 @@ export const branchValidation = Yup.object().shape({
 
 // Workout Content Management – Add/Edit
 export const workoutContentAddSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  muscle_key: Yup.string().required("Muscle is required"),
-  muscle_title: Yup.string(),
-  exercise_key: Yup.string().required("Exercise is required"),
+  muscle_id: Yup.string().required("Muscle is required"),
   image: createImageValidation(
     "Please upload a valid image (jpg, jpeg, png, webp, gif)",
   ),
   description: Yup.string().required("Description is required"),
-  language: Yup.string().required("Language is required"),
-});
-
-export const challengeAddSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  type: Yup.string().required("Type is required"),
-  image: createImageValidation(
-    "Please upload a valid image (jpg, jpeg, png, webp, gif)",
-  ),
-  description: Yup.string().required("Description is required"),
-  reward: Yup.number().required("Reward is required"),
-  duration: Yup.number().required("Duration is required"),
-  milestone: Yup.string().required("Milestone is required"),
-  status: Yup.string().required("Status is required"),
 });
 
 // For edit, image is optional; if provided, validate type
 export const workoutContentEditSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
+  // title: Yup.string().required("Title is required"),
   muscle_key: Yup.string().required("Muscle is required"),
   muscle_title: Yup.string(),
-  exercise_key: Yup.string().required("Exercise is required"),
-  exercise_title: Yup.string(),
+  // exercise_key: Yup.string().required("Exercise is required"),
+  // exercise_title: Yup.string(),
   image: Yup.mixed().test(
     "is-valid-images-optional",
     "Invalid image file type",
@@ -196,7 +179,20 @@ export const workoutContentEditSchema = Yup.object().shape({
     },
   ),
   description: Yup.string().required("Description is required"),
-  language: Yup.string().required("Language is required"),
+  // language: Yup.string().required("Language is required"),
+});
+
+export const challengeAddSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  type: Yup.string().required("Type is required"),
+  image: createImageValidation(
+    "Please upload a valid image (jpg, jpeg, png, webp, gif)",
+  ),
+  description: Yup.string().required("Description is required"),
+  reward: Yup.number().required("Reward is required"),
+  duration: Yup.number().required("Duration is required"),
+  milestone: Yup.string().required("Milestone is required"),
+  status: Yup.string().required("Status is required"),
 });
 
 export const challengeEditSchema = Yup.object().shape({
@@ -266,8 +262,9 @@ export const serviceCategoryEditSchema = Yup.object().shape({
 });
 
 export const workoutVideoAddSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  language: Yup.string().required("Language is required"),
+  // title: Yup.string().required("Title is required"),
+  // language: Yup.string().required("Language is required"),
+  exercise_id: Yup.number().required("Exercise is required"),
   sets: Yup.number()
     .typeError("Sets must be a number")
     .required("Sets is required"),
@@ -280,8 +277,10 @@ export const workoutVideoAddSchema = Yup.object().shape({
 });
 
 export const workoutVideoEditSchema = Yup.object().shape({
-  title: Yup.string().required("Title is required"),
-  language: Yup.string().required("Language is required"),
+  exercise_id: Yup.number().required("Exercise is required"),
+
+  // title: Yup.string().required("Title is required"),
+  // language: Yup.string().required("Language is required"),
   sets: Yup.number()
     .typeError("Sets must be a number")
     .required("Sets is required"),

@@ -249,9 +249,9 @@ export const reportsNewsfeedHeaders = [
 // Workout Content management table headers
 export const contentHeaders = [
   { key: "id", title: "S.No" },
-  { key: "title", title: "Title" },
+  // { key: "title", title: "Title" },
   { key: "muscle_title", title: "Muscle" },
-  { key: "exercise_key", title: "Exercise Type" },
+  // { key: "exercise_key", title: "Exercise Type" },
   // { key: "image", title: "Image" },
   { key: "created_at", title: "Created On" },
   { key: "status", title: "Status" },
@@ -260,10 +260,9 @@ export const contentHeaders = [
 // Workout Content videos table headers
 export const contentVideoHeaders = [
   { key: "id", title: "S.No" },
-  { key: "title", title: "Title" },
+  { key: "title", title: "Exercise" },
   { key: "sets", title: "Sets" },
   { key: "rest_time", title: "Rest Time" },
-  // { key: "language", title: "Language" },
   { key: "created_at", title: "Created On" },
   { key: "status", title: "Status" },
 ];
