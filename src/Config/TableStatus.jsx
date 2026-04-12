@@ -167,6 +167,9 @@ export const challengeKinds = [
   { value: "run", text: "Run" },
   { value: "workout", text: "Workout" },
   { value: "cycle", text: "Cycle" },
+  { value: "strength", text: "Strength" },
+  { value: "face_yoga", text: "Face Yoga" },
+  { value: "cardio", text: "Cardio" },
 ];
 export const partsOfSpeech = [
   {

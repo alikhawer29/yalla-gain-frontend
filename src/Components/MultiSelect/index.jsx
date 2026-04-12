@@ -91,14 +91,20 @@ const MultiSelect = ({
       </div>
 
       <div className="selected-tags">
-        {value.map((item) => (
-          <div key={item.value} className="tag">
-            <span>{item.text}</span>
-            <button type="button" onClick={() => removeOption(item.value)}>
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-          </div>
-        ))}
+        {value.map((item) => {
+          // Ensure item has the expected structure
+          if (!item || typeof item !== 'object' || !item.value) {
+            return null;
+          }
+          return (
+            <div key={item.value} className="tag">
+              <span>{item.text || String(item.value)}</span>
+              <button type="button" onClick={() => removeOption(item.value)}>
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {error && <div className="error-message red-text">{error}</div>}

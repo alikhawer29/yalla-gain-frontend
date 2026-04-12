@@ -1,7 +1,5 @@
-import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import CustomButton from "../../../Components/CustomButton";
@@ -23,16 +21,47 @@ const bodyPartOptions = [
   { value: "triceps", text: "Triceps" },
   { value: "shoulders", text: "Shoulders" },
   { value: "chest", text: "Chest" },
-  { value: "belly", text: "Belly" },
+  { value: "waist", text: "Waist" },
   { value: "back", text: "Back" },
   { value: "neck", text: "Neck" },
   { value: "face", text: "Face" },
-  { value: "waist", text: "Waist" },
+  { value: "core", text: "Core" },
   { value: "glutes", text: "Glutes" },
   { value: "quads", text: "Quads" },
   { value: "hamstrings", text: "Hamstrings" },
   { value: "calves", text: "Calves" },
 ];
+
+// const challengeTypeBodyParts = {
+//   run: ["quads", "hamstrings", "calves", "glutes", "core", "waist"],
+//   cycle: ["quads", "hamstrings", "calves", "glutes", "core", "waist", "back", "neck"],
+//   workout: ["arms", "biceps", "triceps", "shoulders", "chest", "back", "core", "waist", "glutes", "quads", "hamstrings", "calves", "neck", "face"]
+// };
+
+const challengeTypeBodyParts = {
+  run: ["quads", "hamstrings", "calves", "glutes", "core", "waist"],
+
+  cycle: ["quads", "hamstrings", "calves", "glutes", "core", "waist", "back", "neck"],
+
+  workout: [
+    "arms", "biceps", "triceps", "shoulders", "chest",
+    "back", "core", "waist", "glutes", "quads",
+    "hamstrings", "calves", "neck"
+  ],
+
+  strength: [
+    "arms", "biceps", "triceps", "shoulders",
+    "chest", "back", "core"
+  ],
+
+  face_yoga: [
+    "face"
+  ],
+
+  cardio: [
+    "quads", "hamstrings", "calves", "glutes", "core"
+  ]
+};
 
 const AddChallenge = ({ showModal }) => {
   const navigate = useNavigate();
@@ -120,7 +149,7 @@ const AddChallenge = ({ showModal }) => {
                         onBlur={handleBlur}
                         error={touched.status && errors.status}
                         required
-                        // mainLabel="Select Status"
+                      // mainLabel="Select Status"
                       >
                         {generalStatus}
                       </Select>
@@ -132,7 +161,11 @@ const AddChallenge = ({ showModal }) => {
                         name="type"
                         required
                         value={values.type}
-                        onChange={(v) => setFieldValue("type", v)}
+                        onChange={(v) => {
+                          setFieldValue("type", v);
+                          // Clear body parts when challenge type changes
+                          setFieldValue("body_parts", []);
+                        }}
                         onBlur={handleBlur}
                         error={touched.type && errors.type}
                       >
@@ -165,6 +198,7 @@ const AddChallenge = ({ showModal }) => {
                         required
                         type="number"
                         min="0"
+
                       />
                     </div>
 
@@ -180,6 +214,7 @@ const AddChallenge = ({ showModal }) => {
                         required
                         type="number"
                         min="0"
+
                       />
                     </div>
 
@@ -215,33 +250,43 @@ const AddChallenge = ({ showModal }) => {
                       <MultiSelect
                         label="Body Part"
                         name="body_parts"
-                        options={bodyPartOptions}
+                        options={values.type ? bodyPartOptions.filter(option =>
+                          challengeTypeBodyParts[values.type]?.includes(option.value)
+                        ) : bodyPartOptions}
                         value={values.body_parts}
                         onChange={(v) => setFieldValue("body_parts", v)}
                         error={touched.body_parts && errors.body_parts}
                         placeholder="Select"
+                        required
                       />
                     </div>
 
-                    <div className="col-12">
+                    <div className="col-8">
                       <div className="row">
                         {values.body_parts.map((item, index) => (
                           <div className="col-6 mb-4" key={item.value}>
                             <CustomInput
-                            width={"50%"}
+                              width={"50%"}
                               label={item.text}
                               placeholder="Enter Percentage"
                               name={`body_parts[${index}].percentage`}
                               value={item.percentage}
                               onChange={(e) => {
-                                const newBodyParts = [...values.body_parts];
-                                newBodyParts[index].percentage = e.target.value;
-                                setFieldValue("body_parts", newBodyParts);
+                                const value = e.target.value;
+                                const numValue = parseFloat(value);
+
+                                // Only allow values between 0 and 100
+                                if (value === '' || (numValue >= 0 && numValue <= 100)) {
+                                  const newBodyParts = [...values.body_parts];
+                                  newBodyParts[index].percentage = value;
+                                  setFieldValue("body_parts", newBodyParts);
+                                }
                               }}
                               onBlur={handleBlur}
                               required
                               type="number"
                               rightText="%"
+
                             />
                           </div>
                         ))}

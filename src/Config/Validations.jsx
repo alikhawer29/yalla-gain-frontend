@@ -193,6 +193,16 @@ export const challengeAddSchema = Yup.object().shape({
   duration: Yup.number().required("Duration is required"),
   milestone: Yup.string().required("Milestone is required"),
   status: Yup.string().required("Status is required"),
+  body_parts: Yup.array()
+    .min(1, "Body Part is required")
+    .test(
+      "percentages-required",
+      "All selected body parts must have percentage values",
+      function(value) {
+        if (!value || value.length === 0) return false;
+        return value.every(item => item && item.percentage && item.percentage.trim() !== '');
+      }
+    ),
 });
 
 export const challengeEditSchema = Yup.object().shape({
@@ -220,6 +230,16 @@ export const challengeEditSchema = Yup.object().shape({
   duration: Yup.number().required("Duration is required"),
   milestone: Yup.string().required("Milestone is required"),
   status: Yup.string().required("Status is required"),
+  body_parts: Yup.array()
+    .min(1, "Body Part is required")
+    .test(
+      "percentages-required",
+      "All selected body parts must have percentage values",
+      function(value) {
+        if (!value || value.length === 0) return false;
+        return value.every(item => item && item.percentage && item.percentage.trim() !== '');
+      }
+    ),
 });
 
 // Video validators
