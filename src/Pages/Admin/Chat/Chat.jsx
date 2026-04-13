@@ -128,9 +128,11 @@ function getOtherPartyUserId(chat) {
   if (!chat || typeof chat !== "object") return null;
   return pickFirstId(chat, [
     "doctor_id",
+    "trainer_id",
     "user_id",
     "receiver_id",
     "doctorId",
+    "trainerId",
     "participant_id",
     "other_user_id",
   ]);
@@ -159,15 +161,18 @@ function normalizeSocketChatMessage(message, adminUser, activeChat) {
   return { ...message, is_mine: Boolean(message.is_mine) };
 }
 
-/** Match chat list row to admin doctor id (API field names vary). */
-function chatMatchesDoctor(chat, doctorId) {
-  if (chat == null || doctorId == null || doctorId === "") return false;
-  const d = String(doctorId);
+/** Match chat list row to doctor or trainer id (API field names vary). */
+function chatMatchesParticipant(chat, participantId) {
+  if (chat == null || participantId == null || participantId === "")
+    return false;
+  const d = String(participantId);
   const keys = [
     "doctor_id",
+    "trainer_id",
     "user_id",
     "receiver_id",
     "doctorId",
+    "trainerId",
     "participant_id",
     "other_user_id",
   ];
@@ -206,6 +211,8 @@ const Chat = ({ showModal }) => {
         next.delete("doctorId");
         next.delete("chatId");
         next.delete("doctorName");
+        next.delete("trainerId");
+        next.delete("trainerName");
         return next;
       },
       { replace: true },
@@ -223,14 +230,20 @@ const Chat = ({ showModal }) => {
       setSideData(list);
 
       const doctorId = searchParams.get("doctorId");
+      const trainerId = searchParams.get("trainerId");
       const chatIdParam = searchParams.get("chatId");
       const doctorName = searchParams.get("doctorName") || "";
+      const trainerName = searchParams.get("trainerName") || "";
+      const participantId = doctorId || trainerId;
+      const participantName = doctorName || trainerName;
 
       let preferred = null;
       if (chatIdParam) {
         preferred = list.find((c) => String(c.id) === String(chatIdParam));
-      } else if (doctorId) {
-        preferred = list.find((c) => chatMatchesDoctor(c, doctorId));
+      } else if (participantId) {
+        preferred = list.find((c) =>
+          chatMatchesParticipant(c, participantId),
+        );
       }
 
       if (preferred) {
@@ -240,15 +253,16 @@ const Chat = ({ showModal }) => {
         return;
       }
 
-      if (doctorId || chatIdParam) {
+      if (participantId || chatIdParam) {
         clearChatDeepLinkParams();
 
         let resolvedFromApi = null;
-        if (doctorId) {
+        if (participantId) {
           try {
-            const createRes = await post(`/chat/get-or-create`, {
-              doctor_id: doctorId,
-            });
+            const createBody = trainerId
+              ? { trainer_id: trainerId }
+              : { doctor_id: doctorId };
+            const createRes = await post(`/chat/get-or-create`, createBody);
             const raw = createRes?.data;
             const row = raw?.chat ?? raw?.data ?? raw;
             if (row?.id) resolvedFromApi = row;
@@ -271,8 +285,12 @@ const Chat = ({ showModal }) => {
 
         setActiveChat(null);
         setChatBox([]);
-        if (doctorId) {
-          setPendingDoctorProfile({ doctorId, doctorName });
+        if (participantId) {
+          setPendingDoctorProfile({
+            doctorId: participantId,
+            doctorName: participantName,
+            isTrainer: Boolean(trainerId),
+          });
         } else {
           setPendingDoctorProfile(null);
         }
@@ -932,7 +950,9 @@ const Chat = ({ showModal }) => {
                       <h4 className="fw-medium mb-3">
                         {pendingDoctorProfile.doctorName
                           ? `No chat with ${pendingDoctorProfile.doctorName} yet`
-                          : "No chat with this doctor yet"}
+                          : pendingDoctorProfile?.isTrainer
+                            ? "No chat with this trainer yet"
+                            : "No chat with this doctor yet"}
                       </h4>
                     </div>
                   ) : (

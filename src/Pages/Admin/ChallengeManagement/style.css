@@ -65,6 +65,10 @@
   font-size: 16px;
 }
 
+.light-text {
+  color: #E5E5E5;
+}
+
 .add-btn {
   background-color: #118076 !important;
   border: none !important;
@@ -123,4 +127,32 @@
   border: 1px solid #4a4a4a !important;
   border-radius: 8px !important;
   color: #fff !important;
+}
+/* View Content body parts styles */
+.body-parts-heading {
+  color: #118076;
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.body-part-chip {
+  background-color: #118076;
+  color: #fff;
+  padding: 10px 30px;
+  border-radius: 50px;
+  font-weight: 500;
+  min-width: 140px;
+  text-align: center;
+}
+
+.percentage-label {
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.percentage-value {
+  color: #666;
+  font-weight: 500;
+  font-size: 16px;
 }

@@ -1,42 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
-import withModal from "../../../HOC/withModal";
-import { useFormState } from "react-dom";
-import { getDetails, post } from "../../../Services/Api";
+import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
-
-// Simple static dataset (should align with index list)
-const STATIC_CHALLENGES = [
-  {
-    id: 1,
-    title: "Abc",
-    type: "run",
-    upload_date: "12/03/2024",
-    duration: "1 Day",
-    flow_status: "Upcoming",
-    status: 1,
-    reward: "10 Yalla Coin",
-    milestone: "Run 1 hour daily",
-    description: "Lorem ipsum dolor set amet.",
-    image: "",
-  },
-  {
-    id: 2,
-    title: "Xyz",
-    type: "workout",
-    upload_date: "12/03/2024",
-    duration: "10 Day",
-    flow_status: "Ongoing",
-    status: 0,
-    reward: "5 Yalla Coin",
-    milestone: "10 pushups daily",
-    description: "Lorem ipsum",
-    image: "",
-  },
-];
+import withModal from "../../../HOC/withModal";
+import { getDetails, post } from "../../../Services/Api";
+import "./style.css";
 
 const capitalize = (v) => (v ? v.charAt(0).toUpperCase() + v.slice(1) : v);
 
@@ -75,7 +45,6 @@ const ChallengeView = ({ showModal }) => {
       true,
     );
   };
-  // const data = useMemo(() => STATIC_CHALLENGES.find((x) => String(x.id) === String(id)), [id]);
 
   return (
     <DashboardLayout pageTitle="Challenge Management">
@@ -147,11 +116,40 @@ const ChallengeView = ({ showModal }) => {
                   {data?.description ?? "-"}
                 </p>
               </div>
+
+              {data?.body_parts?.length > 0 && (
+                <div className="mb-5">
+                  <h5 className="body-parts-heading mb-4">
+                    Effective percentage on body parts ( can be +- both):
+                  </h5>
+                  <div className="row">
+                    <div className="col-12">
+                      <h5 className="detail-label mb-4">Body Parts</h5>
+                      {data.body_parts.map((item, index) => (
+                        <div
+                          className="d-flex align-items-center mb-4 gap-5"
+                          key={index}
+                        >
+                          <div className="body-part-chip">{item.text}</div>
+                          <div className="percentage-info">
+                            <h6 className="percentage-label mb-1">
+                              Effective Percentage
+                            </h6>
+                            <p className="percentage-value mb-0">
+                              {item.percentage}%
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
               <button
-                className="btn btn-primary"
+                className="btn btn-primary add-btn"
                 onClick={() => navigate(`/admin/challenges/${id}/edit`)}
               >
-                Edit Challenge
+                Edit Content
               </button>
             </div>
           </div>

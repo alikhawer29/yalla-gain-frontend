@@ -16,6 +16,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 const CustomFilters = (props) => {
   const { showEntries = true, showFilter = true, showSearch = true } = props;
   const [formData, setFormData] = useState({});
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
   useEffect(() => {
     setFormData(props.filters);
@@ -64,6 +65,7 @@ const CustomFilters = (props) => {
 
   const handleApply = () => {
     props.setFilters(formData);
+    setFilterMenuOpen(false);
   };
 
   const handleClear = () => {
@@ -73,6 +75,7 @@ const CustomFilters = (props) => {
     };
     setFormData(clearedFilters);
     props.setFilters(clearedFilters);
+    setFilterMenuOpen(false);
   };
 
   return (
@@ -114,7 +117,11 @@ const CustomFilters = (props) => {
               </div>
             )}
             {showFilter && (
-              <Dropdown className="filter-dropdown">
+              <Dropdown
+                className="filter-dropdown"
+                show={filterMenuOpen}
+                onToggle={setFilterMenuOpen}
+              >
                 <Dropdown.Toggle className="btn_filter">
                   {/* <FaFilter size={20} color="white" /> */}
                   <RiEqualizerLine size={24} />

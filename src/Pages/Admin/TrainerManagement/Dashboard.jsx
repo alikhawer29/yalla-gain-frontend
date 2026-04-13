@@ -7,8 +7,9 @@ import { getAll } from "../../../Services/Api";
 import { Graph } from "../../../Components/Graph";
 import { images } from "../../../Assets";
 import { Link, useParams } from "react-router-dom";
+import BackButton2 from "../../../Components/BackButton/BackButton2";
 
-const noop = () => { };
+const noop = () => {};
 
 const TrainerDashboard = () => {
   const { id } = useParams();
@@ -22,11 +23,34 @@ const TrainerDashboard = () => {
 
   // Graph datasets (12 months each)
   const emptySeries = new Array(12).fill(0);
-  const [chartdata, setChartData] = useState({ heading: "Total Earning", label: "Total Earning", fill: true, data: emptySeries });
-  const [revenueChartdata, setRevenueChartData] = useState({ heading: "Total Bookings", label: "Total Bookings", fill: true, data: emptySeries });
+  const [chartdata, setChartData] = useState({
+    heading: "Total Earning",
+    label: "Total Earning",
+    fill: true,
+    data: emptySeries,
+  });
+  const [revenueChartdata, setRevenueChartData] = useState({
+    heading: "Total Bookings",
+    label: "Total Bookings",
+    fill: true,
+    data: emptySeries,
+  });
 
   // Helpers
-  const monthOrder = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const monthOrder = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ];
   const toSeries = (obj = {}) => monthOrder.map((m) => Number(obj?.[m]) || 0);
 
   // Fetch top stats
@@ -35,8 +59,28 @@ const TrainerDashboard = () => {
       const res = await getAll(`/dashboard/stats/${id}`);
       const totals = res?.original?.data || res; // support both shapes
       setData([
-        { id: 1, image: images.Stats1, number: String(totals?.total_earning ?? 0), text: "total earning", change: totals?.total_earning ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#ECE7F1" },
-        { id: 5, image: images.Stats5, number: String(totals?.total_appointments ?? 0), text: "total Booking", change: totals?.total_appointments ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#FFF7CF" },
+        {
+          id: 1,
+          image: images.Stats1,
+          number: String(totals?.total_earning ?? 0),
+          text: "total earning",
+          change: totals?.total_earning ?? 0,
+          increase: false,
+          arrowIcon: true,
+          total_post: "Since last week",
+          backgroundColor: "#ECE7F1",
+        },
+        {
+          id: 5,
+          image: images.Stats5,
+          number: String(totals?.total_appointments ?? 0),
+          text: "total Booking",
+          change: totals?.total_appointments ?? 0,
+          increase: false,
+          arrowIcon: true,
+          total_post: "Since last week",
+          backgroundColor: "#FFF7CF",
+        },
       ]);
     } catch (error) {
       // keep existing data if any; otherwise empty
@@ -61,7 +105,12 @@ const TrainerDashboard = () => {
     try {
       const res = await getAll(`/dashboard/graph/earning/${id}`, { year });
       const series = toSeries(res?.original?.data || res?.data || res);
-      setChartData({ heading: "Total Earning", label: "Total Earning", fill: true, data: series });
+      setChartData({
+        heading: "Total Earning",
+        label: "Total Earning",
+        fill: true,
+        data: series,
+      });
     } catch (error) {
       console.error("Error fetching earning graph", error);
       setChartData((prev) => ({ ...prev, data: emptySeries }));
@@ -73,13 +122,17 @@ const TrainerDashboard = () => {
     try {
       const res = await getAll(`/dashboard/graph/bookings/${id}`, { year });
       const series = toSeries(res?.original?.data || res?.data || res);
-      setRevenueChartData({ heading: "Total Bookings", label: "Total Bookings", fill: true, data: series });
+      setRevenueChartData({
+        heading: "Total Bookings",
+        label: "Total Bookings",
+        fill: true,
+        data: series,
+      });
     } catch (error) {
       console.error("Error fetching bookings graph", error);
       setRevenueChartData((prev) => ({ ...prev, data: emptySeries }));
     }
   };
-
 
   const years = generateNextFiveYears();
 
@@ -100,14 +153,20 @@ const TrainerDashboard = () => {
               <div className="row">
                 <div className="col-12">
                   <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <h2 className="mainTitle text-white mb-3">Trainer Dashboard</h2>
+                    <h2 className="mainTitle mb-4">
+                      <BackButton2 />
+                      Trainer Dashboard
+                    </h2>
                     {/* <Link to={'/admin/dashboard/app-report'} className="btn btn-primary min-width-180">Report</Link> */}
                   </div>
                 </div>
               </div>
               <div className="row">
                 {data?.map((stats, index) => (
-                  <div className="col-xxl-4 col-xl-6 mb-xl-4 mb-3" key={stats.id}>
+                  <div
+                    className="col-xxl-4 col-xl-6 mb-xl-4 mb-3"
+                    key={stats.id}
+                  >
                     <StatCard item={stats} index={index + 1} />
                   </div>
                 ))}
@@ -149,5 +208,3 @@ const TrainerDashboard = () => {
 };
 
 export default TrainerDashboard;
-
-

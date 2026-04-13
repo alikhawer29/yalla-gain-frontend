@@ -6,6 +6,7 @@ import BackButton from "../../../Components/BackButton";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import {
+  capitalizeStatus,
   dateFormat,
   getCountryFlag,
   isNullOrEmpty,
@@ -62,7 +63,7 @@ const AppointmentDetails = () => {
   const contactNumber = `${appointmentDetails.dialing_code || ""}${appointmentDetails.phone || ""}`;
   const appointmentTime =
     appointmentDetails.appointment_start_time &&
-      appointmentDetails.appointment_end_time
+    appointmentDetails.appointment_end_time
       ? `${appointmentDetails.appointment_start_time} - ${appointmentDetails.appointment_end_time}`
       : "";
   const statusRaw = appointmentDetails.status || "";
@@ -127,7 +128,9 @@ const AppointmentDetails = () => {
                               },
                               {
                                 label: "Appointment Charges:",
-                                value: appointmentDetails.amount_paid,
+                                value:
+                                  `${appointmentDetails.amount_paid} Yalla Coins` ||
+                                  "-",
                               },
                               {
                                 label: "Sub Category:",
@@ -167,7 +170,7 @@ const AppointmentDetails = () => {
                           style={{ color: "#FFFFFF" }}
                           className="fw-medium"
                         >
-                          Status
+                          Status:
                         </label>
                         <span
                           style={{
@@ -178,11 +181,11 @@ const AppointmentDetails = () => {
                                   ? "#FFFFFF"
                                   : status === "Past"
                                     ? "#FFFFFF"
-                                    : "FFFFFF",
+                                    : "#FF4F25",
                           }}
                           className={`ms-3 fw-semibold`}
                         >
-                          {status}
+                          {capitalizeStatus(status)}
                         </span>
                       </div>
                     </div>
@@ -215,14 +218,14 @@ const AppointmentDetails = () => {
                             >
                               {userName}
                             </h4>
-                          </div>
-                          <div className="">
-                            <Link
-                              style={{ fontSize: 14, color: "#FFFFFF" }}
-                              to={`/admin/user-management/${user?.id}`}
-                            >
-                              View Details
-                            </Link>
+                            <div className="">
+                              <Link
+                                style={{ fontSize: 14, color: "#FFFFFF" }}
+                                to={`/admin/user-management/${user?.id}`}
+                              >
+                                View Details
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -250,14 +253,14 @@ const AppointmentDetails = () => {
                             >
                               {providerName}
                             </h4>
-                          </div>
-                          <div className="" style={{ color: "#FFFFFF" }}>
-                            <Link
-                              style={{ fontSize: 14, color: "#FFFFFF" }}
-                              to={`/admin/${appointmentDetails?.service?.user?.type === "doctor" ? "doctor-management" : "trainer-management"}/${appointmentDetails?.service?.user?.id}`}
-                            >
-                              View Details
-                            </Link>
+                            <div className="" style={{ color: "#FFFFFF" }}>
+                              <Link
+                                style={{ fontSize: 14, color: "#FFFFFF" }}
+                                to={`/admin/${appointmentDetails?.service?.user?.type === "doctor" ? "doctor-management" : "trainer-management"}/${appointmentDetails?.service?.user?.id}`}
+                              >
+                                View Details
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </div>

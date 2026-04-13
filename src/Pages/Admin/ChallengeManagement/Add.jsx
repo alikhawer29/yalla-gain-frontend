@@ -1,5 +1,4 @@
 import { Formik } from "formik";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import CustomButton from "../../../Components/CustomButton";
@@ -13,60 +12,12 @@ import { challengeAddSchema } from "../../../Config/Validations";
 import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { post } from "../../../Services/Api";
+import { bodyPartOptions, challengeTypeBodyParts } from "./challengeConstants";
 import "./style.css";
-
-const bodyPartOptions = [
-  { value: "arms", text: "Arms" },
-  { value: "biceps", text: "Biceps" },
-  { value: "triceps", text: "Triceps" },
-  { value: "shoulders", text: "Shoulders" },
-  { value: "chest", text: "Chest" },
-  { value: "waist", text: "Waist" },
-  { value: "back", text: "Back" },
-  { value: "neck", text: "Neck" },
-  { value: "face", text: "Face" },
-  { value: "core", text: "Core" },
-  { value: "glutes", text: "Glutes" },
-  { value: "quads", text: "Quads" },
-  { value: "hamstrings", text: "Hamstrings" },
-  { value: "calves", text: "Calves" },
-];
-
-// const challengeTypeBodyParts = {
-//   run: ["quads", "hamstrings", "calves", "glutes", "core", "waist"],
-//   cycle: ["quads", "hamstrings", "calves", "glutes", "core", "waist", "back", "neck"],
-//   workout: ["arms", "biceps", "triceps", "shoulders", "chest", "back", "core", "waist", "glutes", "quads", "hamstrings", "calves", "neck", "face"]
-// };
-
-const challengeTypeBodyParts = {
-  run: ["quads", "hamstrings", "calves", "glutes", "core", "waist"],
-
-  cycle: ["quads", "hamstrings", "calves", "glutes", "core", "waist", "back", "neck"],
-
-  workout: [
-    "arms", "biceps", "triceps", "shoulders", "chest",
-    "back", "core", "waist", "glutes", "quads",
-    "hamstrings", "calves", "neck"
-  ],
-
-  strength: [
-    "arms", "biceps", "triceps", "shoulders",
-    "chest", "back", "core"
-  ],
-
-  face_yoga: [
-    "face"
-  ],
-
-  cardio: [
-    "quads", "hamstrings", "calves", "glutes", "core"
-  ]
-};
 
 const AddChallenge = ({ showModal }) => {
   const navigate = useNavigate();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
-  const [unityChallengeId, setUnityChallengeId] = useState(null);
 
   const initialValues = {
     title: "",
@@ -85,11 +36,6 @@ const AddChallenge = ({ showModal }) => {
     const payload = { ...values };
     const res = await post(`/challenge`, payload);
     if (res?.status) {
-      const createdId = res?.data?.id;
-      if (createdId) {
-        setUnityChallengeId(createdId);
-      }
-
       showModal(
         "Successfully",
         "Challenge has been added successfully.",
@@ -149,7 +95,7 @@ const AddChallenge = ({ showModal }) => {
                         onBlur={handleBlur}
                         error={touched.status && errors.status}
                         required
-                      // mainLabel="Select Status"
+                        // mainLabel="Select Status"
                       >
                         {generalStatus}
                       </Select>
@@ -198,7 +144,6 @@ const AddChallenge = ({ showModal }) => {
                         required
                         type="number"
                         min="0"
-
                       />
                     </div>
 
@@ -214,7 +159,6 @@ const AddChallenge = ({ showModal }) => {
                         required
                         type="number"
                         min="0"
-
                       />
                     </div>
 
@@ -250,9 +194,15 @@ const AddChallenge = ({ showModal }) => {
                       <MultiSelect
                         label="Body Part"
                         name="body_parts"
-                        options={values.type ? bodyPartOptions.filter(option =>
-                          challengeTypeBodyParts[values.type]?.includes(option.value)
-                        ) : bodyPartOptions}
+                        options={
+                          values.type
+                            ? bodyPartOptions.filter((option) =>
+                                challengeTypeBodyParts[values.type]?.includes(
+                                  option.value,
+                                ),
+                              )
+                            : bodyPartOptions
+                        }
                         value={values.body_parts}
                         onChange={(v) => setFieldValue("body_parts", v)}
                         error={touched.body_parts && errors.body_parts}
@@ -276,7 +226,10 @@ const AddChallenge = ({ showModal }) => {
                                 const numValue = parseFloat(value);
 
                                 // Only allow values between 0 and 100
-                                if (value === '' || (numValue >= 0 && numValue <= 100)) {
+                                if (
+                                  value === "" ||
+                                  (numValue >= -100 && numValue <= 100)
+                                ) {
                                   const newBodyParts = [...values.body_parts];
                                   newBodyParts[index].percentage = value;
                                   setFieldValue("body_parts", newBodyParts);
@@ -286,7 +239,7 @@ const AddChallenge = ({ showModal }) => {
                               required
                               type="number"
                               rightText="%"
-
+                              rightTextClass="light-text"
                             />
                           </div>
                         ))}
