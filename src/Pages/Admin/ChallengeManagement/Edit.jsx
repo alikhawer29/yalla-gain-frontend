@@ -17,6 +17,9 @@ import {
   bodyPartOptions,
   challengeTypeBodyParts,
   mapApiBodyPartsToForm,
+  parseChallengeTimeFromApi,
+  timeHourSelectOptions,
+  timeMinuteSelectOptions,
 } from "./challengeConstants";
 import "./style.css";
 
@@ -24,6 +27,8 @@ const emptyValues = {
   title: "",
   type: "",
   duration: 1,
+  time_hour: "",
+  time_minute: "",
   milestone: "",
   reward: 1,
   description: "",
@@ -66,7 +71,10 @@ const EditChallenge = ({ showModal }) => {
           type: d.type || "",
           image: d.image || "",
           description: d.description || "",
-          duration: Number(d.duration) || 1,
+          duration: Number.isInteger(Number(d.duration))
+            ? Number(d.duration)
+            : Math.trunc(Number(d.duration)) || 1,
+          ...parseChallengeTimeFromApi(d),
           milestone: d.milestone || "",
           reward: Number(d.reward) || 1,
           status: statusStr,
@@ -79,12 +87,17 @@ const EditChallenge = ({ showModal }) => {
 
   const handleSubmit = async (values) => {
     startSubmitting();
+    const h = Number(values.time_hour);
+    const m = Number(values.time_minute);
     const payload = {
       title: values.title,
       type: values.type,
-      duration: values.duration,
+      duration: parseInt(String(values.duration), 10),
+      time_hour: h,
+      time_minute: m,
+      execution_time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
       milestone: values.milestone,
-      reward: values.reward,
+      reward: Number(values.reward),
       description: values.description,
       status: values.status,
       body_parts: (values.body_parts || []).map((bp) => ({
@@ -134,6 +147,8 @@ const EditChallenge = ({ showModal }) => {
                 enableReinitialize
                 initialValues={initialValues}
                 validationSchema={challengeEditSchema}
+                validateOnBlur
+                validateOnChange
                 onSubmit={handleSubmit}
               >
                 {({
@@ -203,19 +218,66 @@ const EditChallenge = ({ showModal }) => {
                       />
                     </div>
 
-                    <div className="col-md-6 mb-4">
+                    <div className="col-md-2 mb-4">
                       <CustomInput
-                        label="Duration"
+                        label="Duration (Days)"
                         placeholder="Enter Duration"
                         name="duration"
                         value={values.duration}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          if (raw === "") {
+                            setFieldValue("duration", "");
+                            return;
+                          }
+                          const beforeDecimal = String(raw).split(/[.,]/)[0];
+                          const digits = beforeDecimal.replace(/\D/g, "");
+                          if (digits === "") {
+                            setFieldValue("duration", "");
+                            return;
+                          }
+                          setFieldValue("duration", parseInt(digits, 10));
+                        }}
                         onBlur={handleBlur}
                         error={touched.duration && errors.duration}
                         required
                         type="number"
                         min="0"
+                        step="1"
                       />
+                    </div>
+
+                    <div className="col-md-4 mb-4">
+                      <label className="form-label">
+                        Time (Per Day)
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="row g-2">
+                        <div className="col-6">
+                          <Select
+                            name="time_hour"
+                            value={values.time_hour}
+                            onChange={(v) => setFieldValue("time_hour", v)}
+                            onBlur={handleBlur}
+                            error={touched.time_hour && errors.time_hour}
+                            required
+                          >
+                            {timeHourSelectOptions}
+                          </Select>
+                        </div>
+                        <div className="col-6">
+                          <Select
+                            name="time_minute"
+                            value={values.time_minute}
+                            onChange={(v) => setFieldValue("time_minute", v)}
+                            onBlur={handleBlur}
+                            error={touched.time_minute && errors.time_minute}
+                            required
+                          >
+                            {timeMinuteSelectOptions}
+                          </Select>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="col-md-6 mb-4">

@@ -6,6 +6,7 @@ import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import withModal from "../../../HOC/withModal";
 import { getDetails, post } from "../../../Services/Api";
+import { formatChallengeTimeForView } from "./challengeConstants";
 import "./style.css";
 
 const capitalize = (v) => (v ? v.charAt(0).toUpperCase() + v.slice(1) : v);
@@ -98,10 +99,16 @@ const ChallengeView = ({ showModal }) => {
                   <p className="detail-value">{data?.milestone ?? "-"}</p>
                 </div>
                 <div className="col-md-6">
-                  <h5 className="detail-label">Duration</h5>
+                  <h5 className="detail-label">Duration (Days)</h5>
                   <p className="detail-value">
-                    {data?.duration ? data?.duration + " Days" : "-"}
+                    {data?.duration != null && data?.duration !== ""
+                      ? `${data.duration} Days`
+                      : "-"}
                   </p>
+                </div>
+                <div className="col-md-6">
+                  <h5 className="detail-label">Time (Per Day)</h5>
+                  <p className="detail-value">{formatChallengeTimeForView(data)}</p>
                 </div>
                 <div className="col-md-6">
                   <h5 className="detail-label">Reward</h5>

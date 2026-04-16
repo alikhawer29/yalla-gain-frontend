@@ -190,7 +190,27 @@ export const challengeAddSchema = Yup.object().shape({
   ),
   description: Yup.string().required("Description is required"),
   reward: Yup.number().required("Reward is required"),
-  duration: Yup.number().required("Duration is required"),
+  duration: Yup.number()
+    .typeError("Duration is required")
+    .integer("Duration must be a whole number (days)")
+    .min(0, "Duration cannot be negative")
+    .required("Duration is required"),
+  time_hour: Yup.string()
+    .required("Hour is required")
+    .matches(/^\d+$/, "Select a valid hour")
+    .test("hour-range", "Hour must be between 0 and 23", (v) => {
+      if (v === undefined || v === "") return false;
+      const n = Number(v);
+      return n >= 0 && n <= 23;
+    }),
+  time_minute: Yup.string()
+    .required("Minute is required")
+    .matches(/^\d+$/, "Select a valid minute")
+    .test("minute-range", "Minute must be between 0 and 59", (v) => {
+      if (v === undefined || v === "") return false;
+      const n = Number(v);
+      return n >= 0 && n <= 59;
+    }),
   milestone: Yup.string().required("Milestone is required"),
   status: Yup.string().required("Status is required"),
   body_parts: Yup.array()
@@ -227,7 +247,27 @@ export const challengeEditSchema = Yup.object().shape({
   ),
   description: Yup.string().required("Description is required"),
   reward: Yup.number().required("Reward is required"),
-  duration: Yup.number().required("Duration is required"),
+  duration: Yup.number()
+    .typeError("Duration is required")
+    .integer("Duration must be a whole number (days)")
+    .min(0, "Duration cannot be negative")
+    .required("Duration is required"),
+  time_hour: Yup.string()
+    .required("Hour is required")
+    .matches(/^\d+$/, "Select a valid hour")
+    .test("hour-range", "Hour must be between 0 and 23", (v) => {
+      if (v === undefined || v === "") return false;
+      const n = Number(v);
+      return n >= 0 && n <= 23;
+    }),
+  time_minute: Yup.string()
+    .required("Minute is required")
+    .matches(/^\d+$/, "Select a valid minute")
+    .test("minute-range", "Minute must be between 0 and 59", (v) => {
+      if (v === undefined || v === "") return false;
+      const n = Number(v);
+      return n >= 0 && n <= 59;
+    }),
   milestone: Yup.string().required("Milestone is required"),
   status: Yup.string().required("Status is required"),
   body_parts: Yup.array()

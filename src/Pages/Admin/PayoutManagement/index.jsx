@@ -24,6 +24,10 @@ const PayoutManagement = ({ filters, setFilters, pagination, updatePagination })
     const [rows, setRows] = useState([]);
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
+    useEffect(() => {
+        setTimeValue("");
+    }, [activeType]);
+
     const fetchLogs = async () => {
         try {
             startSubmitting(true);
