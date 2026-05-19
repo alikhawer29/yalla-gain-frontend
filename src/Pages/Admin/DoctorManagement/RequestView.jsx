@@ -1,15 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import withModal from "../../../HOC/withModal";
-import { getDetails, post } from "../../../Services/Api";
+import { deleteRequest, getDetails, post, postJson } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { images } from "../../../Assets";
 import { getCountryFlag } from "../../../Utils/helper";
 import "./style.css";
+import DoctorReapproveForm from "./DoctorReapproveForm";
 
 const requestProfileSkeletonProps = {
   baseColor: "rgba(255, 255, 255, 0.12)",
@@ -56,6 +57,8 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [doctor, setDoctor] = useState(null);
   const [requestProfileLoading, setRequestProfileLoading] = useState(true);
+  const [reapproveEditMode, setReapproveEditMode] = useState(false);
+  const [editLockSecret, setEditLockSecret] = useState(null);
 
   const fetchDoctor = async () => {
     setRequestProfileLoading(true);
@@ -79,6 +82,13 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    if (doctor && STATUS_MAP[doctor.status] !== "Rejected") {
+      setReapproveEditMode(false);
+      setEditLockSecret(null);
+    }
+  }, [doctor?.status]);
+
   const statusLabel = useMemo(
     () => STATUS_MAP[doctor?.status] || "Pending",
     [doctor],
@@ -99,6 +109,7 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
         bio: "-",
         language: "-",
         rejection_reason: null,
+        reapprove_reason: null,
         experienceList: [],
         certifications: [
           {
@@ -155,6 +166,7 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
       language: formatLanguageField(doctor.language),
       experienceList,
       rejection_reason: doctor.rejection_reason || null,
+      reapprove_reason: doctor.reapprove_reason || null,
       certifications,
       photo: doctor.photo || images.placeholder,
     };
@@ -207,6 +219,49 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
     );
   };
 
+  const releaseEditLock = useCallback(async () => {
+    try {
+      await deleteRequest(`/doctor/${id}/edit-lock`);
+    } catch (e) {
+      console.error("Release edit lock:", e);
+    } finally {
+      setEditLockSecret(null);
+    }
+  }, [id]);
+
+  const handleReApproveClick = async () => {
+    startSubmitting(true);
+    try {
+      const res = await postJson(`/doctor/${id}/edit-lock`, {});
+      const acquired = res?.status === true && res?.locked === true;
+      if (acquired) {
+        setEditLockSecret(
+          typeof res?.lock_secret === "string" ? res.lock_secret : null,
+        );
+        setReapproveEditMode(true);
+        return;
+      }
+      const fallback =
+        "This profile is currently being edited in another browser or device. Please try again later.";
+      const message =
+        typeof res?.message === "string" && res.message.trim()
+          ? res.message.trim()
+          : fallback;
+      showModal("Cannot edit", message, null, false, true);
+    } catch (error) {
+      console.error("Edit lock:", error);
+      showModal(
+        "Error",
+        "Could not start editing. Please try again.",
+        null,
+        false,
+        true,
+      );
+    } finally {
+      stopSubmitting(false);
+    }
+  };
+
   const handleReject = () => {
     reasonModal(
       "",
@@ -221,6 +276,9 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
       true,
     );
   };
+
+  const showReapproveForm =
+    statusLabel === "Rejected" && reapproveEditMode && doctor;
 
   const infoItems = useMemo(
     () => [
@@ -359,92 +417,154 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
             </>
           ) : (
             <>
-              <div className="doctor-request-summary">
-                <div className="d-flex align-items-center gap-5 mb-4">
-                  <div className="detail-box-img">
-                    <img src={details.photo} alt={details.name} />
+              {!showReapproveForm && (
+                <div className="doctor-request-summary">
+                  <div className="d-flex align-items-center gap-5 mb-4">
+                    <div className="detail-box-img">
+                      <img src={details.photo} alt={details.name} />
+                    </div>
                   </div>
-                </div>
 
-                {statusLabel === "Pending" && (
-                  <div className="doctor-request-actions">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleApprove}
-                      disabled={isSubmitting || statusLabel === "Approved"}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="btn btn-outline-danger"
-                      onClick={handleReject}
-                      disabled={isSubmitting || statusLabel === "Rejected"}
-                    >
-                      Reject
-                    </button>
+                  {statusLabel === "Pending" && (
+                    <div className="doctor-request-actions">
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleApprove}
+                        disabled={isSubmitting || statusLabel === "Approved"}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="btn btn-outline-danger"
+                        onClick={handleReject}
+                        disabled={isSubmitting || statusLabel === "Rejected"}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+
+                  {statusLabel === "Rejected" && !reapproveEditMode && (
+                    <div className="doctor-request-actions">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={handleReApproveClick}
+                        disabled={isSubmitting}
+                      >
+                        Re Approve
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {details?.rejection_reason &&
+                statusLabel === "Rejected" &&
+                !reapproveEditMode && (
+                  <div className="doctor-info-grid mb-4">
+                    <div className="row">
+                      <div className="col-12 mb-3">
+                        <div className="detail-box">
+                          <h6>Rejection Reason</h6>
+                          <p className="mb-0">{details.rejection_reason}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
-              </div>
 
-              <div className="doctor-info-grid">
-                <div className="row">
-                  {infoItems.map(({ label, value }) => (
-                    <div className="col-xl-3 col-md-6 mb-3" key={label}>
+              {showReapproveForm && details?.rejection_reason && (
+                <div className="doctor-info-grid mb-3">
+                  <div className="row">
+                    <div className="col-12">
                       <div className="detail-box">
-                        <h6>{label}</h6>
-                        <p className="mb-0">
-                          {label === "Phone Number" &&
-                            typeof value === "string" && (
-                              <span>
-                                {getCountryFlag(value, details.countryCode)}
-                              </span>
-                            )}
-                          {label === "Specialization and Experience" &&
-                          Array.isArray(value)
-                            ? value.map((item) => (
-                                <div key={item.id}>
-                                  {item.specialization} ({item.experience}{" "}
-                                  years)
-                                </div>
-                              ))
-                            : value}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="doctor-certification mt-5 detail-box">
-                <h3 className="section-title mb-3">Certification Detail</h3>
-                {details.certifications.map((cert, index) => (
-                  <div
-                    className="row g-4 align-items-center"
-                    key={cert.id || index}
-                  >
-                    <div className="col-xl-5">
-                      <div className="detail-box mb-3">
-                        <h6>Institute Name</h6>
-                        <p className="mb-0">{cert.institute_name}</p>
-                      </div>
-                      <div className="detail-box">
-                        <h6>Certificate Title</h6>
-                        <p className="mb-0">{cert.certificate_title}</p>
-                      </div>
-                    </div>
-                    <div className="col-xl-7">
-                      <div className="certificate-preview doctor-certificate-preview">
-                        <img
-                          src={cert.certificate_picture}
-                          alt="Certificate"
-                          className="img-fluid doctor-certificate-image"
-                        />
+                        <h6>Rejection Reason</h6>
+                        <p className="mb-0 ">{details.rejection_reason}</p>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-              {details?.rejection_reason && (
+                </div>
+              )}
+
+              {showReapproveForm ? (
+                <DoctorReapproveForm
+                  doctor={doctor}
+                  doctorId={id}
+                  editLockSecret={editLockSecret}
+                  readOnlyEmail={details.email}
+                  onCancel={() => setReapproveEditMode(false)}
+                  onReleaseEditLock={releaseEditLock}
+                  onSuccess={fetchDoctor}
+                  showModal={showModal}
+                  isSubmitting={isSubmitting}
+                  startSubmitting={startSubmitting}
+                  stopSubmitting={stopSubmitting}
+                />
+              ) : (
+                <>
+                  <div className="doctor-info-grid">
+                    <div className="row">
+                      {infoItems.map(({ label, value }) => (
+                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                          <div className="detail-box">
+                            <h6>{label}</h6>
+                            <p className="mb-0">
+                              {label === "Phone Number" &&
+                                typeof value === "string" && (
+                                  <span>
+                                    {getCountryFlag(value, details.countryCode)}
+                                  </span>
+                                )}
+                              {label === "Specialization and Experience" &&
+                              Array.isArray(value)
+                                ? value.map((item) => (
+                                    <div key={item.id}>
+                                      {item.specialization} ({item.experience}{" "}
+                                      years)
+                                    </div>
+                                  ))
+                                : value}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="doctor-certification mt-5 detail-box">
+                    <h3 className="section-title mb-3">Certification Detail</h3>
+                    {details.certifications.map((cert, index) => (
+                      <div
+                        className="row g-4 align-items-center"
+                        key={cert.id || index}
+                      >
+                        <div className="col-xl-5">
+                          <div className="detail-box mb-3">
+                            <h6>Institute Name</h6>
+                            <p className="mb-0">{cert.institute_name}</p>
+                          </div>
+                          <div className="detail-box">
+                            <h6>Certificate Title</h6>
+                            <p className="mb-0">{cert.certificate_title}</p>
+                          </div>
+                        </div>
+                        <div className="col-xl-7">
+                          <div className="certificate-preview doctor-certificate-preview">
+                            <img
+                              src={cert.certificate_picture}
+                              alt="Certificate"
+                              className="img-fluid doctor-certificate-image"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {details?.rejection_reason && statusLabel !== "Rejected" && (
                 <div className="doctor-info-grid">
                   <div className="row">
                     <div
@@ -454,6 +574,19 @@ const DoctorRequestView = ({ showModal, reasonModal }) => {
                       <div className="detail-box">
                         <h6>Rejection Reason</h6>
                         <p className="mb-0">{details?.rejection_reason}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {details?.reapprove_reason && (
+                <div className="doctor-info-grid mt-3">
+                  <div className="row">
+                    <div className="col-12 mb-3">
+                      <div className="detail-box">
+                        <h6>Re-approved Reason</h6>
+                        <p className="mb-0">{details.reapprove_reason}</p>
                       </div>
                     </div>
                   </div>

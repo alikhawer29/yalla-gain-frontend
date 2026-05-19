@@ -576,13 +576,15 @@ const Chat = ({ showModal }) => {
                             }}
                           />
                         </div>
-                        <div className={`flex-grow-1`}>
-                          <h6 className={`mb-0 text-white`}>{chat.name}</h6>
-                          <p className={`mb-0`} style={{ color: "#A1A3B0" }}>
+                        <div className={`flex-grow-1 ${Styles.sidebarContent}`}>
+                          <h6 className={`mb-0 text-white ${Styles.sidebarName}`}>
+                            {chat.name}
+                          </h6>
+                          <p className={`mb-0 ${Styles.sidebarLastMessage}`}>
                             {chat?.last_message?.message}
                           </p>
                         </div>
-                        <div>
+                        <div className={Styles.sidebarMeta}>
                           <p
                             className={`img-fluid ${Styles["noti-tag-time"]} mb-0`}
                           >

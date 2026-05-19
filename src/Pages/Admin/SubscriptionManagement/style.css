@@ -1,4 +1,4 @@
-/* View and Edit plan styling refinements */
+/* View plan */
 .plan-view .detail-label {
   color: #ffffff;
   font-weight: 600;
@@ -24,4 +24,298 @@
 }
 .plan-status-color {
   color: #ffffff;
+}
+
+/* Configuration-based plan form */
+.plan-form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.plan-form-section {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+}
+
+.plan-form-section__title {
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.plan-form-section__subtitle {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.plan-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.plan-feature-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  margin: 0;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.plan-feature-card--on {
+  border-color: rgba(76, 175, 80, 0.45);
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.plan-feature-card--locked {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.plan-feature-card__label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.plan-feature-card__switch .form-check-input {
+  width: 2.5em;
+  height: 1.25em;
+  cursor: pointer;
+}
+
+.plan-trial-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  margin: 0;
+}
+
+.plan-trial-toggle__label {
+  color: #fff;
+  font-weight: 500;
+}
+
+.plan-preview-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: 12px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.plan-preview-card__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.35rem;
+}
+
+.plan-preview-card__title {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+.plan-preview-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.plan-preview-card__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.plan-preview-card__item--excluded {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.plan-preview-card__item--bonus {
+  color: #ffd54f;
+  font-weight: 500;
+}
+
+.plan-preview-card__icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  text-align: center;
+}
+
+/* Plan view screen */
+.plan-view-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.plan-view-loading {
+  opacity: 0.7;
+}
+
+.plan-view-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.plan-view-hero__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.35rem;
+}
+
+.plan-view-hero__title {
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.plan-view-hero__badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.plan-view-hero__badge--active {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.plan-view-hero__badge--inactive {
+  background: rgba(244, 67, 54, 0.15);
+  color: #e57373;
+  border: 1px solid rgba(244, 67, 54, 0.35);
+}
+
+.plan-view-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.plan-view-tile {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.plan-view-tile__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.plan-view-tile__value {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.plan-view-tile__value--success {
+  color: #81c784;
+}
+
+.plan-view-tile__value--muted {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.plan-view-feature-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.plan-view-feature-card--on {
+  border-color: rgba(76, 175, 80, 0.35);
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.plan-view-feature-card__label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.plan-view-feature-card__badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.plan-view-feature-card__badge--yes {
+  background: rgba(76, 175, 80, 0.2);
+  color: #a5d6a7;
+}
+
+.plan-view-feature-card__badge--no {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.plan-view-section .plan-preview-card {
+  margin-top: 1rem;
 }

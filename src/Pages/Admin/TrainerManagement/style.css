@@ -483,6 +483,48 @@
   background-color: currentColor;
 }
 
+/* Re-approve form (shared DoctorReapproveForm): avoid flex squeeze on dropzones + button row */
+.doctor-reapprove-form .doctor-request-summary {
+  display: block;
+  width: 100%;
+}
+
+.doctor-reapprove-form .doctor-request-summary .row {
+  width: 100%;
+  max-width: 100%;
+}
+
+.doctor-reapprove-form .image-dropzone {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.doctor-reapprove-form .image-dropzone .dropzone-box {
+  width: 100%;
+  min-width: 200px;
+  box-sizing: border-box;
+}
+
+.doctor-reapprove-form .image-dropzone .dropzone-placeholder {
+  padding: 18px 16px;
+  max-width: 100%;
+}
+
+.doctor-reapprove-form .image-dropzone .dropzone-placeholder .title,
+.doctor-reapprove-form .image-dropzone .dropzone-placeholder .muted {
+  max-width: 18rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.doctor-reapprove-form .doctor-request-actions {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 @media (max-width: 576px) {
   .doctor-request-actions {
     width: 100%;
@@ -491,6 +533,15 @@
 
   .doctor-request-actions .btn {
     width: 100%;
+  }
+
+  .doctor-reapprove-form .doctor-request-actions {
+    width: auto;
+    align-items: center;
+  }
+
+  .doctor-reapprove-form .doctor-request-actions .btn {
+    width: auto;
   }
 }
 

@@ -21,7 +21,10 @@ const NotificationCard = (props) => {
       style={isClickable ? { cursor: "pointer" } : undefined}
       onClick={handleCardClick}
     >
-      <div className="d-sm-flex justify-content-between align-items-center gap-3" key={props.id}>
+      <div
+        className="d-sm-flex justify-content-between align-items-center gap-3"
+        key={props.id}
+      >
         <div className="d-flex gap-3 align-items-center">
           <div className="d-flex flex-column gap-1 flex-grow-1">
             <div className="d-flex flex-column gap-1">
@@ -33,9 +36,9 @@ const NotificationCard = (props) => {
             <div className="dateTime">
               <p className="p-sm l-grey-text mb-0">
                 <FontAwesomeIcon icon={faClock} />
-                <span className="dateTimeSeparator">|</span>
                 {props?.time}
               </p>
+              <span className="dateTimeSeparator">|</span>
               <p className="p-sm l-grey-text mb-0">
                 <FontAwesomeIcon icon={faCalendar} />
                 {props?.date}

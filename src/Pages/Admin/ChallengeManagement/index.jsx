@@ -122,6 +122,17 @@ const ChallengeManagement = ({
                 toTitle: "To",
               },
             ]}
+            selectOptions={[
+              {
+                main_title: "Filter by status",
+                title: "status",
+                options: [
+                  { value: "", text: "All" },
+                  { value: "1", text: "Active" },
+                  { value: "0", text: "Inactive" },
+                ],
+              },
+            ]}
           >
             <tbody>
               {rows.map((item, index) => (

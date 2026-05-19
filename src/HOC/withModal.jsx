@@ -13,6 +13,7 @@ const withModal = (WrappedComponent) => {
       currentStep: MODAL_STEPS.INITIAL,
       show: false,
       success: false,
+      alert: false,
       heading: "",
       para: "",
       action: null,
@@ -42,6 +43,7 @@ const withModal = (WrappedComponent) => {
         currentStep: showReason ? MODAL_STEPS.REASON_INPUT : MODAL_STEPS.INITIAL,
         show: true,
         success,
+        alert: false,
         heading,
         reasonHeading,
         reasonSubHeading,
@@ -56,8 +58,28 @@ const withModal = (WrappedComponent) => {
       });
     };
 
-    const showModal = (heading = null, para, action, success = false) => {
-      setModalState({ heading, para, action, success, show: true });
+    /**
+     * @param success When true, shows success check + primary Okay.
+     * @param alert When true (and not success), shows single Okay — use for informational errors.
+     */
+    const showModal = (
+      heading = null,
+      para,
+      action,
+      success = false,
+      alert = false,
+    ) => {
+      setModalState((prev) => ({
+        ...prev,
+        heading,
+        para,
+        action,
+        success,
+        alert: Boolean(alert) && !success,
+        show: true,
+        showReason: false,
+        currentStep: MODAL_STEPS.INITIAL,
+      }));
     };
 
     const handleModalClose = () => {
@@ -113,6 +135,7 @@ const withModal = (WrappedComponent) => {
           reasonSubHeading={modalState.reasonSubHeading}
           para={modalState.para}
           success={modalState.success}
+          alert={modalState.alert}
           showReason={modalState.currentStep === MODAL_STEPS.REASON_INPUT}
           onChange={handleReasonChange}
           value={modalState.reasonValue}

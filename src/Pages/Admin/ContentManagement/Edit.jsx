@@ -149,6 +149,7 @@ const EditContent = ({ showModal }) => {
                             setFieldValue("exercise_key", "");
                             setFieldValue("exercise_title", "");
                           }}
+                          required
                           onBlur={handleBlur}
                           error={touched.muscle_key && errors.muscle_key}
                         >
@@ -215,6 +216,7 @@ const EditContent = ({ showModal }) => {
                               : ""
                           }
                           onChange={(file) => setFieldValue("image", file)}
+                          required
                         />
                         {touched.image && errors.image ? (
                           <div className="red-text">{errors.image}</div>

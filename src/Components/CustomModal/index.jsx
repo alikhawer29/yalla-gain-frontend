@@ -102,7 +102,7 @@ const CustomModal = (props) => {
                   <CustomButton
                     onClick={props?.action ?? props?.close}
                     className="primary px-5 mb-2 mt-3 modalButton"
-                    text="Okay"
+                    text={props?.btnText || "Ok"}
                   />
                 </>
               ) : (

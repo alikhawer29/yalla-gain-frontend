@@ -130,23 +130,11 @@ export const language = [
     text: "English",
   },
   {
-    value: "chinese",
-    text: "Chinese",
+    value: "arabic",
+    text: "Arabic",
   },
-  {
-    value: "portuguese",
-    text: "Portuguese",
-  },
-  {
-    value: "russian",
-    text: "Russian",
-  },
-  {
-    value: "french",
-    text: "French",
-  },
-
 ];
+
 export const timeDuration = [
   {
     value: "",
@@ -161,6 +149,7 @@ export const timeDuration = [
     text: "1 Hour",
   },
 ];
+
 // Challenge kinds
 export const challengeKinds = [
   { value: "", text: "Select" },
@@ -286,15 +275,12 @@ export const exercisesByMuscle = {
     { value: "rope_pushdown", text: "Triceps Rope Pushdown" },
     { value: "dips", text: "Triceps Dips" },
   ],
-  trapeze: [
-    { value: "shrugs", text: "Shrugs" },
-  ],
+  trapeze: [{ value: "shrugs", text: "Shrugs" }],
   abs: [
     { value: "leg_raises", text: "Leg Raises" },
     { value: "plank", text: "Plank" },
   ],
 };
-
 
 export const challengeTypes = [
   {
@@ -1047,4 +1033,3 @@ export const userTypeStatus = [
     text: "Consultant",
   },
 ];
-

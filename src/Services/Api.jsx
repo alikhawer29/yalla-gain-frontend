@@ -72,6 +72,30 @@ export const deleteData = async (route, params = {}) => {
   }
 };
 
+/** JSON POST (no FormData), for lightweight admin endpoints. */
+export const postJson = async (route, body = {}) => {
+  try {
+    const { data } = await axios.post(route, body, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return data;
+  } catch (error) {
+    console.error("Error posting JSON:", error);
+    return error.response?.data;
+  }
+};
+
+/** DELETE with no body (or default axios handling). */
+export const deleteRequest = async (route) => {
+  try {
+    const { data } = await axios.delete(route);
+    return data;
+  } catch (error) {
+    console.error("Error deleting:", error);
+    return error.response?.data;
+  }
+};
+
 
 export const logout = async (route, params = {}) => {
   try {

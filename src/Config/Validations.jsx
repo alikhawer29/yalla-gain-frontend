@@ -68,38 +68,63 @@ export const addNewPlaneSchema = Yup.object().shape({
 
 // Subscription Plan (Admin) – Add/Edit
 export const subscriptionPlanSchema = Yup.object().shape({
-  title: Yup.string().required("Subscription title is required"),
-  duration: Yup.string().required("Duration is required"),
-  price: Yup.string().required("Price is required"),
-  description: Yup.string()
-    .trim()
-    .required("Description is required")
-    .min(10, "Description must be at least 10 characters")
-    .test(
-      "valid-description-characters",
-      "Only letters, numbers, spaces, and . , ! ? ' \" ( ) : ; / - _ are allowed",
-      (value) => {
-        if (!value) return true;
-
-        const hasBlockedControlCharacter = Array.from(value).some((char) => {
-          const code = char.charCodeAt(0);
-          return (
-            (code >= 0 && code <= 8) ||
-            code === 11 ||
-            code === 12 ||
-            (code >= 14 && code <= 31) ||
-            code === 127
-          );
-        });
-
-        if (hasBlockedControlCharacter) return false;
-
-        return /^[A-Za-z0-9\s.,!?'"():;/_-]+$/.test(value);
-      },
-    ),
-  features: Yup.array()
-    .of(Yup.string().trim().required("Feature is required"))
-    .min(1, "At least one feature is required"),
+  plan_type: Yup.string()
+    .oneOf(["free", "gold", "platinum"], "Invalid plan type")
+    .required("Plan type is required"),
+  duration: Yup.string()
+    .nullable()
+    .when("plan_type", {
+      is: (planType) => planType !== "free",
+      then: (schema) =>
+        schema
+          .oneOf(["monthly", "yearly"], "Invalid duration")
+          .required("Duration is required"),
+      otherwise: (schema) => schema.notRequired().nullable(),
+    }),
+  price: Yup.number()
+    .transform((value, originalValue) =>
+      originalValue === "" || originalValue === null ? undefined : value,
+    )
+    .when("plan_type", {
+      is: "free",
+      then: (schema) => schema.notRequired(),
+      otherwise: (schema) =>
+        schema
+          .typeError("Price must be a number")
+          .min(0, "Price must be 0 or greater")
+          .required("Price is required"),
+    }),
+  has_trial: Yup.boolean(),
+  trainer_sessions: Yup.number()
+    .typeError("Trainer sessions must be a number")
+    .integer("Trainer sessions must be a whole number")
+    .min(0, "Must be 0 or greater")
+    .when("plan_type", {
+      is: (planType) => planType !== "free",
+      then: (schema) => schema.required("Trainer sessions is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  doctor_sessions: Yup.number()
+    .typeError("Doctor sessions must be a number")
+    .integer("Doctor sessions must be a whole number")
+    .min(0, "Must be 0 or greater")
+    .when("plan_type", {
+      is: (planType) => planType !== "free",
+      then: (schema) => schema.required("Doctor sessions is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  yalla_points: Yup.number()
+    .typeError("Yalla points must be a number")
+    .integer("Yalla points must be a whole number")
+    .min(0, "Must be 0 or greater")
+    .when("plan_type", {
+      is: (planType) => planType !== "free",
+      then: (schema) => schema.required("Yalla points is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  has_spotify: Yup.boolean(),
+  has_messaging: Yup.boolean(),
+  has_nutrition_chatbot: Yup.boolean(),
 });
 
 const timeSchema = Yup.object().shape({
@@ -2222,3 +2247,53 @@ export const setConsultantProfileSchema = (formData) =>
       }),
     }),
   });
+
+export const doctorReapproveProfileValidation = Yup.object().shape({
+  reapprove_reason: Yup.string()
+    .trim()
+    .required("Re-approved reason is required")
+    .max(5000, "Maximum 5000 characters"),
+  first_name: Yup.string().trim().required("First name is required"),
+  last_name: Yup.string().trim().required("Last name is required"),
+  gender: Yup.string().required("Gender is required"),
+  phone: Yup.string().required("Phone number is required"),
+  state: Yup.string().trim().required("State is required"),
+  city: Yup.string().trim().required("City is required"),
+  bio: Yup.string().trim().required("Bio is required"),
+  language: Yup.string().required("Language is required"),
+  experience: Yup.array()
+    .of(
+      Yup.object().shape({
+        specialization: Yup.string()
+          .trim()
+          .required("Specialization is required"),
+        experience: Yup.string().trim().required("Experience is required"),
+      }),
+    )
+    .min(1, "At least one experience entry is required"),
+  certificates: Yup.array()
+    .of(
+      Yup.object()
+        .shape({
+          id: Yup.mixed().nullable(),
+          institute_name: Yup.string()
+            .trim()
+            .required("Institute name is required"),
+          certificate_title: Yup.string()
+            .trim()
+            .required("Certificate title is required"),
+          certificate_picture: Yup.mixed().nullable(),
+          existing_picture_url: Yup.string().nullable(),
+        })
+        .test(
+          "cert-image",
+          "Certificate image is required for new certificates",
+          (value) => {
+            const hasId = value?.id != null && value?.id !== "";
+            if (hasId) return true;
+            return value?.certificate_picture instanceof File;
+          },
+        ),
+    )
+    .min(1, "At least one certificate is required"),
+});

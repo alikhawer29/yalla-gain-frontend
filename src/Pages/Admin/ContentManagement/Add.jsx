@@ -97,6 +97,7 @@ const AddContent = ({ showModal }) => {
                         setFieldValue("muscle_id", v);
                         setSelectedMuscle(v);
                       }}
+                      required
                       error={touched.muscle_id && errors.muscle_id}
                     >
                       {muscleOptions}
@@ -111,6 +112,7 @@ const AddContent = ({ showModal }) => {
                       value={values.description}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      required
                       error={touched.description && errors.description}
                     />
 

@@ -1,3 +1,8 @@
+.image-dropzone {
+  width: 100%;
+  max-width: 100%;
+}
+
 .image-dropzone .dropzone-label {
   display: inline-block;
   font-weight: 600;
@@ -8,6 +13,8 @@
   border: 1.5px solid #6a6a6a;
   border-radius: 10px;
   min-height: 140px;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
