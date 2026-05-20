@@ -41,7 +41,7 @@ const profileSkeletonProps = {
 const UserDetails = ({
   showModal /*, filters, setFilters, pagination, updatePagination */,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [imageLoading, setImageLoading] = useState(true);
@@ -103,19 +103,24 @@ const UserDetails = ({
   const statusMutation = useMutation({
     mutationFn: ({ userId, status }) =>
       post(`/user/${userId}/status`, { status }),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries(["user", id]);
       showModal(
-        "Successful",
-        `User status has been changed successfully.`,
+        t("modal.successfully"),
+        t("user.status_changed_success", {
+          status:
+            variables.status === "1" || variables.status === 1
+              ? t("status.active")
+              : t("status.inactive"),
+        }),
         null,
         true,
       );
     },
     onError: (error) => {
       showModal(
-        "Error",
-        `Failed to update user status: ${error.message}`,
+        t("modal.error"),
+        `${t("pages.failed_to_update")}: ${error.message}`,
         null,
         true,
       );
@@ -227,12 +232,15 @@ const UserDetails = ({
     (e, userId) => {
       const newStatusValue = e;
       showModal(
-        `Mark as ${newStatusValue === "1" ? "Active" : "Inactive"}`,
-        `Are you sure you want to change this user's status to ${newStatusValue === "1" ? "Active" : "Inactive"}?`,
+        null,
+        t("user.status_change_confirm", {
+          status:
+            newStatusValue === "1" ? t("status.active") : t("status.inactive"),
+        }),
         () => statusMutation.mutate({ userId, status: newStatusValue }),
       );
     },
-    [showModal, statusMutation],
+    [showModal, statusMutation, t],
   );
 
   // Memoized detail fields
@@ -245,12 +253,16 @@ const UserDetails = ({
       .trim();
     const displayPhone = [dialing_code, phone].filter(Boolean).join("");
     return [
-      { label: "User Name", value: displayName || "—" },
-      { label: "Phone Number", value: displayPhone || "—", isPhone: true },
-      // { label: "Date Of Birth", value: dob ?? "—" },
-      { label: "Email Address", value: email ?? "—" },
+      { key: "user_name", label: t("fields.user_name"), value: displayName || "—" },
+      {
+        key: "phone_number",
+        label: t("fields.phone_number"),
+        value: displayPhone || "—",
+        isPhone: true,
+      },
+      { key: "email_address", label: t("fields.email_address"), value: email ?? "—" },
     ];
-  }, [profileData]);
+  }, [profileData, t, i18n.language]);
 
   return (
     <DashboardLayout pageTitle={t('pages.user_details')}>
@@ -258,9 +270,10 @@ const UserDetails = ({
         <div className="row dashCard mb-5">
           <div className="col-12 mb-4">
             <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-              <h2 className="mainTitle mb-4">
+              <h2 className="mainTitle mainTitle--with-back mb-4">
+
+                {t("pages.user_details")}
                 <BackButton2 />
-                User Details
               </h2>
               <div className="d-flex justify-content-start justify-content-sm-end">
                 <div className="profile-status d-flex  align-items-end flex-column gap-3">
@@ -310,8 +323,8 @@ const UserDetails = ({
                 <div className="row">
                   <div className="col-xxl-9 col-lg-11">
                     <div className="row mb-4">
-                      {detailFields.map(({ label }) => (
-                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                      {detailFields.map(({ key, label }) => (
+                        <div className="col-xl-3 col-md-6 mb-3" key={key}>
                           <div className="detail-box">
                             <Skeleton
                               width="55%"
@@ -366,14 +379,14 @@ const UserDetails = ({
                     className="btn btn-primary"
                     to={`/admin/user-management/${id}/user-post`}
                   >
-                    User Post
+                    {t("pages.user_post")}
                   </Link>
                 </div>
                 <div className="row">
                   <div className="col-xxl-9 col-lg-11">
                     <div className="row mb-4 gy-3">
-                      {detailFields.map(({ label, value, isPhone }) => (
-                        <div className="col-xl-3 col-md-6" key={label}>
+                      {detailFields.map(({ key, label, value, isPhone }) => (
+                        <div className="col-xl-3 col-md-6" key={key}>
                           <div className="detail-box">
                             <h6 className="">{label}</h6>
                             <p className=" mb-0">
@@ -427,16 +440,16 @@ const UserDetails = ({
                     key={item?.id}
                     {...(item?.id
                       ? clickableTableRowNavProps(
-                          navigate,
-                          `/admin/appointments/${item.id}`,
-                        )
+                        navigate,
+                        `/admin/appointments/${item.id}`,
+                      )
                       : {})}
                   >
                     <td>
                       {serialNum(
                         (bookingFilters.page - 1) * bookingFilters.per_page +
-                          index +
-                          1,
+                        index +
+                        1,
                       )}
                     </td>
                     <td>#{item?.id}</td>
@@ -504,9 +517,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (challengeFilters.page - 1) *
-                          challengeFilters.per_page +
-                          index +
-                          1,
+                        challengeFilters.per_page +
+                        index +
+                        1,
                       )}
                     </td>
                     <td>{item?.challenge?.title}</td>
@@ -567,9 +580,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (subscriptionFilters.page - 1) *
-                          subscriptionFilters.per_page +
-                          index +
-                          1,
+                        subscriptionFilters.per_page +
+                        index +
+                        1,
                       )}
                     </td>
                     <td>{item?.subscription_plan?.title}</td>

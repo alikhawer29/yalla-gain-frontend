@@ -15,7 +15,6 @@ import { getDetails, post } from "../../../Services/Api";
 import { serviceCategoryEditSchema } from "../../../Config/Validations";
 
 const normalizeStatus = (value) => {
-  const { t } = useTranslation();
     if (value === 1 || value === "1" || value === true || String(value).toLowerCase() === "active") {
         return "1";
     }

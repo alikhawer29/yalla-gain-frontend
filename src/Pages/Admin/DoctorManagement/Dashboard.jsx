@@ -11,7 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 
 const DoctorDashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
   const [data, setData] = useState([]);
 
@@ -63,22 +63,22 @@ const DoctorDashboard = () => {
           id: 1,
           image: images.Stats1,
           number: String(totals?.total_earning ?? 0),
-          text: "total earning",
+          text: t("dashboard.total_earning"),
           change: totals?.total_earning ?? 0,
           increase: false,
           arrowIcon: true,
-          total_post: "Since last week",
+          total_post: t("dashboard.since_last_week"),
           backgroundColor: "#ECE7F1",
         },
         {
           id: 5,
           image: images.Stats5,
           number: String(totals?.total_appointments ?? 0),
-          text: "total Booking",
+          text: t("dashboard.total_booking_stat"),
           change: totals?.total_appointments ?? 0,
           increase: false,
           arrowIcon: true,
-          total_post: "Since last week",
+          total_post: t("dashboard.since_last_week"),
           backgroundColor: "#FFF7CF",
         },
       ]);
@@ -106,8 +106,8 @@ const DoctorDashboard = () => {
       const res = await getAll(`/dashboard/graph/earning/${id}`, { year });
       const series = toSeries(res?.original?.data || res?.data || res);
       setChartData({
-        heading: "Total Earning",
-        label: "Total Earning",
+        heading: t("pages.total_earning"),
+        label: t("pages.total_earning"),
         fill: true,
         data: series,
       });
@@ -123,8 +123,8 @@ const DoctorDashboard = () => {
       const res = await getAll(`/dashboard/graph/bookings/${id}`, { year });
       const series = toSeries(res?.original?.data || res?.data || res);
       setRevenueChartData({
-        heading: "Total Bookings",
-        label: "Total Bookings",
+        heading: t("pages.total_bookings"),
+        label: t("pages.total_bookings"),
         fill: true,
         data: series,
       });
@@ -141,7 +141,7 @@ const DoctorDashboard = () => {
     fetchEarningGraph(earningsYear);
     fetchBookingGraph(bookingsYear);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [i18n.language]);
 
   return (
     <DashboardLayout pageTitle={t('pages.doctor_dashboard')}>
@@ -153,9 +153,9 @@ const DoctorDashboard = () => {
               <div className="row">
                 <div className="col-12">
                   <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <h2 className="mainTitle mb-4">
+                    <h2 className="mainTitle mainTitle--with-back mb-4">
                       <BackButton2 />
-                      Doctor Dashboard
+                      {t("pages.doctor_dashboard")}
                     </h2>
                     {/* <Link to={'/admin/dashboard/app-report'} className="btn btn-primary min-width-180">Report</Link> */}
                   </div>
@@ -182,8 +182,8 @@ const DoctorDashboard = () => {
               selectedValue={String(earningsYear)}
               onSelectChange={handleEarningYearChange}
               options={years}
-              text="Total Earning"
-              heading="Total Earning"
+              text={t("pages.total_earning")}
+              heading={t("pages.total_earning")}
               backgroundColor="rgba(17, 128, 118, 0.25)"
             />
           </div>
@@ -196,8 +196,8 @@ const DoctorDashboard = () => {
               selectedValue={String(bookingsYear)}
               onSelectChange={handleBookingYearChange}
               options={years}
-              text="Total Bookings"
-              heading="Total Bookings"
+              text={t("pages.total_bookings")}
+              heading={t("pages.total_bookings")}
               backgroundColor="rgba(17, 128, 118, 0.25)"
             />
           </div>

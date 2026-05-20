@@ -175,29 +175,29 @@ const DoctorDetails = ({ showModal }) => {
 
     const experienceList = Array.isArray(doctor.experience)
       ? doctor.experience.map((item) => ({
-          id: item.id,
-          specialization: item.specialization || "-",
-          experience: item.experience || "-",
-        }))
+        id: item.id,
+        specialization: item.specialization || "-",
+        experience: item.experience || "-",
+      }))
       : [];
 
     const certifications =
       Array.isArray(doctor.certifications) && doctor.certifications.length
         ? doctor.certifications.map((cert) => ({
-            id: cert.id,
-            institute_name: cert.institute_name || "-",
-            certificate_title: cert.certificate_title || "-",
-            certificate_picture:
-              cert.certificate_picture || images.certificate_image,
-          }))
+          id: cert.id,
+          institute_name: cert.institute_name || "-",
+          certificate_title: cert.certificate_title || "-",
+          certificate_picture:
+            cert.certificate_picture || images.certificate_image,
+        }))
         : [
-            {
-              id: "placeholder",
-              institute_name: "-",
-              certificate_title: "-",
-              certificate_picture: images.certificate_image,
-            },
-          ];
+          {
+            id: "placeholder",
+            institute_name: "-",
+            certificate_title: "-",
+            certificate_picture: images.certificate_image,
+          },
+        ];
 
     return {
       name:
@@ -262,8 +262,7 @@ const DoctorDetails = ({ showModal }) => {
     const newStatusValue = e;
     showModal(
       `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this user's status to ${newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -280,8 +279,7 @@ const DoctorDetails = ({ showModal }) => {
     fetchDoctor();
     showModal(
       "Successful",
-      `User status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `User status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
@@ -293,7 +291,7 @@ const DoctorDetails = ({ showModal }) => {
       <div className="container-fluid">
         <div className="dashCard doctor-request-view doctor-details-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-            <h2 className="mainTitle mb-4">
+            <h2 className="mainTitle mainTitle--with-back mb-4">
               <BackButton2 />
               {t("pages.doctor_details")}
             </h2>
@@ -426,7 +424,7 @@ const DoctorDetails = ({ showModal }) => {
                         navigate(`/admin/doctor-management/${id}/services`)
                       }
                     >
-                      View Services
+                      {t("provider.view_services")}
                     </button>
                     <button
                       className="btn btn-primary"
@@ -434,7 +432,7 @@ const DoctorDetails = ({ showModal }) => {
                         navigate(`/admin/doctor-management/${id}/reviews`)
                       }
                     >
-                      Rating & Reviews
+                      {t("provider.rating_reviews")}
                     </button>
                     <button
                       className="btn btn-primary"
@@ -442,7 +440,7 @@ const DoctorDetails = ({ showModal }) => {
                         navigate(`/admin/doctor-management/${id}/dashboard`)
                       }
                     >
-                      Dashboard
+                      {t("sidebar.dashboard")}
                     </button>
                     <button
                       type="button"
@@ -453,7 +451,7 @@ const DoctorDetails = ({ showModal }) => {
                         navigate(`/admin/chat?${q.toString()}`);
                       }}
                     >
-                      Chat With Doctor
+                      {t("provider.chat_with_doctor")}
                     </button>
                   </div>
                 </div>
@@ -473,7 +471,7 @@ const DoctorDetails = ({ showModal }) => {
               </div>
 
               <div className="doctor-certification mt-5 detail-box">
-                <h3 className="section-title mb-3">Certification Detail</h3>
+                <h3 className="section-title mb-3">{t("common.certificationDetails")}</h3>
                 {details.certifications.map((cert, index) => (
                   <div
                     className="row g-4 align-items-center"
@@ -481,13 +479,13 @@ const DoctorDetails = ({ showModal }) => {
                   >
                     <div className="col-xl-3">
                       <div className="detail-box mb-3">
-                        <h6>Institute Name</h6>
+                        <h6>{t("common.instituteName")}</h6>
                         <p className="mb-0">{cert.institute_name}</p>
                       </div>
                     </div>
                     <div className="col-xl-3">
                       <div className="detail-box">
-                        <h6>Certificate Title</h6>
+                        <h6>{t("common.certificateTitle")}</h6>
                         <p className="mb-0">{cert.certificate_title}</p>
                       </div>
                     </div>
@@ -554,9 +552,9 @@ const DoctorDetails = ({ showModal }) => {
                     key={item.id || index}
                     {...(item.id
                       ? clickableTableRowNavProps(
-                          navigate,
-                          `/admin/appointments/${item.id}`,
-                        )
+                        navigate,
+                        `/admin/appointments/${item.id}`,
+                      )
                       : {})}
                   >
                     <td>{serialNum(offset + index + 1)}</td>

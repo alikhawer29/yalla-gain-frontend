@@ -9,7 +9,6 @@ import { getAll, post as postApi } from "../../../Services/Api";
 import "./style.css";
 
 const mapApiPostToUI = (apiPost) => {
-  const { t } = useTranslation();
     const fullName = `${apiPost?.user?.first_name ?? ""} ${apiPost?.user?.last_name ?? ""}`.trim();
     return {
         postId: apiPost?.id,

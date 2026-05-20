@@ -32,7 +32,10 @@
     "language": "Language",
     "english": "English",
     "arabic": "Arabic",
-    "years": "years"
+    "years": "years",
+    "certificationDetails": "Certification Details",
+    "instituteName": "Institute Name",
+    "certificateTitle": "Certificate Title"
   },
   "nav": {
     "challenges": "Challenges",
@@ -95,6 +98,7 @@
     "total_trainers": "Total Trainers",
     "new_booking": "New Booking",
     "since_last_week": "Since last week",
+    "total_booking_stat": "Total Booking",
     "new_bookings": "New Bookings",
     "total_earning_graph": "Total Earning",
     "total_users_graph": "Total Users",
@@ -522,6 +526,60 @@
     "chat": "Chat",
     "call": "Call",
     "video_call": "Video Call",
-    "consultant": "Consultant"
+    "consultant": "Consultant",
+    "rescheduled": "Rescheduled"
+  },
+  "booking": {
+    "details": "Booking Details",
+    "booking_id": "Booking ID",
+    "booking_date": "Booking Date",
+    "session_type": "Session Type",
+    "category": "Category",
+    "appointment_date": "Appointment Date",
+    "appointment_time": "Appointment Time",
+    "rescheduled_date": "Rescheduled Appointment Date",
+    "rescheduled_time": "Rescheduled Appointment Time",
+    "appointment_charges": "Appointment Charges",
+    "sub_category": "Sub Category",
+    "contact_no": "Contact No",
+    "user_detail": "User Detail",
+    "consultant_detail": "Consultant Detail",
+    "view_details": "View Details",
+    "rejection_reason": "Rejection Reason",
+    "rating": "Rating",
+    "report_details": "Report Details",
+    "report_date": "Report Date",
+    "message": "Message",
+    "service_name": "Service Name",
+    "service_charges": "Service Charges",
+    "user_type": "User Type",
+    "view_user_details": "View User Details",
+    "view_doctor_details": "View Doctor Details",
+    "view_trainer_details": "View Trainer Details",
+    "yalla_coins": "Yalla Coins",
+    "filter_by_status": "Filter by status",
+    "appointment_date_filter": "Appointment Date",
+    "newsfeed_tab": "Newsfeed"
+  },
+  "provider": {
+    "view_services": "View Services",
+    "rating_reviews": "Rating & Reviews",
+    "chat_with_doctor": "Chat With Doctor",
+    "chat_with_trainer": "Chat With Trainer"
+  },
+  "service_detail": {
+    "service_category": "Service Category",
+    "service_charges": "Service Charges",
+    "description": "Description",
+    "slots": "Slots",
+    "no_slots": "No slots available",
+    "status_change_confirm": "Are you sure you want to change this service's status to {{status}}?",
+    "status_changed": "Service status has been changed to {{status}} successfully.",
+    "mark_as": "Mark as {{status}}"
+  },
+  "chat_ui": {
+    "search_placeholder": "Search...",
+    "type_message": "Type A Message...",
+    "open_image": "Open image"
   }
 }

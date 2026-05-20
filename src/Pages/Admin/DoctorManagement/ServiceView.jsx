@@ -23,7 +23,6 @@ const SERVICE_STATUS_MAP = {
 };
 
 const formatServiceStatus = (value) => {
-  const { t } = useTranslation();
     if (value === null || value === undefined) return "Inactive";
     if (Number.isFinite(value)) {
         return Number(value) === 1 ? "Active" : "Inactive";
@@ -51,6 +50,7 @@ const formatBookingStatus = (value) => {
 };
 
 const DoctorServiceView = ({ showModal }) => {
+    const { t } = useTranslation();
     const { id, serviceId } = useParams();
     const navigate = useNavigate();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -171,11 +171,12 @@ const DoctorServiceView = ({ showModal }) => {
 
     const handleStatusChange = (e, userId) => {
         const newStatusValue = e;
+        const statusLabel =
+            newStatusValue == "1" ? t("status.active") : t("status.inactive");
         showModal(
-            `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-            `Are you sure you want to change this service's status to ${newStatusValue == "1" ? "Active" : "Inactive"
-            }?`,
-            () => onConfirmStatusChange(userId, newStatusValue)
+            t("service_detail.mark_as", { status: statusLabel }),
+            t("service_detail.status_change_confirm", { status: statusLabel }),
+            () => onConfirmStatusChange(userId, newStatusValue),
         );
     };
 
@@ -189,12 +190,13 @@ const DoctorServiceView = ({ showModal }) => {
 
         fetchService();
 
+        const statusLabel =
+            newStatusValue == "1" ? t("status.active") : t("status.inactive");
         showModal(
-            "Successful",
-            `Service status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
-            } successfully.`,
+            t("modal.successfully"),
+            t("service_detail.status_changed", { status: statusLabel }),
             null,
-            true
+            true,
         );
     };
 
@@ -202,13 +204,13 @@ const DoctorServiceView = ({ showModal }) => {
     const startIndex = (pagination.currentPage - 1) * (pagination.perPage || filters.per_page || 10);
 
     return (
-        <DashboardLayout pageTitle="Service Details">
+        <DashboardLayout pageTitle={t("pages.view_service")}>
             <div className="container-fluid">
                 <div className="dashCard doctor-service-view">
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-                        <h2 className="mainTitle mb-4">
+                        <h2 className="mainTitle mainTitle--with-back mb-4">
                             <BackButton2 />
-                            View Service
+                            {t("pages.view_service")}
                         </h2>
                         <div className="d-flex flex-column align-items-end gap-2">
                             {/* <span className={`statusChip ${statusClassName}`}>{serviceDetails.statusLabel}</span> */}
@@ -254,25 +256,25 @@ const DoctorServiceView = ({ showModal }) => {
                         </div> */}
                         <div className="col-xl-3 col-md-6 mb-3">
                             <div className="detail-box">
-                                <h6>Service Category</h6>
+                                <h6>{t("service_detail.service_category")}</h6>
                                 <p className="mb-0">{serviceDetails.title}</p>
                             </div>
                         </div>
                         <div className="col-xl-3 col-md-6 mb-3">
                             <div className="detail-box">
-                                <h6>Service Charges</h6>
-                                <p className="mb-0">{serviceDetails.charges} Yalla Coins</p>
+                                <h6>{t("service_detail.service_charges")}</h6>
+                                <p className="mb-0">{serviceDetails.charges} {t("booking.yalla_coins")}</p>
                             </div>
                         </div>
                         <div className="col-xl-6 col-md-6 mb-3">
                             <div className="detail-box">
-                                <h6>Description</h6>
+                                <h6>{t("service_detail.description")}</h6>
                                 <p className="mb-0">{serviceDetails.description}</p>
                             </div>
                         </div>
                     </div>
 
-                    <h4 className="f-white-color">Slots</h4>
+                    <h4 className="f-white-color">{t("service_detail.slots")}</h4>
 
                     <div className="row">
                         {serviceDetails.slots.length ? (
@@ -295,7 +297,7 @@ const DoctorServiceView = ({ showModal }) => {
                         ) : (
                             <div className="slot-card">
                                 <span className="slot-day">-</span>
-                                <span className="slot-time">No slots available</span>
+                                <span className="slot-time">{t("service_detail.no_slots")}</span>
                             </div>
                         )}
                     </div>
@@ -313,17 +315,17 @@ const DoctorServiceView = ({ showModal }) => {
                         headers={doctorServiceBookingHeaders}
                         pagination={pagination}
                         selectOptions={[{
-                            main_title: "Filter by status",
+                            main_title: t("booking.filter_by_status"),
                             title: "status",
                             options: [
-                                { value: "", text: "All" },
-                                { value: "pending", text: "Pending" },
-                                { value: "upcoming", text: "Upcoming" },
-                                { value: "past", text: "Past" },
-                                { value: "approved", text: "Approved" },
+                                { value: "", text: t("status.all") },
+                                { value: "pending", text: t("status.pending") },
+                                { value: "upcoming", text: t("status.upcoming") },
+                                { value: "past", text: t("status.past") },
+                                { value: "approved", text: t("status.approved") },
                             ],
                         }]}
-                        dateFilters={[{ title: "Date", from: "from", to: "to", fromTitle: "From", toTitle: "To" }]}
+                        dateFilters={[{ title: t("booking.appointment_date_filter"), from: "from", to: "to", fromTitle: t("filters.from"), toTitle: t("filters.to") }]}
                     >
                         <tbody>
                             {bookings.map((item, index) => {

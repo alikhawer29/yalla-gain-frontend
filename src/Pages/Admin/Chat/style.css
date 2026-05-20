@@ -18,6 +18,18 @@
   padding: 0 35px 0 10px;
 }
 
+[dir="rtl"] .chat-search .searchButton {
+  left: 0 !important;
+  right: auto !important;
+}
+
+[dir="rtl"] .chat-search .form-control {
+  direction: rtl;
+  text-align: right;
+  padding-left: 44px !important;
+  padding-right: 14px !important;
+}
+
 .documentDownloadBtn {
   width: 30px;
   height: 30px;

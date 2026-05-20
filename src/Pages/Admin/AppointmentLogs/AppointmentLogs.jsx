@@ -10,32 +10,17 @@ import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { userBookingLogsData } from "../../../Config/data";
 import "./style.css";
 
-const TYPE_TABS = [
-  { label: "Doctor", value: "doctor" },
-  { label: "Trainer", value: "trainer" },
-];
-
-const STATUS_TABS = [
-  { label: "Pending", value: "pending" },
-  { label: "Rejected", value: "rejected" },
-  { label: "Upcoming", value: "upcoming" },
-  { label: "Past", value: "past" },
-  { label: "In Progress", value: "in-progress" },
-  { label: "Rescheduled", value: "rescheduled" },
-];
-
 const DEFAULT_FILTERS = {
   from: "",
   to: "",
   page: 1,
   per_page: 10,
   search: "",
-  type: TYPE_TABS[0].value,
-  status: STATUS_TABS[0].value,
+  type: "doctor",
+  status: "pending",
 };
 
 const extractResponsePayload = (response) => {
-  const { t } = useTranslation();
   if (!response) {
     return { data: [], meta: {} };
   }
@@ -69,7 +54,28 @@ const hasFiltersChanged = (prev, next) => {
 };
 
 const AppointmentLogs = () => {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
+  const typeTabs = useMemo(
+    () => [
+      { label: t("status.doctor"), value: "doctor" },
+      { label: t("status.trainer"), value: "trainer" },
+    ],
+    [t, i18n.language],
+  );
+
+  const statusTabs = useMemo(
+    () => [
+      { label: t("status.pending"), value: "pending" },
+      { label: t("status.rejected"), value: "rejected" },
+      { label: t("status.upcoming"), value: "upcoming" },
+      { label: t("status.past"), value: "past" },
+      { label: t("status.inprogress"), value: "in-progress" },
+      { label: t("status.rescheduled"), value: "rescheduled" },
+    ],
+    [t, i18n.language],
+  );
   const [filters, setFiltersState] = useState(DEFAULT_FILTERS);
   const [refreshTick, setRefreshTick] = useState(0);
   const [records, setRecords] = useState([]);
@@ -311,7 +317,7 @@ const AppointmentLogs = () => {
           <h2 className="mainTitle mb-4">{t('pages.booking_logs')}</h2>
 
           <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
-            {TYPE_TABS.map((tab) => (
+            {typeTabs.map((tab) => (
               <button
                 key={tab.value}
                 type="button"
@@ -324,7 +330,7 @@ const AppointmentLogs = () => {
           </div>
 
           <div className="d-flex flex-wrap gap-2 mb-4 logs-status-group">
-            {STATUS_TABS.map((tab) => (
+            {statusTabs.map((tab) => (
               <button
                 key={tab.value}
                 type="button"

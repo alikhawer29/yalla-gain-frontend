@@ -19,7 +19,6 @@ import { getAll } from "../../../Services/Api";
 import "./style.css";
 
 const mapStatus = (status) => {
-  const { t } = useTranslation();
   if (typeof status === "number") return status === 1 ? "Pending" : "Resolved";
   if (!status) return "Pending";
   const s = String(status).toLowerCase();
@@ -28,17 +27,20 @@ const mapStatus = (status) => {
   return capitalizeFirstLetter(String(status));
 };
 
-const TABS = [
-  { label: "Booking", value: "booking" },
-  { label: "Newsfeed", value: "newsfeed" },
-];
-
 const ReportsManagement = ({
   filters,
   setFilters,
   pagination,
   updatePagination,
 }) => {
+  const { t, i18n } = useTranslation();
+  const tabs = useMemo(
+    () => [
+      { label: t("pages.booking_logs"), value: "booking" },
+      { label: t("booking.newsfeed_tab"), value: "newsfeed" },
+    ],
+    [t, i18n.language],
+  );
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -113,7 +115,7 @@ const ReportsManagement = ({
               <h2 className="mainTitle mb-4">{t('sidebar.reports_management')}</h2>
 
               <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
-                {TABS.map((tab) => (
+                {tabs.map((tab) => (
                   <button
                     key={tab.value}
                     type="button"

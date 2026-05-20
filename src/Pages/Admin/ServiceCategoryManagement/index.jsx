@@ -13,7 +13,6 @@ import { serviceCategoryHeaders } from "../../../Config/TableHeaders";
 import { getAll, post } from "../../../Services/Api";
 
 const formatType = (value = "") => {
-  const { t } = useTranslation();
   if (!value) return "-";
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
@@ -37,6 +36,7 @@ const ServiceCategoryManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [rows, setRows] = useState([]);

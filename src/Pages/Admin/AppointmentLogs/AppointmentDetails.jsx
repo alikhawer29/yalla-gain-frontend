@@ -45,9 +45,9 @@ const AppointmentDetails = () => {
           <div className="row">
             <div className="col-12 ">
               <div className="row my-4">
-                <h2 className="mainTitle mb-4">
+                <h2 className="mainTitle mainTitle--with-back mb-4">
                   <BackButton2 />
-                  Appointment Details
+                  {t("pages.appointment_details")}
                 </h2>
               </div>
             </div>
@@ -85,17 +85,65 @@ const AppointmentDetails = () => {
       )
     : "";
   const statusRaw = (appointmentDetails.status || "").toLowerCase();
-  const status =
-    statusRaw === "upcoming"
-      ? "Upcoming"
-      : statusRaw === "in-progress"
-        ? "In-Progress"
-        : statusRaw === "past"
-          ? "Past"
-          : statusRaw === "rejected"
-            ? "Rejected"
-            : appointmentDetails.status || "";
+  const statusKey =
+    statusRaw === "in-progress" ? "inprogress" : statusRaw.replace(/-/g, "");
+  const statusLabel = statusKey
+    ? t(`status.${statusKey}`, { defaultValue: capitalizeStatus(appointmentDetails.status || "") })
+    : "-";
   const isRejected = statusRaw === "rejected";
+
+  const detailItems = (() => {
+    const items = [
+      { key: "booking_id", label: t("booking.booking_id"), value: `#${appointmentDetails.id}` },
+      {
+        key: "booking_date",
+        label: t("booking.booking_date"),
+        value: dateFormat(appointmentDetails.created_at),
+      },
+      {
+        key: "session_type",
+        label: t("booking.session_type"),
+        value: capitalizeFirstLetter(appointmentDetails.service?.user?.type || "-"),
+      },
+      {
+        key: "category",
+        label: t("booking.category"),
+        value: appointmentDetails.service?.title || "-",
+      },
+      {
+        key: "appointment_date",
+        label: t("booking.appointment_date"),
+        value: dateFormat(appointmentDetails.appointment_date),
+      },
+      { key: "appointment_time", label: t("booking.appointment_time"), value: appointmentTime },
+    ];
+    if (hasRescheduled) {
+      items.push(
+        {
+          key: "rescheduled_date",
+          label: t("booking.rescheduled_date"),
+          value: dateFormat(appointmentDetails.rescheduled_appointment_date),
+        },
+        { key: "rescheduled_time", label: t("booking.rescheduled_time"), value: rescheduledTime },
+      );
+    }
+    items.push(
+      {
+        key: "charges",
+        label: t("booking.appointment_charges"),
+        value: `${appointmentDetails.amount_paid} ${t("booking.yalla_coins")}` || "-",
+      },
+      {
+        key: "sub_category",
+        label: t("booking.sub_category"),
+        value: appointmentDetails.service?.description || "-",
+      },
+      { key: "user_name", label: t("fields.user_name"), value: userName },
+      { key: "contact_no", label: t("booking.contact_no"), value: contactNumber, isPhone: true },
+      { key: "email", label: t("fields.email_address"), value: appointmentDetails.email },
+    );
+    return items;
+  })();
   return (
     <DashboardLayout pageTitle={t('pages.appointment_details')}>
       <div className="container-fluid">
@@ -104,9 +152,9 @@ const AppointmentDetails = () => {
             <div className="dashCard">
               <div className="row mb-4">
                 <div className="col-12">
-                  <h2 className="mainTitle mb-4">
+                  <h2 className="mainTitle mainTitle--with-back mb-4">
                     <BackButton2 />
-                    Booking Details
+                    {t("booking.details")}
                   </h2>
                 </div>
               </div>
@@ -117,78 +165,15 @@ const AppointmentDetails = () => {
                       <div className="row">
                         <div className="col-xxl-12 col-lg-8">
                           <div className="row my-2">
-                            {[
-                              {
-                                label: "Booking ID:",
-                                value: `#${appointmentDetails.id}`,
-                              },
-                              {
-                                label: "Booking Date:",
-                                value: dateFormat(
-                                  appointmentDetails.created_at,
-                                ),
-                              },
-                              {
-                                label: "Session Type:",
-                                value: capitalizeFirstLetter(
-                                  appointmentDetails.service?.user?.type || "-",
-                                ),
-                              },
-                              {
-                                label: "Category:",
-                                value: appointmentDetails.service?.title || "-",
-                              },
-                              {
-                                label: "Appointment Date:",
-                                value: dateFormat(
-                                  appointmentDetails.appointment_date,
-                                ),
-                              },
-                              {
-                                label: "Appointment Time:",
-                                value: appointmentTime,
-                              },
-                              ...(hasRescheduled
-                                ? [
-                                    {
-                                      label: "Rescheduled Appointment Date:",
-                                      value: dateFormat(
-                                        appointmentDetails.rescheduled_appointment_date,
-                                      ),
-                                    },
-                                    {
-                                      label: "Rescheduled Appointment Time:",
-                                      value: rescheduledTime,
-                                    },
-                                  ]
-                                : []),
-                              {
-                                label: "Appointment Charges:",
-                                value:
-                                  `${appointmentDetails.amount_paid} Yalla Coins` ||
-                                  "-",
-                              },
-                              {
-                                label: "Sub Category:",
-                                value:
-                                  appointmentDetails.service?.description ||
-                                  "-",
-                              },
-                              { label: "User Name:", value: userName },
-                              { label: "Contact No:", value: contactNumber },
-                              {
-                                label: "Email Address:",
-                                value: appointmentDetails.email,
-                              },
-                            ].map(({ label, value }) => (
+                            {detailItems.map(({ key, label, value, isPhone }) => (
                               <div
                                 className="col-xxl-3 col-xl-6 mb-3"
-                                key={label}
+                                key={key}
                               >
                                 <div className="detail-box">
-                                  <h6 className="">{label}</h6>
+                                  <h6>{label}</h6>
                                   <p className="mb-0">
-                                    {label === "Contact No:" && (
+                                    {isPhone && value && value !== "-" && (
                                       <span>{getCountryFlag(value)}</span>
                                     )}{" "}
                                     {value}
@@ -206,24 +191,15 @@ const AppointmentDetails = () => {
                           style={{ color: "#FFFFFF" }}
                           className="fw-medium"
                         >
-                          Status:
+                          {t("table.status")}:
                         </label>
                         <span
                           style={{
-                            color:
-                              status === "Rejected"
-                                ? "#FF4F25"
-                                : status === "Upcoming"
-                                  ? "#FFFFFF"
-                                  : status === "In-Progress"
-                                    ? "#FFFFFF"
-                                    : status === "Past"
-                                      ? "#FFFFFF"
-                                      : "#FF4F25",
+                            color: isRejected ? "#FF4F25" : "#FFFFFF",
                           }}
-                          className={`ms-3 fw-semibold`}
+                          className="ms-3 fw-semibold"
                         >
-                          {capitalizeStatus(status)}
+                          {statusLabel}
                         </span>
                       </div>
                     </div>
@@ -234,7 +210,7 @@ const AppointmentDetails = () => {
                 <div className="row mt-3">
                   <div className="col-12">
                     <div className="detail-box appointment-rejection-box">
-                      <h6>Rejection Reason</h6>
+                      <h6>{t("booking.rejection_reason")}</h6>
                       <p className="mb-0 appointment-rejection-reason">
                         {appointmentDetails.rejection_reason}
                       </p>
@@ -247,7 +223,7 @@ const AppointmentDetails = () => {
                   <div className="row">
                     <div className="col-md-6 mb-md-0 mb-3">
                       <h2 className="mb-2" style={{ color: "#FFFFFF" }}>
-                        User Detail
+                        {t("booking.user_detail")}
                       </h2>
                       <div className="booking-detail-card">
                         <div className="d-flex align-items-center justify-content-between flex-wrap">
@@ -273,7 +249,7 @@ const AppointmentDetails = () => {
                                 style={{ fontSize: 14, color: "#FFFFFF" }}
                                 to={`/admin/user-management/${user?.id}`}
                               >
-                                View Details
+                                {t("booking.view_details")}
                               </Link>
                             </div>
                           </div>
@@ -282,7 +258,7 @@ const AppointmentDetails = () => {
                     </div>
                     <div className="col-md-6 mb-md-0 mb-3">
                       <h2 className="mb-2" style={{ color: "#FFFFFF" }}>
-                        Consultant Detail
+                        {t("booking.consultant_detail")}
                       </h2>
                       <div className="booking-detail-card">
                         <div className="d-flex align-items-center justify-content-between flex-wrap">
@@ -308,7 +284,7 @@ const AppointmentDetails = () => {
                                 style={{ fontSize: 14, color: "#FFFFFF" }}
                                 to={`/admin/${appointmentDetails?.service?.user?.type === "doctor" ? "doctor-management" : "trainer-management"}/${appointmentDetails?.service?.user?.id}`}
                               >
-                                View Details
+                                {t("booking.view_details")}
                               </Link>
                             </div>
                           </div>
@@ -321,7 +297,7 @@ const AppointmentDetails = () => {
               {appointmentDetails.status == "Past" && (
                 <div className="row mt-3">
                   <div className="col-12">
-                    <h2>Rating</h2>
+                    <h2>{t("booking.rating")}</h2>
                     {Array(parseInt(appointmentDetails.ratings))
                       .fill()
                       .map((_, index) => (

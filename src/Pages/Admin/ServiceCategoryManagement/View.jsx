@@ -11,8 +11,7 @@ import CustomButton from "../../../Components/CustomButton";
 import "./style.css";
 
 const formatType = (value = "") => {
-  const { t } = useTranslation();
-    if (!value) return "-";
+  if (!value) return "-";
     return value.charAt(0).toUpperCase() + value.slice(1);
 };
 

@@ -4,7 +4,8 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 const CustomPagination = ({ pagination, setFilters }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language?.startsWith("ar");
   const { perPage, totalRecords, currentPage, totalPages } = pagination;
 
   // Ensure perPage is a number and not a string
@@ -99,12 +100,22 @@ const CustomPagination = ({ pagination, setFilters }) => {
           </p>
         </div>
         <div className="">
-          <Pagination>
-            {/* <Pagination.First onClick={handleFirstPage} /> */}
-            <Pagination.Prev onClick={handlePrevPage}>{t("pagination.previous")}</Pagination.Prev>
+          <Pagination className={isRtl ? "pagination-bar--rtl" : undefined}>
+            <Pagination.Prev
+              className="pagination-prev"
+              disabled={active <= 1}
+              onClick={handlePrevPage}
+            >
+              {t("pagination.previous")}
+            </Pagination.Prev>
             {items}
-            <Pagination.Next onClick={handleNextPage}>{t("pagination.next")}</Pagination.Next>
-            {/* <Pagination.Last onClick={handleLastPage} /> */}
+            <Pagination.Next
+              className="pagination-next"
+              disabled={active >= totalPages}
+              onClick={handleNextPage}
+            >
+              {t("pagination.next")}
+            </Pagination.Next>
           </Pagination>
         </div>
       </div>

@@ -21,7 +21,6 @@ import {
 import { post } from "../../../Services/Api";
 
 const stringFromField = (field) => {
-  const { t } = useTranslation();
   if (field == null) return "";
   if (typeof field === "string") return field;
   return field.name || field.slug || "";

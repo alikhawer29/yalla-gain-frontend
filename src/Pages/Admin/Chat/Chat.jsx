@@ -205,6 +205,7 @@ function chatMatchesParticipant(chat, participantId) {
 }
 
 const Chat = ({ showModal }) => {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
@@ -532,7 +533,7 @@ const Chat = ({ showModal }) => {
         <Container fluid className="">
           <div className="">
             <div className="site_card p-0 ">
-              <h2 className="fw-bold pt-3 mb-3 mainTitle">Chats</h2>
+              <h2 className="fw-bold pt-3 mb-3 mainTitle">{t("pages.chats")}</h2>
               <div
                 className={`d-flex justify-content-between align-items-center mb-xl-0 mb-3`}
               >
@@ -559,7 +560,7 @@ const Chat = ({ showModal }) => {
                     <div className="chat-search flex-grow-1">
                       <CustomInput
                         type="text"
-                        placeholder="Search..."
+                        placeholder={t("chat_ui.search_placeholder")}
                         name="search"
                         id="search"
                         value={searchQuery}
@@ -577,20 +578,20 @@ const Chat = ({ showModal }) => {
                           setChatFilter("all");
                         }}
                         className={`btn min-width-120 ${chatFilter === "all" ? "btn-primary" : "btn-secondary"}`}
-                        text="All"
+                        text={t("status.all")}
                       />
                       <CustomButton
                         onClick={() => {
                           setChatFilter("read");
                         }}
-                        text="Read"
+                        text={t("status.read")}
                         className={`btn min-width-120 ${chatFilter === "read" ? "btn-primary" : "btn-secondary"}`}
                       />
                       <CustomButton
                         onClick={() => {
                           setChatFilter("unread");
                         }}
-                        text="Unread"
+                        text={t("status.unread")}
                         className={`btn min-width-120 ${chatFilter === "unread" ? "btn-primary" : "btn-secondary"} `}
                       />
                     </div>
@@ -903,7 +904,7 @@ const Chat = ({ showModal }) => {
                           <div className={Styles.inputRow}>
                             <input
                               type="text"
-                              placeholder="Type A Message..."
+                              placeholder={t("chat_ui.type_message")}
                               value={messageInput}
                               onChange={(e) =>
                                 setMessageInput(e.target.value)

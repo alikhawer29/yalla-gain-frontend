@@ -180,29 +180,29 @@ const TrainerDetails = ({ showModal }) => {
 
     const experienceList = Array.isArray(Trainer.experience)
       ? Trainer.experience.map((item) => ({
-          id: item.id,
-          specialization: item.specialization || "-",
-          experience: item.experience || "-",
-        }))
+        id: item.id,
+        specialization: item.specialization || "-",
+        experience: item.experience || "-",
+      }))
       : [];
 
     const certifications =
       Array.isArray(Trainer.certifications) && Trainer.certifications.length
         ? Trainer.certifications.map((cert) => ({
-            id: cert.id,
-            institute_name: cert.institute_name || "-",
-            certificate_title: cert.certificate_title || "-",
-            certificate_picture:
-              cert.certificate_picture || images.certificate_image,
-          }))
+          id: cert.id,
+          institute_name: cert.institute_name || "-",
+          certificate_title: cert.certificate_title || "-",
+          certificate_picture:
+            cert.certificate_picture || images.certificate_image,
+        }))
         : [
-            {
-              id: "placeholder",
-              institute_name: "-",
-              certificate_title: "-",
-              certificate_picture: images.certificate_image,
-            },
-          ];
+          {
+            id: "placeholder",
+            institute_name: "-",
+            certificate_title: "-",
+            certificate_picture: images.certificate_image,
+          },
+        ];
 
     return {
       name:
@@ -268,8 +268,7 @@ const TrainerDetails = ({ showModal }) => {
     const newStatusValue = e;
     showModal(
       `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this user's status to ${newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -286,8 +285,7 @@ const TrainerDetails = ({ showModal }) => {
     fetchTrainer();
     showModal(
       "Successful",
-      `User status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `User status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
@@ -299,9 +297,9 @@ const TrainerDetails = ({ showModal }) => {
       <div className="container-fluid">
         <div className="dashCard Trainer-request-view Trainer-details-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-            <h2 className="mainTitle mb-4">
+            <h2 className="mainTitle mainTitle--with-back mb-4">
               <BackButton2 />
-              Trainer Details
+              {t("pages.trainer_details")}
             </h2>
             {trainerProfileLoading ? (
               <Skeleton
@@ -432,7 +430,7 @@ const TrainerDetails = ({ showModal }) => {
                         navigate(`/admin/trainer-management/${id}/services`)
                       }
                     >
-                      View Services
+                      {t("provider.view_services")}
                     </button>
                     <button
                       className="btn btn-primary"
@@ -440,7 +438,7 @@ const TrainerDetails = ({ showModal }) => {
                         navigate(`/admin/trainer-management/${id}/reviews`)
                       }
                     >
-                      Rating & Reviews
+                      {t("provider.rating_reviews")}
                     </button>
                     <button
                       className="btn btn-primary"
@@ -448,7 +446,7 @@ const TrainerDetails = ({ showModal }) => {
                         navigate(`/admin/trainer-management/${id}/dashboard`)
                       }
                     >
-                      Dashboard
+                      {t("sidebar.dashboard")}
                     </button>
                     <button
                       type="button"
@@ -461,7 +459,7 @@ const TrainerDetails = ({ showModal }) => {
                         navigate(`/admin/chat?${q.toString()}`);
                       }}
                     >
-                      Chat With Trainer
+                      {t("provider.chat_with_trainer")}
                     </button>
                   </div>
                 </div>
@@ -481,7 +479,7 @@ const TrainerDetails = ({ showModal }) => {
               </div>
 
               <div className="doctor-certification mt-5 detail-box">
-                <h3 className="section-title mb-3">Certification Detail</h3>
+                <h3 className="section-title mb-3">{t("common.certificationDetails")}</h3>
                 {details.certifications.map((cert, index) => (
                   <div
                     className="row g-4 align-items-center"
@@ -489,13 +487,13 @@ const TrainerDetails = ({ showModal }) => {
                   >
                     <div className="col-xl-3">
                       <div className="detail-box mb-3">
-                        <h6>Institute Name</h6>
+                        <h6>{t("common.instituteName")}</h6>
                         <p className="mb-0">{cert.institute_name}</p>
                       </div>
                     </div>
                     <div className="col-xl-3">
                       <div className="detail-box">
-                        <h6>Certificate Title</h6>
+                        <h6>{t("common.certificateTitle")}</h6>
                         <p className="mb-0">{cert.certificate_title}</p>
                       </div>
                     </div>
@@ -562,9 +560,9 @@ const TrainerDetails = ({ showModal }) => {
                     key={item.id || index}
                     {...(item.id
                       ? clickableTableRowNavProps(
-                          navigate,
-                          `/admin/appointments/${item.id}`,
-                        )
+                        navigate,
+                        `/admin/appointments/${item.id}`,
+                      )
                       : {})}
                   >
                     <td>{serialNum(offset + index + 1)}</td>

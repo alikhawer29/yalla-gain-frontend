@@ -32,7 +32,10 @@
     "language": "اللغة",
     "english": "الإنجليزية",
     "arabic": "العربية",
-    "years": "سنوات"
+    "years": "سنوات",
+    "certificationDetails": "تفاصيل الشهادة",
+    "instituteName": "اسم المعهد",
+    "certificateTitle": "عنوان الشهادة"
   },
   "nav": {
     "challenges": "التحديات",
@@ -95,6 +98,7 @@
     "total_trainers": "إجمالي المدربين",
     "new_booking": "حجز جديد",
     "since_last_week": "منذ الأسبوع الماضي",
+    "total_booking_stat": "إجمالي الحجوزات",
     "new_bookings": "الحجوزات الجديدة",
     "total_earning_graph": "إجمالي الأرباح",
     "total_users_graph": "إجمالي المستخدمين",
@@ -522,6 +526,60 @@
     "chat": "محادثة",
     "call": "مكالمة",
     "video_call": "مكالمة فيديو",
-    "consultant": "استشاري"
+    "consultant": "استشاري",
+    "rescheduled": "إعادة جدولة"
+  },
+  "booking": {
+    "details": "تفاصيل الحجز",
+    "booking_id": "رقم الحجز",
+    "booking_date": "تاريخ الحجز",
+    "session_type": "نوع الجلسة",
+    "category": "الفئة",
+    "appointment_date": "تاريخ الموعد",
+    "appointment_time": "وقت الموعد",
+    "rescheduled_date": "تاريخ الموعد المعاد جدولته",
+    "rescheduled_time": "وقت الموعد المعاد جدولته",
+    "appointment_charges": "رسوم الموعد",
+    "sub_category": "الفئة الفرعية",
+    "contact_no": "رقم الاتصال",
+    "user_detail": "تفاصيل المستخدم",
+    "consultant_detail": "تفاصيل الاستشاري",
+    "view_details": "عرض التفاصيل",
+    "rejection_reason": "سبب الرفض",
+    "rating": "التقييم",
+    "report_details": "تفاصيل التقرير",
+    "report_date": "تاريخ التقرير",
+    "message": "الرسالة",
+    "service_name": "اسم الخدمة",
+    "service_charges": "رسوم الخدمة",
+    "user_type": "نوع المستخدم",
+    "view_user_details": "عرض تفاصيل المستخدم",
+    "view_doctor_details": "عرض تفاصيل الطبيب",
+    "view_trainer_details": "عرض تفاصيل المدرب",
+    "yalla_coins": "عملات يلا",
+    "filter_by_status": "تصفية حسب الحالة",
+    "appointment_date_filter": "تاريخ الموعد",
+    "newsfeed_tab": "المنشورات"
+  },
+  "provider": {
+    "view_services": "عرض الخدمات",
+    "rating_reviews": "التقييمات والمراجعات",
+    "chat_with_doctor": "محادثة الطبيب",
+    "chat_with_trainer": "محادثة المدرب"
+  },
+  "service_detail": {
+    "service_category": "فئة الخدمة",
+    "service_charges": "رسوم الخدمة",
+    "description": "الوصف",
+    "slots": "المواعيد",
+    "no_slots": "لا توجد مواعيد متاحة",
+    "status_change_confirm": "هل أنت متأكد أنك تريد تغيير حالة هذه الخدمة إلى {{status}}؟",
+    "status_changed": "تم تغيير حالة الخدمة إلى {{status}} بنجاح.",
+    "mark_as": "تعيين كـ {{status}}"
+  },
+  "chat_ui": {
+    "search_placeholder": "بحث...",
+    "type_message": "اكتب رسالة...",
+    "open_image": "فتح الصورة"
   }
 }

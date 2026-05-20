@@ -89,11 +89,13 @@ const CustomFilters = (props) => {
     setFilterMenuOpen(false);
   };
 
+  const isRtl = i18n.language?.startsWith("ar");
+
   return (
     <>
-      <div className="tableFilters">
+      <div className={`tableFilters${isRtl ? " tableFilters--rtl" : ""}`}>
         <div
-          className={`d-flex ${showEntries ? "justify-content-between" : "justify-content-end"} gap-3 flex-wrap align-items-center`}
+          className={`tableFilters-bar d-flex ${showEntries ? "justify-content-between" : "justify-content-end"} gap-3 flex-wrap align-items-center`}
         >
           {showEntries && (
             <div className="d-flex align-items-center gap-3">
@@ -111,7 +113,7 @@ const CustomFilters = (props) => {
           )}
           <div className="d-flex align-items-center justify-content-end gap-2">
             {showSearch && (
-              <div className="filterWrapper d-md-flex align-items-baseline mb-0">
+              <div className="filterWrapper filterWrapper--search d-md-flex align-items-baseline mb-0">
                 <div className="searchWrapper">
                   <SiteInput
                     type="text"
@@ -138,9 +140,9 @@ const CustomFilters = (props) => {
                   <RiEqualizerLine size={24} />
                 </Dropdown.Toggle>
 
-                <Dropdown.Menu align="end">
+                <Dropdown.Menu align={isRtl ? "start" : "end"}>
                   <div className="border-btm py-3">
-                    <h2 className="filter-title ms-3 mb-0">{t("filters.filters")}</h2>
+                    <h2 className="filter-title filter-title-spacing mb-0">{t("filters.filters")}</h2>
                   </div>
                   <div className="fiter-main">
                     {props?.dateFilters && (

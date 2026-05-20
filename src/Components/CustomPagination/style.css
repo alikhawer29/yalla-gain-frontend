@@ -33,3 +33,52 @@ p.paginationText {
     background: #C5E4F6;
     box-shadow: none;
 }
+
+/* RTL: Next on left, Prev on right; page numbers stay 1 → 2 → 3 (LTR) */
+[dir="rtl"] .customPagination ul.pagination.pagination-bar--rtl {
+    flex-direction: row;
+    direction: ltr;
+}
+
+[dir="rtl"] .customPagination ul.pagination.pagination-bar--rtl .pagination-prev {
+    order: 10;
+}
+
+[dir="rtl"] .customPagination ul.pagination.pagination-bar--rtl .pagination-next {
+    order: -10;
+}
+
+[dir="rtl"] .admin-layout .customPagination .pagination-prev .page-link,
+[dir="rtl"] .user-layout .customPagination .pagination-prev .page-link {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 0 !important;
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+    border-right: 1px solid var(--pagiBorderColor) !important;
+}
+
+[dir="rtl"] .admin-layout .customPagination .pagination-next .page-link,
+[dir="rtl"] .user-layout .customPagination .pagination-next .page-link {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right: 0 !important;
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    border-left: 1px solid var(--pagiBorderColor) !important;
+}
+
+[dir="rtl"] .admin-layout .customPagination .page-item.disabled .page-link,
+[dir="rtl"] .user-layout .customPagination .page-item.disabled .page-link {
+    color: rgba(255, 255, 255, 0.35) !important;
+    background-color: transparent !important;
+    border-color: var(--pagiBorderColor) !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+[dir="rtl"] .admin-layout .customPagination .page-item:not(:first-child) .page-link::before,
+[dir="rtl"] .user-layout .customPagination .page-item:not(:first-child) .page-link::before {
+    left: 0;
+    right: auto;
+}

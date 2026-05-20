@@ -109,8 +109,8 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
     <DashboardLayout pageTitle={t('pages.view_report')}>
       <div className="container-fluid">
         <div className="dashCard report-view">
-          <h2 className="mainTitle mb-4">
-            <BackButton2 /> View Report
+          <h2 className="mainTitle mainTitle--with-back mb-4">
+            <BackButton2 /> {t("pages.view_report")}
           </h2>
           <div className="d-flex flex-md-row flex-column mb-3">
             <div className="flex-grow-1 order-1 order-md-0">
@@ -118,7 +118,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                 <div className="col-xxl-10 col-lg-9">
                   {/* User Detail */}
                   <div className="mb-4">
-                    <h2 className="my-2 sub-title">User Detail</h2>
+                    <h2 className="my-2 sub-title">{t("booking.user_detail")}</h2>
                     <div className="booking-detail-card">
                       <div className="d-flex align-items-center flex-wrap">
                         <div className="d-flex gap-sm-3 gap-2 align-items-center">
@@ -132,7 +132,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                             </div>
                           </div>
                           <div>
-                            <span className="info-label">User Name</span>
+                            <span className="info-label">{t("fields.user_name")}</span>
                             <p
                               className="info-value mb-0"
                               style={{ fontSize: 16 }}
@@ -151,7 +151,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                             className="btn btn-secondary"
                             to={`/admin/user-management/${detail?.appointment?.user?.id || ""}`}
                           >
-                            View User Details
+                            {t("booking.view_user_details")}
                           </Link>
                         </div>
                       </div>
@@ -164,7 +164,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                       {capitalizeFirstLetter(
                         detail?.appointment?.service?.user?.type || "Trainer",
                       )}{" "}
-                      Detail
+                      {t("booking.consultant_detail")}
                     </h2>
                     <div className="booking-detail-card">
                       <div className="d-flex align-items-center flex-wrap">
@@ -184,7 +184,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                                 detail?.appointment?.service?.user?.type ||
                                   "Trainer",
                               )}{" "}
-                              Name
+                              {t("fields.user_name")}
                             </span>
                             <p
                               className="info-value mb-0"
@@ -204,12 +204,9 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                             className="btn btn-secondary"
                             to={`/admin/${detail?.appointment?.service?.user?.type === "doctor" ? "doctor" : "trainer"}-management/${detail?.appointment?.service?.user?.id || ""}`}
                           >
-                            View{" "}
-                            {capitalizeFirstLetter(
-                              detail?.appointment?.service?.user?.type ||
-                                "trainer",
-                            )}{" "}
-                            Details
+                            {detail?.appointment?.service?.user?.type === "doctor"
+                              ? t("booking.view_doctor_details")
+                              : t("booking.view_trainer_details")}
                           </Link>
                         </div>
                       </div>
@@ -217,15 +214,15 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                     <div className="row mt-3">
                       {[
                         {
-                          label: "Service Name",
+                          label: t("booking.service_name"),
                           value: detail?.appointment?.service?.title,
                         },
                         {
-                          label: "Service Charges",
-                          value: `${detail?.appointment?.service?.charges ?? "-"} Yalla Coins`,
+                          label: t("booking.service_charges"),
+                          value: `${detail?.appointment?.service?.charges ?? "-"} ${t("booking.yalla_coins")}`,
                         },
                         {
-                          label: "User Type",
+                          label: t("booking.user_type"),
                           value: capitalizeFirstLetter(
                             detail?.appointment?.service?.user?.type || "-",
                           ),
@@ -242,23 +239,23 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                   </div>
 
                   {/* Booking Details */}
-                  <h2 className="mb-4 sub-title">Booking Details</h2>
+                  <h2 className="mb-4 sub-title">{t("booking.details")}</h2>
                   <div className="row my-2">
                     {[
                       {
-                        label: "Booking ID",
+                        label: t("booking.booking_id"),
                         value: `#${detail?.appointment?.id}`,
                       },
                       {
-                        label: "Booking Date",
+                        label: t("booking.booking_date"),
                         value: dateFormat(detail?.appointment?.created_at),
                       },
                       {
-                        label: "Appointment Date",
+                        label: t("booking.appointment_date"),
                         value: detail?.appointment?.appointment_date,
                       },
                       {
-                        label: "Appointment Time",
+                        label: t("booking.appointment_time"),
                         value: timeFormat(
                           detail?.appointment?.appointment_start_time,
                         )
@@ -276,11 +273,11 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                   </div>
 
                   {/* Report Details */}
-                  <h2 className="mb-4 sub-title">Report Details</h2>
+                  <h2 className="mb-4 sub-title">{t("booking.report_details")}</h2>
                   <div className="row my-2">
                     {[
                       {
-                        label: "Report Date",
+                        label: t("booking.report_date"),
                         value: dateFormat(detail?.reportedOn),
                       },
                     ].map(({ label, value }) => (
@@ -293,7 +290,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                     ))}
                     <div className="col-xxl-6 col-xl-12 mb-3">
                       <div className="detail-box">
-                        <h6>Message</h6>
+                        <h6>{t("booking.message")}</h6>
                         <p className="mb-0">{detail?.reason || "-"}</p>
                       </div>
                     </div>

@@ -14,7 +14,6 @@ import { getAll } from "../../../Services/Api";
 import "../ReportsManagement/style.css";
 
 const seedDoctorTrainer = () => {
-  const { t } = useTranslation();
   // Static rows as per design: S.No, Booking ID, Booking Charges, Commission, Booking Date
   const base = [
     {
@@ -80,6 +79,7 @@ const tabs = [
 ];
 
 const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("doctor");
   const [rows, setRows] = useState([]);
@@ -210,14 +210,14 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
               <h2 className="mainTitle mb-4">{t('sidebar.payment_logs')}</h2>
 
               <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
-                {tabs.map((t) => (
+                {tabs.map((tab) => (
                   <button
-                    key={t.key}
+                    key={tab.key}
                     type="button"
-                    className={`btn min-width-120 ${activeTab === t.key ? "btn-primary" : "btn-secondary"}`}
-                    onClick={() => setActiveTab(t.key)}
+                    className={`btn min-width-120 ${activeTab === tab.key ? "btn-primary" : "btn-secondary"}`}
+                    onClick={() => setActiveTab(tab.key)}
                   >
-                    {t.label}
+                    {tab.label}
                   </button>
                 ))}
               </div>
