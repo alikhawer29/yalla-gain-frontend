@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dropdown } from "react-bootstrap";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import Like from "./reactions/like.svg?react";
@@ -19,6 +20,7 @@ import withModal from "../../HOC/withModal";
 import { images } from "../../Assets";
 
 const ClickablePostImage = ({ src, alt = "Post image", className = "", onOpen }) => {
+  const { t } = useTranslation();
   if (!src) return null;
 
   return (

@@ -1,4 +1,5 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -18,6 +19,7 @@ import "./style.css";
 import { images } from "../../../Assets";
 
 const AppointmentDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
 
   const [appointmentDetails, setAppointmentDetails] = useState();
@@ -38,7 +40,7 @@ const AppointmentDetails = () => {
 
   if (isNullOrEmpty(appointmentDetails)) {
     return (
-      <DashboardLayout pageTitle="Appointment Details">
+      <DashboardLayout pageTitle={t('pages.appointment_details')}>
         <div className="container-fluid">
           <div className="row">
             <div className="col-12 ">
@@ -95,7 +97,7 @@ const AppointmentDetails = () => {
             : appointmentDetails.status || "";
   const isRejected = statusRaw === "rejected";
   return (
-    <DashboardLayout pageTitle="Appointment Details">
+    <DashboardLayout pageTitle={t('pages.appointment_details')}>
       <div className="container-fluid">
         <div className="row">
           <div className="col-12 ">

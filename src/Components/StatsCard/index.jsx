@@ -19,9 +19,10 @@ const StatsCard = (props) => {
               <div className="mt-xl-3 mt-1">
                 <div>
                   <h3 className="statsNumber">
-                    {" "}
-                    {console.log(props.item.text, "Sdf")}
-                    {props.item.text == "total earning" && <FontAwesomeIcon icon={faDollarSign} />} {props.item.change}
+                    {props.item.text === "total earning" && (
+                      <FontAwesomeIcon icon={faDollarSign} />
+                    )}{" "}
+                    {props.item.change}
                   </h3>
                 </div>
               </div>

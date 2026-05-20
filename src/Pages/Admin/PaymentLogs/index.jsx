@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -13,6 +14,7 @@ import { getAll } from "../../../Services/Api";
 import "../ReportsManagement/style.css";
 
 const seedDoctorTrainer = () => {
+  const { t } = useTranslation();
   // Static rows as per design: S.No, Booking ID, Booking Charges, Commission, Booking Date
   const base = [
     {
@@ -200,12 +202,12 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
   }, [activeTab, filters, allRows]);
 
   return (
-    <DashboardLayout pageTitle="Payment Logs">
+    <DashboardLayout pageTitle={t('sidebar.payment_logs')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
-              <h2 className="mainTitle mb-4">Payment Logs</h2>
+              <h2 className="mainTitle mb-4">{t('sidebar.payment_logs')}</h2>
 
               <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
                 {tabs.map((t) => (

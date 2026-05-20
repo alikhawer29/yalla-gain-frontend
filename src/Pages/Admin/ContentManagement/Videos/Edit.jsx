@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -15,6 +16,7 @@ import VideoDropzone from "../../../../Components/VideoDropzone";
 import { workoutVideoEditSchema } from "../../../../Config/Validations";
 
 const EditVideo = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { videoId } = useParams();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -87,7 +89,7 @@ const EditVideo = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

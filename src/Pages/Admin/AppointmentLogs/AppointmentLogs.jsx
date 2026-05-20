@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import CustomTable from "../../../Components/CustomTable";
 import { appointmentLogsHeaders } from "../../../Config/TableHeaders";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -34,6 +35,7 @@ const DEFAULT_FILTERS = {
 };
 
 const extractResponsePayload = (response) => {
+  const { t } = useTranslation();
   if (!response) {
     return { data: [], meta: {} };
   }
@@ -303,10 +305,10 @@ const AppointmentLogs = () => {
   const hasRecords = tableRows.length > 0;
 
   return (
-    <DashboardLayout pageTitle="Appointment Logs">
+    <DashboardLayout pageTitle={t('sidebar.appointment_logs')}>
       <div className="container-fluid">
         <div className="dashCard booking-logs-card">
-          <h2 className="mainTitle mb-4">Booking Logs</h2>
+          <h2 className="mainTitle mb-4">{t('pages.booking_logs')}</h2>
 
           <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
             {TYPE_TABS.map((tab) => (

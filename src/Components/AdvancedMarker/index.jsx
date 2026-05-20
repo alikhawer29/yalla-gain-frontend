@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from "react-i18next";
 
 const AdvancedMarker = ({ position, map }) => {
+  const { t } = useTranslation();
     const markerRef = useRef(null);
 
     useEffect(() => {

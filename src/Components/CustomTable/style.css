@@ -382,6 +382,53 @@ User Table Styling ***************/
   background: #838383;
 }
 
+/* RTL: mirror row cell borders and alignment for Arabic */
+[dir="rtl"] .admin-layout .customTable table th,
+[dir="rtl"] .admin-layout .customTable tbody td {
+  text-align: right;
+}
+
+[dir="rtl"] .admin-layout .customTable tbody td:first-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  border-left: 0 !important;
+  border-right: 1px solid #E7E7E7 !important;
+  padding-right: 1.5rem !important;
+  padding-left: 1.2rem !important;
+}
+
+[dir="rtl"] .admin-layout .customTable tbody td:last-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+  border-right: 0 !important;
+  border-left: 1px solid #E7E7E7 !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.2rem !important;
+  text-align: center;
+}
+
+[dir="rtl"] .admin-layout .customTable tr td:first-child {
+  border-radius: 0 10px 10px 0 !important;
+  border-right: 1.5px solid rgba(57, 174, 148, 0.1) !important;
+  border-left: 0 !important;
+}
+
+[dir="rtl"] .admin-layout .customTable tr td:last-child {
+  border-radius: 10px 0 0 10px !important;
+}
+
+[dir="rtl"] .customTable th:first-child {
+  border-radius: 0 5px 5px 0;
+}
+
+[dir="rtl"] .customTable th:last-child {
+  border-radius: 5px 0 0 5px;
+}
+
 @media screen and (max-width:1199px) {
 
   .user-layout .customTable thead th,

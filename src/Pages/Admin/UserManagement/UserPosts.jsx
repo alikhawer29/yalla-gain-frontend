@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -8,6 +9,7 @@ import { getAll, post as postApi } from "../../../Services/Api";
 import "./style.css";
 
 const mapApiPostToUI = (apiPost) => {
+  const { t } = useTranslation();
     const fullName = `${apiPost?.user?.first_name ?? ""} ${apiPost?.user?.last_name ?? ""}`.trim();
     return {
         postId: apiPost?.id,
@@ -44,7 +46,7 @@ const mapApiPostToUI = (apiPost) => {
 };
 
 const UserPosts = () => {
-    usePageTitle("User Post");
+    usePageTitle(t('pages.user_post'));
     const { id } = useParams();
     const userId = useMemo(() => id || "2", [id]);
     const [posts, setPosts] = useState([]);

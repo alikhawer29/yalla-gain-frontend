@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaXmark } from "react-icons/fa6";
 import Styles from "./ImageGallery.module.css";
 
@@ -17,6 +18,7 @@ const ImageGallery = ({
   fullWidth = false,
   className,
 }) => {
+  const { t } = useTranslation();
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const gapMap = {

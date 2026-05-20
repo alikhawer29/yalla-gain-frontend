@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -18,6 +19,7 @@ const ChallengeManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
@@ -95,11 +97,11 @@ const ChallengeManagement = ({
   const labelType = (type) => type?.charAt(0)?.toUpperCase() + type?.slice(1);
 
   return (
-    <DashboardLayout pageTitle="Challenge Management">
+    <DashboardLayout pageTitle={t('sidebar.challenge_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mainTitle mb-0">Challenge Management</h2>
+            <h2 className="mainTitle mb-0">{t('sidebar.challenge_management')}</h2>
             <button
               className="btn btn-primary"
               onClick={() => navigate(`/admin/challenges/add`)}

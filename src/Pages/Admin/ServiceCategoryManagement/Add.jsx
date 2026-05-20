@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -31,12 +32,12 @@ const AddServiceCategory = ({ showModal }) => {
     };
 
     return (
-        <DashboardLayout pageTitle="Service Category Management">
+        <DashboardLayout pageTitle={t('sidebar.service_category_management')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="row">
                         <div className="col-12 col-xl-6 col-xxl-5">
-                            <h2 className="mainTitle mb-4"><BackButton2 />Add Category</h2>
+                            <h2 className="mainTitle mb-4"><BackButton2 />{t('pages.add_category')}</h2>
                             <Formik initialValues={initialValues} validationSchema={serviceCategoryAddSchema} onSubmit={handleSubmit}>
                                 {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
                                     <form onSubmit={handleSubmit}>

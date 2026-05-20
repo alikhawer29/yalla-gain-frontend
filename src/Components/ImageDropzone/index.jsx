@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./style.css";
 import { images } from "../../Assets";
 // A lightweight drag & drop image uploader with preview and remove
@@ -10,6 +11,7 @@ const ImageDropzone = ({
   initialUrl = "",
   onChange,
 }) => {
+  const { t } = useTranslation();
   const [preview, setPreview] = useState("");
   const [file, setFile] = useState(null); // if null and preview set => existing url
   const inputRef = useRef(null);

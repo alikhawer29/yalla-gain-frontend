@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import "./style.css";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -11,11 +12,11 @@ const Profile = () => {
 
     return (
         <>
-            <DashboardLayout pageTitle="My Profile">
+            <DashboardLayout pageTitle={t('pages.my_profile')}>
                 <div className="dashCard">
                     <div className="row mb-4">
                         <div className="col-12">
-                            <h2 className="mainTitle">My Profile</h2>
+                            <h2 className="mainTitle">{t('pages.my_profile')}</h2>
                         </div>
                     </div>
                     <div className="row mb-3">

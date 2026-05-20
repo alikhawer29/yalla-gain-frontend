@@ -64,6 +64,15 @@
   text-wrap: auto;
 }
 
+[dir="rtl"] .stats_card .statsText {
+  text-transform: none;
+  text-align: right;
+}
+
+[dir="rtl"] .stats_card .statsNumber {
+  text-align: right;
+}
+
 .statsChange {
   position: absolute;
   top: 15px;
@@ -82,8 +91,9 @@
   padding: 2rem;
 }
 
+
 .statsGraph {
-  margin-right: -1.5rem;
+  margin-inline-end: -1.5rem;
   margin-bottom: -15px;
 
   & svg {
@@ -94,7 +104,7 @@
 
 @media screen and (max-width: 1399px) {
   .statsGraph {
-    margin-right: -8px;
+    margin-inline-end: -8px;
   }
 }
 
@@ -128,7 +138,7 @@
 
 @media screen and (max-width: 991px) {
   .statsGraph {
-    margin-right: -1.5rem;
+    margin-inline-end: -1.5rem;
   }
 
   .statsNumber {

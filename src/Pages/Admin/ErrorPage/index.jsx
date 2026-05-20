@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react'
 // import { error } from '../../assets'
 // import SiteButton from '../../../components/SiteButton/SiteButton'

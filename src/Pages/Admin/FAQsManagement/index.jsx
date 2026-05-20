@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import withModal from "../../../HOC/withModal";
@@ -45,6 +46,7 @@ const sampleFaqs = [
 ];
 
 const FAQsManagement = ({ showModal }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [faqs, setFaqs] = useState([{ id: 1, question: "Loading...", answer: "Loading...", updated_at: "", media: [] }]);
     useEffect(() => {
@@ -76,11 +78,11 @@ const FAQsManagement = ({ showModal }) => {
     const rows = useMemo(() => faqs, [faqs]);
 
     return (
-        <DashboardLayout pageTitle="FAQs Management">
+        <DashboardLayout pageTitle={t('sidebar.faqs_management')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="d-flex justify-content-between align-items-center mb-4">
-                        <h2 className="mainTitle mb-0">FAQs Management</h2>
+                        <h2 className="mainTitle mb-0">{t('sidebar.faqs_management')}</h2>
                         <button
                             className="btn btn-primary"
                             onClick={() => navigate("/admin/faqs-management/add")}

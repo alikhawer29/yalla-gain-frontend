@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton from "../../../Components/BackButton";
@@ -11,6 +12,7 @@ import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { showToast } from "../../../Components/Toast";
 
 const ChangePassword = ({ showModal }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
     const [errorsData, setErrorsData] = useState({});
@@ -32,13 +34,13 @@ const ChangePassword = ({ showModal }) => {
     };
     return (
         <>
-            <DashboardLayout pageTitle="Change Password">
+            <DashboardLayout pageTitle={t('pages.change_password')}>
                 <div className="dashCard my-4">
                     <div className="row mb-3">
                         <div className="col-12">
                             <div className="d-flex align-items-center gap-2">
                                 <BackButton2 />
-                                <h2 className="mainTitle mb-0">Change Password</h2>
+                                <h2 className="mainTitle mb-0">{t('pages.change_password')}</h2>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +9,7 @@ import { FaEye } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 
 const TableDropdown = ({ itemId, linkPath, view, edit, add }) => {
+  const { t } = useTranslation();
   return (
     <Dropdown className="tableDropdown">
       <Dropdown.Toggle
@@ -20,18 +22,18 @@ const TableDropdown = ({ itemId, linkPath, view, edit, add }) => {
         {view && (
           <Link to={`${linkPath}/${itemId}`} className="dropdown-item">
             <FaEye />
-            View
+            {t("table_ui.view")}
           </Link>
         )}
         {edit && (
           <Link to={`${linkPath}/edit/${itemId}`} className="dropdown-item">
-            Edit
+            {t("table_ui.edit")}
           </Link>
         )}
         {add && (
           <Link to={`${linkPath}`} className="dropdown-item">
             <FaCirclePlus />
-            Add
+            {t("table_ui.add")}
           </Link>
         )}
       </Dropdown.Menu>

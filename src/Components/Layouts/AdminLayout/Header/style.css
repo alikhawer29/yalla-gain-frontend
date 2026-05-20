@@ -14,6 +14,18 @@
   right: 0;
 }
 
+/* RTL: logo right, nav/actions left (opposite of English) */
+[dir="rtl"] .customCollapse {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .header-nav-actions--rtl {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
 .header-collapsed .customHeader {
   /* width: calc(100% - 60px); */
   width: 100%;
@@ -58,6 +70,22 @@
     width: 26px;
     height: 26px;
   }
+}
+
+.chat-unread-badge {
+  position: absolute;
+  top: -10px;
+  inset-inline-end: -10px;
+  background-color: #FFA500;
+  color: #fff;
+  min-width: 18px;
+  height: 18px;
+  padding: 2px 5px;
+  font-size: 10px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /*----- Notifcation Start-----*/
@@ -181,7 +209,7 @@
   transition: all 0.2s ease-out;
   border-radius: 50px;
   position: absolute;
-  right: -8px;
+  inset-inline-end: -8px;
   top: 3px;
   display: flex;
   align-items: center;
@@ -290,14 +318,19 @@
     background: #15355E;
     position: absolute;
     top: 84px;
-    left: 0;
+    inset-inline-start: 0;
     width: 100%;
     box-shadow: 0px 2px 3px rgb(0 0 0 / 10%);
   }
 
   .customCollapse .navbar-nav {
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
+  }
+
+  [dir="rtl"] .customCollapse .navbar-nav,
+  [dir="rtl"] .header-nav-actions--rtl {
+    justify-content: flex-start;
   }
 
   .customCollapse .navbar-nav .dropdown-menu {

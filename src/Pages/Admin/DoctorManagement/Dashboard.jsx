@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import StatCard from "../../../Components/StatsCard/index";
 import "./dashboarsstyle.css";
@@ -9,9 +10,8 @@ import { images } from "../../../Assets";
 import { Link, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 
-const noop = () => {};
-
 const DoctorDashboard = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [data, setData] = useState([]);
 
@@ -144,7 +144,7 @@ const DoctorDashboard = () => {
   }, []);
 
   return (
-    <DashboardLayout pageTitle="Doctor Dashboard">
+    <DashboardLayout pageTitle={t('pages.doctor_dashboard')}>
       {/* <div className="container-fluid dashCard pt-1"> */}
       <div className="container-fluid">
         <div className="row">

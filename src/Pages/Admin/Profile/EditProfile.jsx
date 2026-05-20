@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -21,6 +22,7 @@ import { useDispatch } from "react-redux";
 
 
 const EditProfile = ({ showModal }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [imageObject, setImageObject] = useState({});
@@ -89,13 +91,13 @@ const EditProfile = ({ showModal }) => {
 
     return (
         <>
-            <DashboardLayout pageTitle="Edit Profile">
+            <DashboardLayout pageTitle={t('pages.edit_profile')}>
                 <div className="dashCard my-4">
                     <div className="row mt-3">
                         <div className="col-12">
                             <div className="d-flex align-items-center gap-2">
                                 <BackButton2 />
-                                <h2 className="mainTitle mb-0">Edit Profile</h2>
+                                <h2 className="mainTitle mb-0">{t('pages.edit_profile')}</h2>
                             </div>
                         </div>
                     </div>

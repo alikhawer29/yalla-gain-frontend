@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -22,6 +23,7 @@ const SERVICE_STATUS_MAP = {
 };
 
 const formatServiceStatus = (value) => {
+  const { t } = useTranslation();
     if (value === null || value === undefined) return "Inactive";
     if (Number.isFinite(value)) {
         return Number(value) === 1 ? "Active" : "Inactive";
@@ -207,7 +209,7 @@ const TrainerServiceView = ({ showModal }) => {
                         <div className="d-flex align-items-center gap-3">
                             <BackButton2 />
                             <div>
-                                <h2 className="mainTitle mb-1">View Service</h2>
+                                <h2 className="mainTitle mb-1">{t('pages.view_service')}</h2>
                                 {/* <p className="detail-subtitle mb-0">Detailed view of service {serviceDetails.title}</p> */}
                             </div>
                         </div>
@@ -305,7 +307,7 @@ const TrainerServiceView = ({ showModal }) => {
 
                 <div className="dashCard mt-4">
                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-                        <h3 className="mainTitle mb-0">Booking Logs</h3>
+                        <h3 className="mainTitle mb-0">{t('pages.booking_logs')}</h3>
                     </div>
                     <CustomTable
                         filters={filters}

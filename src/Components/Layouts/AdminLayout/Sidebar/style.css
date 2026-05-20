@@ -9,6 +9,13 @@
   padding-bottom: 84px;
   overflow-y: auto;
   white-space: nowrap;
+  left: 0;
+}
+
+/* RTL Support */
+[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
 }
 
 .sideLink {
@@ -24,6 +31,11 @@
   position: relative;
   transition: 0.15s linear;
   display: flex;
+}
+
+/* RTL Support */
+[dir="rtl"] .sideLink {
+  border-radius: 15px 0px 0px 15px;
 }
 
 .sideLink:hover,
@@ -59,6 +71,12 @@
   margin-right: 0.5rem;
 }
 
+/* RTL Support */
+[dir="rtl"] .sideIcon {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
 /*----- Sidebar Collapsed Start -----*/
 
 .sidebar.collapsed {
@@ -85,6 +103,12 @@
   position: absolute;
   padding: 0.8rem 1rem;
   white-space: nowrap;
+}
+
+/* RTL Support */
+[dir="rtl"] .sidebar.collapsed .sideLink:hover .sideLinkText {
+  left: auto;
+  right: 60px;
 }
 
 .sidebar::-webkit-scrollbar {

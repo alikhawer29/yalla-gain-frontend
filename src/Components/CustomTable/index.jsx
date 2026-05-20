@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { translateHeaders } from "../../Utils/i18nHelpers";
 import CustomFilters from "../CustomFilters";
 import CustomPagination from "../CustomPagination";
 import LoadingSpinner from "../Loader";
@@ -13,6 +15,12 @@ const tableSkeletonProps = {
 };
 
 const CustomTable = (props) => {
+  const { t, i18n } = useTranslation();
+  const headers = useMemo(
+    () => translateHeaders(props?.headers, t),
+    [props?.headers, t, i18n.language]
+  );
+
   return (
     <>
       <CustomFilters
@@ -29,7 +37,7 @@ const CustomTable = (props) => {
           <table>
             <thead>
               <tr>
-                {props?.headers.map((header, index) => (
+                {headers.map((header, index) => (
                   <th key={index}>
                     <Skeleton {...tableSkeletonProps} />
                   </th>
@@ -39,7 +47,7 @@ const CustomTable = (props) => {
             <tbody>
               {[...Array(5)].map((_, rowIndex) => (
                 <tr key={rowIndex}>
-                  {props?.headers.map((_, colIndex) => (
+                  {headers.map((_, colIndex) => (
                     <td key={colIndex}>
                       <Skeleton {...tableSkeletonProps} />
                     </td>
@@ -52,7 +60,7 @@ const CustomTable = (props) => {
           <table>
             <thead>
               <tr>
-                {props?.headers.map((header) => (
+                {headers.map((header) => (
                   <th key={header?.key} className="sorting">
                     {header?.title}
                   </th>
@@ -64,10 +72,10 @@ const CustomTable = (props) => {
               <tbody>
                 <tr>
                   <td
-                    colSpan={props?.headers?.length}
+                    colSpan={headers?.length}
                     style={{ textAlign: "center" }}
                   >
-                    No Records Found
+                    {t("table_ui.no_records")}
                   </td>
                 </tr>
               </tbody>

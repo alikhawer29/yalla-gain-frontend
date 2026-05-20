@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -15,6 +16,7 @@ import { Select } from "../../../Components/Select";
 import withModal from "../../../HOC/withModal";
 
 const DoctorServices = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const doctor = useMemo(

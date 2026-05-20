@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -19,6 +20,7 @@ const ContentManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const navigate = useNavigate();
@@ -76,14 +78,14 @@ const ContentManagement = ({
   };
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
               <div className="row mb-2">
                 <div className="col-12 d-flex justify-content-between align-items-center">
-                  <h2 className="mainTitle mb-0">Content Management</h2>
+                  <h2 className="mainTitle mb-0">{t('sidebar.content_management')}</h2>
                   <button
                     className="btn btn-primary"
                     onClick={() => navigate("/admin/content-management/add")}

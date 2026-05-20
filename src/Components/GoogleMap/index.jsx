@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from "react-i18next";
 import { GoogleMap, useJsApiLoader, Marker  } from '@react-google-maps/api'
 
 const containerStyle = {

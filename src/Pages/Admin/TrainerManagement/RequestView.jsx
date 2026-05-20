@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useParams } from "react-router-dom";
@@ -12,11 +13,11 @@ import { getCountryFlag } from "../../../Utils/helper";
 import DoctorReapproveForm from "../DoctorManagement/DoctorReapproveForm";
 import "./style.css";
 
-const STATUS_MAP = {
-  1: "Approved",
-  2: "Pending",
-  3: "Rejected",
-};
+const getStatusMap = (t) => ({
+  1: t("request_status.approved"),
+  2: t("request_status.pending"),
+  3: t("request_status.rejected"),
+});
 
 const formatNameField = (field) => {
   if (field == null || field === "") return "-";
@@ -60,6 +61,7 @@ const requestProfileSkeletonProps = {
 };
 
 const TrainerRequestView = ({ showModal, reasonModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [trainer, setTrainer] = useState(null);
@@ -90,17 +92,18 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
   }, [id]);
 
   useEffect(() => {
-    if (trainer && STATUS_MAP[trainer.status] !== "Rejected") {
+    if (trainer && trainer.status !== 3) {
       setReapproveEditMode(false);
       setEditLockSecret(null);
     }
   }, [trainer?.status]);
 
   const statusLabel = useMemo(
-    () => STATUS_MAP[trainer?.status] || "Pending",
-    [trainer],
+    () => getStatusMap(t)[trainer?.status] || t("request_status.pending"),
+    [trainer, t],
   );
-  const statusClassName = `status${statusLabel}`;
+  const statusClassKey = { 1: "Approved", 2: "Pending", 3: "Rejected" }[trainer?.status] || "Pending";
+  const statusClassName = `status${statusClassKey}`;
 
   const details = useMemo(() => {
     if (!trainer) {
@@ -286,34 +289,56 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
   };
 
   const showReapproveForm =
-    statusLabel === "Rejected" && reapproveEditMode && trainer;
+    trainer?.status === 3 && reapproveEditMode && trainer;
 
   const infoItems = useMemo(
     () => [
-      { label: "User Name", value: details.name },
-      { label: "Gender", value: details.gender },
-      { label: "Phone Number", value: details.phoneValue },
-      { label: "Email Address", value: details.email },
-      { label: "State", value: details.state },
-      { label: "City", value: details.city },
-      { label: "Bio", value: details.bio },
-      { label: "Language", value: details.language },
+      { key: "user_name", label: t("fields.user_name"), value: details.name },
+      { key: "gender", label: t("fields.gender"), value: details.gender },
+      { key: "phone", label: t("fields.phone_number"), value: details.phoneValue },
+      { key: "email", label: t("fields.email_address"), value: details.email },
+      { key: "state", label: t("fields.state"), value: details.state },
+      { key: "city", label: t("fields.city"), value: details.city },
+      { key: "bio", label: t("fields.bio"), value: details.bio },
+      { key: "language", label: t("fields.language"), value: details.language },
       {
-        label: "Specialization and Experience",
-        value: details.experienceList.length ? details.experienceList : "-",
+        key: "experience",
+        label: t("fields.specialization_experience"),
+        value: details.experienceList,
       },
     ],
-    [details],
+    [details, t],
   );
 
+  const renderInfoValue = (item) => {
+    const { key, value } = item;
+    if (key === "experience") {
+      if (!Array.isArray(value) || !value.length) return "-";
+      return value.map((exp) => (
+        <div key={exp.id}>
+          {exp.specialization} ({exp.experience} {t("common.years")})
+        </div>
+      ));
+    }
+    if (key === "phone" && typeof value === "string") {
+      return (
+        <>
+          {getCountryFlag(value, details.countryCode)}
+          {value}
+        </>
+      );
+    }
+    return value ?? "-";
+  };
+
   return (
-    <DashboardLayout pageTitle="Trainer Request Details">
+    <DashboardLayout pageTitle={t('pages.trainer_request_details')}>
       <div className="container-fluid">
         <div className="dashCard doctor-request-view">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <h2 className="mainTitle mb-4">
               <BackButton2 />
-              Trainer Details
+              {t("pages.trainer_details")}
             </h2>
             {requestProfileLoading ? (
               <Skeleton
@@ -440,26 +465,26 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
                     </div>
                   </div>
 
-                  {statusLabel === "Pending" && (
+                  {trainer?.status === 2 && (
                     <div className="doctor-request-actions">
                       <button
                         className="btn btn-primary"
                         onClick={handleApprove}
-                        disabled={isSubmitting || statusLabel === "Approved"}
+                        disabled={isSubmitting || trainer?.status === 1}
                       >
-                        Approve
+                        {t("pages.approve")}
                       </button>
                       <button
                         className="btn btn-outline-danger"
                         onClick={handleReject}
-                        disabled={isSubmitting || statusLabel === "Rejected"}
+                        disabled={isSubmitting || trainer?.status === 3}
                       >
-                        Reject
+                        {t("pages.reject")}
                       </button>
                     </div>
                   )}
 
-                  {statusLabel === "Rejected" && !reapproveEditMode && (
+                  {trainer?.status === 3 && !reapproveEditMode && (
                     <div className="doctor-request-actions">
                       <button
                         type="button"
@@ -467,7 +492,7 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
                         onClick={handleReApproveClick}
                         disabled={isSubmitting}
                       >
-                        Re Approve
+                        {t("pages.reapprove")}
                       </button>
                     </div>
                   )}
@@ -475,13 +500,13 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
               )}
 
               {details?.rejection_reason &&
-                statusLabel === "Rejected" &&
+                trainer?.status === 3 &&
                 !reapproveEditMode && (
                   <div className="doctor-info-grid mb-4">
                     <div className="row">
                       <div className="col-12 mb-3">
                         <div className="detail-box">
-                          <h6>Rejection Reason</h6>
+                          <h6>{t("pages.rejection_reason")}</h6>
                           <p className="mb-0">{details.rejection_reason}</p>
                         </div>
                       </div>
@@ -521,30 +546,11 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
                 <>
                   <div className="doctor-info-grid">
                     <div className="row">
-                      {infoItems.map(({ label, value }) => (
-                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                      {infoItems.map((item) => (
+                        <div className="col-xl-3 col-md-6 mb-3" key={item.key}>
                           <div className="detail-box">
-                            <h6>{label}</h6>
-                            <p className="mb-0">
-                              {label === "Phone Number" &&
-                                typeof value === "string" && (
-                                  <span>
-                                    {getCountryFlag(
-                                      value,
-                                      details.countryCode,
-                                    )}
-                                  </span>
-                                )}
-                              {label === "Specialization and Experience" &&
-                              Array.isArray(value)
-                                ? value.map((item) => (
-                                    <div key={item.id}>
-                                      {item.specialization} ({item.experience}{" "}
-                                      years)
-                                    </div>
-                                  ))
-                                : value}
-                            </p>
+                            <h6>{item.label}</h6>
+                            <p className="mb-0">{renderInfoValue(item)}</p>
                           </div>
                         </div>
                       ))}
@@ -587,7 +593,7 @@ const TrainerRequestView = ({ showModal, reasonModal }) => {
                 </>
               )}
 
-              {details?.rejection_reason && statusLabel !== "Rejected" && (
+              {details?.rejection_reason && trainer?.status !== 3 && (
                 <div className="doctor-info-grid">
                   <div className="row">
                     <div

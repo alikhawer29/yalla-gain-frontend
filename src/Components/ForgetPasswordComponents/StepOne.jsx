@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { forgotEmail } from "../../Config/Validations";
@@ -11,6 +12,7 @@ import "./style.css";
 import { post } from "../../Services/Api";
 
 const StepOne = ({ apiEndpoint, navigateTo }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
     usePageTitleUser("Forgot Password");

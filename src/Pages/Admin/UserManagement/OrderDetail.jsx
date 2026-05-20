@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton from "../../../Components/BackButton";
@@ -8,6 +9,7 @@ import { dateFormat, getCountryFlag, isNullOrEmpty, statusClassMap2 } from "../.
 import "./style.css";
 
 const UserOrderDetails = () => {
+  const { t } = useTranslation();
   const { orderid } = useParams();
   const [userOrderData, setUserOrderData] = useState({});
 

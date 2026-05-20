@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -29,6 +30,7 @@ const TrainerRequests = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -108,7 +110,7 @@ const TrainerRequests = ({
     (pagination.perPage || filters.per_page || 10);
 
   return (
-    <DashboardLayout pageTitle="Trainer Requests">
+    <DashboardLayout pageTitle={t('pages.trainer_requests')}>
       <div className="container-fluid">
         <div className="dashCard doctor-requests-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">

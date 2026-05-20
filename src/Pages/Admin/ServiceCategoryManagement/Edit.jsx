@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -14,6 +15,7 @@ import { getDetails, post } from "../../../Services/Api";
 import { serviceCategoryEditSchema } from "../../../Config/Validations";
 
 const normalizeStatus = (value) => {
+  const { t } = useTranslation();
     if (value === 1 || value === "1" || value === true || String(value).toLowerCase() === "active") {
         return "1";
     }
@@ -63,12 +65,12 @@ const EditServiceCategory = ({ showModal }) => {
     };
 
     return (
-        <DashboardLayout pageTitle="Service Category Management">
+        <DashboardLayout pageTitle={t('sidebar.service_category_management')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="row">
                         <div className="col-12 col-xl-6 col-xxl-5">
-                            <h2 className="mainTitle mb-4"><BackButton2 />Edit Category</h2>
+                            <h2 className="mainTitle mb-4"><BackButton2 />{t('pages.edit_category')}</h2>
                             <Formik enableReinitialize initialValues={initialValues} validationSchema={serviceCategoryEditSchema} onSubmit={handleSubmit}>
                                 {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
                                     <form onSubmit={handleSubmit}>

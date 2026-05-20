@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaXmark } from "react-icons/fa6";
 import { HiOutlineUpload } from "react-icons/hi";
 import Styles from "./UploadAndDisplayVideo.module.css";
@@ -15,6 +16,7 @@ const UploadAndDisplayVideo = ({
   errorFromParent = "",
   id = "0",
 }) => {
+  const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [error, setError] = useState("");
   const [initialized, setInitialized] = useState(false); // New flag

@@ -6,6 +6,12 @@ import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter } from "react-router-dom";
 import ApiConfig from "./Config/ApiConfig";
 import { persistor, store } from "./Store/store.jsx";
+import { applyDocumentDirection } from "./Utils/applyDirection";
+
+// Apply saved language direction before first paint (avoids English flash on refresh)
+applyDocumentDirection(localStorage.getItem("i18nextLng") || "en");
+
+import "./Utils/i18n";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

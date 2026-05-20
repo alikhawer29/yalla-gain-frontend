@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -9,6 +10,7 @@ import { getAll } from "../../../Services/Api";
 import { complaintLogsHeaders } from "../../../Config/TableHeaders";
 
 const ComplaintManagement = ({ filters, setFilters, pagination, updatePagination }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -46,14 +48,14 @@ const ComplaintManagement = ({ filters, setFilters, pagination, updatePagination
   }, [filters]);
 
   return (
-    <DashboardLayout pageTitle="Complaint Management">
+    <DashboardLayout pageTitle={t('sidebar.complaint_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
               <div className="row mb-2">
                 <div className="col-12 d-flex justify-content-between align-items-center">
-                  <h2 className="mainTitle mb-0">Complaint Management</h2>
+                  <h2 className="mainTitle mb-0">{t('sidebar.complaint_management')}</h2>
                 </div>
               </div>
               <CustomTable

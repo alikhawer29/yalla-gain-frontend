@@ -8,9 +8,18 @@ import { generateNextFiveYears } from "../../../Utils/helper";
 import { getAll } from "../../../Services/Api";
 import { Graph } from "../../../Components/Graph";
 import { images } from "../../../Assets";
+import { useTranslation } from "react-i18next";
 
 const STAT_CARD_COUNT = 5;
 const GRAPH_BLOCK_COUNT = 5;
+
+const STAT_LABEL_KEYS = [
+    "dashboard.total_earning",
+    "dashboard.total_users",
+    "dashboard.total_doctors",
+    "dashboard.total_trainers",
+    "dashboard.new_booking",
+];
 
 const statSkeletonProps = {
     baseColor: "rgba(255, 255, 255, 0.14)",
@@ -50,6 +59,7 @@ const DashboardGraphSkeleton = () => (
 );
 
 export const Dashboard = () => {
+    const { t, i18n, ready } = useTranslation();
     // Top stats cards
     const [data, setData] = useState([]);
     const [statsLoading, setStatsLoading] = useState(true);
@@ -66,11 +76,11 @@ export const Dashboard = () => {
 
     // Graph datasets (12 months each)
     const emptySeries = new Array(12).fill(0);
-    const [chartdata, setChartData] = useState({ heading: "Total Earning", label: "Total Earning", fill: true, data: emptySeries });
-    const [revenueChartdata, setRevenueChartData] = useState({ heading: "New Bookings", label: "New Bookings", fill: true, data: emptySeries });
-    const [userdata, setNewUsersData] = useState({ heading: "Total Users", label: "Total Users", fill: true, data: emptySeries });
-    const [doctorData, setDoctorData] = useState({ heading: "Total Doctors", label: "Total Doctors", fill: true, data: emptySeries });
-    const [trainerData, setTrainerData] = useState({ heading: "Total Trainers", label: "Total Trainers", fill: true, data: emptySeries });
+    const [chartdata, setChartData] = useState({ heading: t('dashboard.total_earning_graph'), label: t('dashboard.total_earning_graph'), fill: true, data: emptySeries });
+    const [revenueChartdata, setRevenueChartData] = useState({ heading: t('dashboard.new_bookings'), label: t('dashboard.new_bookings'), fill: true, data: emptySeries });
+    const [userdata, setNewUsersData] = useState({ heading: t('dashboard.total_users_graph'), label: t('dashboard.total_users_graph'), fill: true, data: emptySeries });
+    const [doctorData, setDoctorData] = useState({ heading: t('dashboard.total_doctors_graph'), label: t('dashboard.total_doctors_graph'), fill: true, data: emptySeries });
+    const [trainerData, setTrainerData] = useState({ heading: t('dashboard.total_trainer_graph'), label: t('dashboard.total_trainer_graph'), fill: true, data: emptySeries });
 
     // Helpers
     const monthOrder = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
@@ -82,11 +92,11 @@ export const Dashboard = () => {
             const res = await getAll("/dashboard/stats");
             const totals = res?.original?.data || res; // support both shapes
             setData([
-                { id: 1, image: images.Stats1, number: String(totals?.total_earning ?? 0), text: "total earning", change: totals?.total_earning ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#ECE7F1" },
-                { id: 2, image: images.Stats2, number: String(totals?.total_users ?? 0), text: "Total Users", change: totals?.total_users ?? 0, increase: true, arrowIcon: true, total_post: "Since last week", backgroundColor: "#E8F3F0" },
-                { id: 3, image: images.Stats3, number: String(totals?.total_doctors ?? 0), text: "Total Doctors", change: totals?.total_doctors ?? 0, increase: true, arrowIcon: true, total_post: "Since last week", backgroundColor: "#E2F1FB" },
-                { id: 4, image: images.Stats4, number: String(totals?.total_trainers ?? 0), text: "Total Trainers", change: totals?.total_trainers ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#FFF7CF" },
-                { id: 5, image: images.Stats5, number: String(totals?.total_appointments ?? 0), text: "New Booking", change: totals?.total_appointments ?? 0, increase: false, arrowIcon: true, total_post: "Since last week", backgroundColor: "#FFF7CF" },
+                { id: 1, image: images.Stats1, number: String(totals?.total_earning ?? 0), text: t('dashboard.total_earning'), change: totals?.total_earning ?? 0, increase: false, arrowIcon: true, total_post: t('dashboard.since_last_week'), backgroundColor: "#ECE7F1" },
+                { id: 2, image: images.Stats2, number: String(totals?.total_users ?? 0), text: t('dashboard.total_users'), change: totals?.total_users ?? 0, increase: true, arrowIcon: true, total_post: t('dashboard.since_last_week'), backgroundColor: "#E8F3F0" },
+                { id: 3, image: images.Stats3, number: String(totals?.total_doctors ?? 0), text: t('dashboard.total_doctors'), change: totals?.total_doctors ?? 0, increase: true, arrowIcon: true, total_post: t('dashboard.since_last_week'), backgroundColor: "#E2F1FB" },
+                { id: 4, image: images.Stats4, number: String(totals?.total_trainers ?? 0), text: t('dashboard.total_trainers'), change: totals?.total_trainers ?? 0, increase: false, arrowIcon: true, total_post: t('dashboard.since_last_week'), backgroundColor: "#FFF7CF" },
+                { id: 5, image: images.Stats5, number: String(totals?.total_appointments ?? 0), text: t('dashboard.new_booking'), change: totals?.total_appointments ?? 0, increase: false, arrowIcon: true, total_post: t('dashboard.since_last_week'), backgroundColor: "#FFF7CF" },
             ]);
         } catch (error) {
             // keep existing data if any; otherwise empty
@@ -126,7 +136,7 @@ export const Dashboard = () => {
         try {
             const res = await getAll("/dashboard/graph/earning", { year });
             const series = toSeries(res?.original?.data || res?.data || res);
-            setChartData({ heading: "Total Earning", label: "Total Earning", fill: true, data: series });
+            setChartData({ heading: t('dashboard.total_earning_graph'), label: t('dashboard.total_earning_graph'), fill: true, data: series });
         } catch (error) {
             console.error("Error fetching earning graph", error);
             setChartData((prev) => ({ ...prev, data: emptySeries }));
@@ -138,7 +148,7 @@ export const Dashboard = () => {
         try {
             const res = await getAll("/dashboard/graph/bookings", { year });
             const series = toSeries(res?.original?.data || res?.data || res);
-            setRevenueChartData({ heading: "New Bookings", label: "New Bookings", fill: true, data: series });
+            setRevenueChartData({ heading: t('dashboard.new_bookings'), label: t('dashboard.new_bookings'), fill: true, data: series });
         } catch (error) {
             console.error("Error fetching bookings graph", error);
             setRevenueChartData((prev) => ({ ...prev, data: emptySeries }));
@@ -150,7 +160,7 @@ export const Dashboard = () => {
         try {
             const res = await getAll("/dashboard/graph/users", { year });
             const series = toSeries(res?.original?.data || res?.data || res);
-            setNewUsersData({ heading: "Total Users", label: "Total Users", fill: true, data: series });
+            setNewUsersData({ heading: t('dashboard.total_users_graph'), label: t('dashboard.total_users_graph'), fill: true, data: series });
         } catch (error) {
             console.error("Error fetching users graph", error);
             setNewUsersData((prev) => ({ ...prev, data: emptySeries }));
@@ -162,7 +172,7 @@ export const Dashboard = () => {
         try {
             const res = await getAll("/dashboard/graph/doctors", { year });
             const series = toSeries(res?.original?.data || res?.data || res);
-            setDoctorData({ heading: "Total Doctors", label: "Total Doctors", fill: true, data: series });
+            setDoctorData({ heading: t('dashboard.total_doctors_graph'), label: t('dashboard.total_doctors_graph'), fill: true, data: series });
         } catch (error) {
             console.error("Error fetching doctors graph", error);
             setDoctorData((prev) => ({ ...prev, data: emptySeries }));
@@ -174,7 +184,7 @@ export const Dashboard = () => {
         try {
             const res = await getAll("/dashboard/graph/trainers", { year });
             const series = toSeries(res?.original?.data || res?.data || res);
-            setTrainerData({ heading: "Total Trainers", label: "Total Trainers", fill: true, data: series });
+            setTrainerData({ heading: t('dashboard.total_trainer_graph'), label: t('dashboard.total_trainer_graph'), fill: true, data: series });
         } catch (error) {
             console.error("Error fetching trainers graph", error);
             setTrainerData((prev) => ({ ...prev, data: emptySeries }));
@@ -216,9 +226,48 @@ export const Dashboard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        if (!ready) return;
+
+        setData((prev) => {
+            if (!prev.length) return prev;
+            return prev.map((item, index) => ({
+                ...item,
+                text: t(STAT_LABEL_KEYS[index]),
+                total_post: t("dashboard.since_last_week"),
+            }));
+        });
+
+        setChartData((prev) => ({
+            ...prev,
+            heading: t("dashboard.total_earning_graph"),
+            label: t("dashboard.total_earning_graph"),
+        }));
+        setRevenueChartData((prev) => ({
+            ...prev,
+            heading: t("dashboard.new_bookings"),
+            label: t("dashboard.new_bookings"),
+        }));
+        setNewUsersData((prev) => ({
+            ...prev,
+            heading: t("dashboard.total_users_graph"),
+            label: t("dashboard.total_users_graph"),
+        }));
+        setDoctorData((prev) => ({
+            ...prev,
+            heading: t("dashboard.total_doctors_graph"),
+            label: t("dashboard.total_doctors_graph"),
+        }));
+        setTrainerData((prev) => ({
+            ...prev,
+            heading: t("dashboard.total_trainer_graph"),
+            label: t("dashboard.total_trainer_graph"),
+        }));
+    }, [ready, i18n.language, t, data.length]);
+
     return (
         <>
-            <DashboardLayout pageTitle="Dashboard">
+            <DashboardLayout pageTitle={t('dashboard.title')}>
                 {/* <div className="container-fluid dashCard pt-1"> */}
                 <div className="container-fluid">
                     <div className="row">
@@ -227,7 +276,7 @@ export const Dashboard = () => {
                                 <div className="row">
                                     <div className="col-12">
                                         <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                                            <h2 className="mainTitle text-white mb-3">Dashboard</h2>
+                                            <h2 className="mainTitle text-white mb-3">{t('dashboard.title')}</h2>
                                             {/* <Link to={'/admin/dashboard/app-report'} className="btn btn-primary min-width-180">Report</Link> */}
                                         </div>
                                     </div>
@@ -266,8 +315,8 @@ export const Dashboard = () => {
                                             selectedValue={String(earningsYear)}
                                             onSelectChange={handleEarningYearChange}
                                             options={years}
-                                            text="Total Earning"
-                                            heading="Total Earning"
+                                            text={t('dashboard.total_earning_graph')}
+                                            heading={t('dashboard.total_earning_graph')}
                                             backgroundColor="rgba(17, 128, 118, 0.25)"
                                         />
                                     </div>
@@ -280,8 +329,8 @@ export const Dashboard = () => {
                                             selectedValue={String(bookingsYear)}
                                             onSelectChange={handleBookingYearChange}
                                             options={years}
-                                            text="New Bookings"
-                                            heading="New Bookings"
+                                            text={t('dashboard.new_bookings')}
+                                            heading={t('dashboard.new_bookings')}
                                             backgroundColor="rgba(17, 128, 118, 0.25)"
                                         />
                                     </div>
@@ -294,8 +343,8 @@ export const Dashboard = () => {
                                             selectedValue={String(usersYear)}
                                             onSelectChange={handleUsersYearChange}
                                             options={years}
-                                            text="Total Users"
-                                            heading="Total Users"
+                                            text={t('dashboard.total_users_graph')}
+                                            heading={t('dashboard.total_users_graph')}
                                             backgroundColor="rgba(17, 128, 118, 0.25)"
                                         />
                                     </div>
@@ -308,8 +357,8 @@ export const Dashboard = () => {
                                             selectedValue={String(doctorsYear)}
                                             onSelectChange={handleDoctorsYearChange}
                                             options={years}
-                                            text="Total Doctors"
-                                            heading="Total Doctors"
+                                            text={t('dashboard.total_doctors_graph')}
+                                            heading={t('dashboard.total_doctors_graph')}
                                             backgroundColor="rgba(17, 128, 118, 0.25)"
                                         />
                                     </div>
@@ -322,8 +371,8 @@ export const Dashboard = () => {
                                             selectedValue={String(trainersYear)}
                                             onSelectChange={handleTrainersYearChange}
                                             options={years}
-                                            text="Total Trainer"
-                                            heading="Total Trainer"
+                                            text={t('dashboard.total_trainer_graph')}
+                                            heading={t('dashboard.total_trainer_graph')}
                                             backgroundColor="rgba(17, 128, 118, 0.25)"
                                         />
                                     </div>

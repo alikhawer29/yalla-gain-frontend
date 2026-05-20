@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../../Components/BackButton/BackButton2";
@@ -14,6 +15,7 @@ import { useFormStatus } from "../../../../Hooks/useFormStatus";
 import { getDetails, post } from "../../../../Services/Api";
 
 const AddVideo = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id: contentId } = useParams();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -76,7 +78,7 @@ const AddVideo = ({ showModal }) => {
   }, [contentId]);
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

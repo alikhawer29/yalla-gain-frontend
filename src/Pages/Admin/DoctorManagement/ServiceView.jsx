@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -22,6 +23,7 @@ const SERVICE_STATUS_MAP = {
 };
 
 const formatServiceStatus = (value) => {
+  const { t } = useTranslation();
     if (value === null || value === undefined) return "Inactive";
     if (Number.isFinite(value)) {
         return Number(value) === 1 ? "Active" : "Inactive";
@@ -302,7 +304,7 @@ const DoctorServiceView = ({ showModal }) => {
 
                 <div className="dashCard mt-4">
                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-                        <h3 className="mainTitle mb-0">Booking Logs</h3>
+                        <h3 className="mainTitle mb-0">{t('pages.booking_logs')}</h3>
                     </div>
                     <CustomTable
                         filters={filters}

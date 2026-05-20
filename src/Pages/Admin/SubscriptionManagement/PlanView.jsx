@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import withModal from "../../../HOC/withModal";
@@ -11,6 +12,7 @@ import PlanViewDetails from "./PlanViewDetails";
 import "./style.css";
 
 const PlanView = ({ showModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [plan, setPlan] = useState(null);
@@ -56,7 +58,7 @@ const PlanView = ({ showModal }) => {
   const isActive = plan?.status === 1 || plan?.status === "1";
 
   return (
-    <DashboardLayout pageTitle="Subscription Management">
+    <DashboardLayout pageTitle={t('sidebar.subscription_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

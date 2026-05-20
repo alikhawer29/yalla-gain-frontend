@@ -1,10 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./style.css";
 import { dateFormat } from "../../Utils/helper";
 import { Card } from "react-bootstrap";
 import { FaRegClock } from "react-icons/fa6";
 
 const SlotCard = ({ day, date, slots }) => {
+  const { t } = useTranslation();
   return (
     <Card className="card-slot">
       {/* Header */}

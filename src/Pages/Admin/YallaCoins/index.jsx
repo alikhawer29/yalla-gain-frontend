@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
@@ -17,6 +18,7 @@ const InAppCoinManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [rows, setRows] = useState([]);
 
@@ -77,11 +79,11 @@ const InAppCoinManagement = ({
   const navigate = useNavigate();
 
   return (
-    <DashboardLayout pageTitle="Yalla Coin Logs">
+    <DashboardLayout pageTitle={t('sidebar.yalla_coin_logs')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mainTitle mb-0">In App Coin Management</h2>
+            <h2 className="mainTitle mb-0">{t('pages.in_app_coin_management')}</h2>
             <button
               className="btn btn-primary"
               onClick={() => navigate(`/admin/yalla-coins/manage`)}

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import CustomInput from "../../../Components/CustomInput";
 import { Select } from "../../../Components/Select";
 import CustomButton from "../../../Components/CustomButton";

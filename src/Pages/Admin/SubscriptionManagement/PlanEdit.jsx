@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -15,6 +16,7 @@ import {
 import PlanForm from "./PlanForm";
 
 const PlanEdit = ({ showModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -35,7 +37,7 @@ const PlanEdit = ({ showModal }) => {
   }, [id]);
 
   return (
-    <DashboardLayout pageTitle="Subscription Management">
+    <DashboardLayout pageTitle={t('sidebar.subscription_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

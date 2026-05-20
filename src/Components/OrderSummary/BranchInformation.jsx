@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { FaMapPin } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 // import "./style.css";
 
 const BranchInformation = (props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handlePinClick = () => {

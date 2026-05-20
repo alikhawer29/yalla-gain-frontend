@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -10,17 +11,17 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { getAll } from "../../../Services/Api";
 import "./style.css";
 
-const STATUS_MAP = {
-  1: "Approved",
-  2: "Pending",
-  3: "Rejected",
-};
+const getStatusMap = (t) => ({
+  1: t("request_status.approved"),
+  2: t("request_status.pending"),
+  3: t("request_status.rejected"),
+});
 
-const statusFilterOptions = [
-  { value: "", text: "All" },
-  { value: "2", text: "Pending" },
-  { value: "1", text: "Approved" },
-  { value: "3", text: "Rejected" },
+const getStatusFilterOptions = (t) => [
+  { value: "", text: t("status.all") },
+  { value: "2", text: t("request_status.pending") },
+  { value: "1", text: t("request_status.approved") },
+  { value: "3", text: t("request_status.rejected") },
 ];
 
 const DoctorRequests = ({
@@ -29,6 +30,7 @@ const DoctorRequests = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -98,13 +100,13 @@ const DoctorRequests = ({
     (pagination.perPage || filters.per_page || 10);
 
   return (
-    <DashboardLayout pageTitle="Doctor Requests">
+    <DashboardLayout pageTitle={t('pages.doctor_requests')}>
       <div className="container-fluid">
         <div className="dashCard doctor-requests-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <h2 className="mainTitle mb-4">
               <BackButton2 />
-              Doctor Requests
+              {t("pages.doctor_requests")}
             </h2>
           </div>
 
@@ -116,25 +118,25 @@ const DoctorRequests = ({
             pagination={pagination}
             selectOptions={[
               {
-                main_title: "Filter by status",
+                main_title: t("filters.filter_by_status"),
                 title: "status",
-                options: statusFilterOptions,
+                options: getStatusFilterOptions(t),
               },
             ]}
             dateFilters={[
               {
-                title: "Date",
+                title: t("filters.date"),
                 from: "from",
                 to: "to",
-                fromTitle: "From",
-                toTitle: "To",
+                fromTitle: t("filters.from"),
+                toTitle: t("filters.to"),
               },
             ]}
           >
             <tbody>
               {rows.map((request, index) => {
                 const statusKey = String(request?.status ?? "");
-                const statusLabel = STATUS_MAP[statusKey] || "-";
+                const statusLabel = getStatusMap(t)[statusKey] || "-";
                 return (
                   <tr
                     key={request?.id ?? index}
@@ -152,7 +154,11 @@ const DoctorRequests = ({
                         "-"}
                     </td>
                     <td>
-                      <span className={`statusChip status${statusLabel}`}>
+                      <span
+                        className={`statusChip status${
+                          { 1: "Approved", 2: "Pending", 3: "Rejected" }[statusKey] || ""
+                        }`}
+                      >
                         {statusLabel}
                       </span>
                     </td>

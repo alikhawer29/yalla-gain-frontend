@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -57,12 +58,12 @@ const AddFAQ = ({ showModal }) => {
     };
 
     return (
-        <DashboardLayout pageTitle="FAQs Management">
+        <DashboardLayout pageTitle={t('sidebar.faqs_management')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="row">
                         <div className="col-12">
-                            <h2 className="mainTitle mb-4"><BackButton2 />Add FAQs</h2>
+                            <h2 className="mainTitle mb-4"><BackButton2 />{t('pages.add_faqs')}</h2>
 
                             <Formik initialValues={initialValues} onSubmit={handleSubmit}>
                                 {({ values, handleChange, handleBlur, handleSubmit, setFieldValue }) => (

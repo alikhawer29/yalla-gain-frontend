@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -19,6 +20,7 @@ const DoctorManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
@@ -115,13 +117,13 @@ const DoctorManagement = ({
   const statusFilterOptions = [{ value: "", text: "All" }, ...statusOptions];
 
   return (
-    <DashboardLayout pageTitle="Doctor Management">
+    <DashboardLayout pageTitle={t('sidebar.doctor_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-                <h2 className="mainTitle mb-0">Doctor Management</h2>
+                <h2 className="mainTitle mb-0">{t('sidebar.doctor_management')}</h2>
                 <button
                   className="btn btn-primary"
                   onClick={() => navigate("/admin/doctor-management/requests")}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -14,6 +15,7 @@ import ImageDropzone from "../../../Components/ImageDropzone";
 import VideoDropzone from "../../../Components/VideoDropzone";
 
 const EditFAQ = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [initialValues, setInitialValues] = useState({
@@ -119,7 +121,7 @@ const EditFAQ = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="FAQs Management">
+    <DashboardLayout pageTitle={t('sidebar.faqs_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -19,6 +20,7 @@ const PlanManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const navigate = useNavigate();
@@ -80,7 +82,7 @@ const PlanManagement = ({
   };
 
   return (
-    <DashboardLayout pageTitle="Subscription Management">
+    <DashboardLayout pageTitle={t('sidebar.subscription_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

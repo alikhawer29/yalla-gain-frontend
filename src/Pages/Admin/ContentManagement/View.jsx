@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -15,6 +16,7 @@ import { getAll } from "../../../Services/Api";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 
 const ContentView = ({ showModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [content, setContent] = useState(null);
@@ -114,7 +116,7 @@ const ContentView = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         {/* Details Card */}
         <div className="dashCard">
@@ -211,7 +213,7 @@ const ContentView = ({ showModal }) => {
           <div className="row">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h3 className="mainTitle mb-0">Videos</h3>
+                <h3 className="mainTitle mb-0">{t('pages.videos')}</h3>
                 <button
                   className="btn btn-primary"
                   onClick={() =>

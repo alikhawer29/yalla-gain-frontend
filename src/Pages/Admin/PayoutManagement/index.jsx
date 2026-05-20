@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomInput from "../../../Components/CustomInput";
 import CustomButton from "../../../Components/CustomButton";
@@ -19,6 +20,7 @@ const seedLogs = (count = 12, date = "12/03/2024", label = "5 Days") =>
     }));
 
 const PayoutManagement = ({ filters, setFilters, pagination, updatePagination }) => {
+  const { t } = useTranslation();
     const [activeType, setActiveType] = useState("doctor"); // 'doctor' | 'trainer'
     const [timeValue, setTimeValue] = useState("");
     const [rows, setRows] = useState([]);
@@ -97,7 +99,7 @@ const PayoutManagement = ({ filters, setFilters, pagination, updatePagination })
                 <div className="dashCard mb-4">
                     <div className="row">
                         <div className="col-12">
-                            <h2 className="mainTitle mb-4">Payouts Management</h2>
+                            <h2 className="mainTitle mb-4">{t('pages.payouts_management')}</h2>
                             <div className="d-flex flex-wrap gap-2 mb-4">
                                 <button
                                     type="button"
@@ -139,7 +141,7 @@ const PayoutManagement = ({ filters, setFilters, pagination, updatePagination })
                 <div className="dashCard">
                     <div className="row">
                         <div className="col-12">
-                            <h2 className="mainTitle mb-3">Payout Logs</h2>
+                            <h2 className="mainTitle mb-3">{t('pages.payout_logs')}</h2>
                             <CustomTable
                                 filters={filters}
                                 setFilters={setFilters}

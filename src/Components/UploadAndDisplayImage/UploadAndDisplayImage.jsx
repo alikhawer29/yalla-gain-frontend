@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaXmark } from "react-icons/fa6";
 import Styles from "./UploadAndDisplayImage.module.css";
 import "./style.css";
@@ -20,6 +21,7 @@ const ImageUpload = ({
   imgId,
   uploaderType = "default",
 }) => {
+  const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [error, setError] = useState("");
   const [initialized, setInitialized] = useState(false); // New flag

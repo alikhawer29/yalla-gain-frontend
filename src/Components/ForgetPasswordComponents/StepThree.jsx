@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import "./style.css";
 import { post } from "../../Services/Api";
 
 const StepThree = ({ apiEndpoint, navigateTo }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [load, setLoad] = useState(false);

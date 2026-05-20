@@ -1,5 +1,7 @@
 import debounce from "lodash.debounce";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { translateFilterOptions, translateOptions } from "../../Utils/i18nHelpers";
 import { Dropdown } from "react-bootstrap";
 import { RiEqualizerLine } from "react-icons/ri";
 import { sorting } from "../../Config/TableStatus";
@@ -14,7 +16,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const CustomFilters = (props) => {
+  const { t, i18n } = useTranslation();
   const { showEntries = true, showFilter = true, showSearch = true } = props;
+  const sortingOptions = useMemo(
+    () => translateOptions(sorting, t),
+    [t, i18n.language]
+  );
+  const selectOptions = useMemo(
+    () => translateFilterOptions(props?.selectOptions, t),
+    [props?.selectOptions, t, i18n.language]
+  );
   const [formData, setFormData] = useState({});
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
@@ -90,11 +101,11 @@ const CustomFilters = (props) => {
                 className="select-entries"
                 value={formData?.per_page}
                 name="per_page"
-                label="Show"
+                label={t("filters.show")}
                 onChange={(value) => handleSelectChange("per_page", value)}
                 labelclass="secondaryLabel mb-0"
               >
-                {sorting}
+                {sortingOptions}
               </Select>
             </div>
           )}
@@ -104,7 +115,7 @@ const CustomFilters = (props) => {
                 <div className="searchWrapper">
                   <SiteInput
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t("filters.search_placeholder")}
                     name="search"
                     className="filterInput searchInput form-control"
                     value={formData?.search || ""}
@@ -129,7 +140,7 @@ const CustomFilters = (props) => {
 
                 <Dropdown.Menu align="end">
                   <div className="border-btm py-3">
-                    <h2 className="filter-title ms-3 mb-0">Filters</h2>
+                    <h2 className="filter-title ms-3 mb-0">{t("filters.filters")}</h2>
                   </div>
                   <div className="fiter-main">
                     {props?.dateFilters && (
@@ -138,18 +149,20 @@ const CustomFilters = (props) => {
                           ({ title, toTitle, fromTitle, from, to }, index) => (
                             <div className="filterWrapper mb-4" key={index}>
                               <h5 className="mb-2 fw-medium text-white">
-                                Filter By{" "}
-                                {title == "Date" ? "Created On Date" : title}
+                                {t("filters.filter_by")}{" "}
+                                {title === "Date"
+                                  ? t("filters.created_on_date")
+                                  : t(`filters.${title?.toLowerCase?.().replace(/\s+/g, "_")}`, { defaultValue: title })}
                               </h5>
                               {fromTitle && (
                                 <label className="filterLabel w-100 mb-0 mt-2">
-                                  {fromTitle}
+                                  {fromTitle === "From" ? t("filters.from") : fromTitle}
                                 </label>
                               )}
                               <input
                                 type="date"
-                                placeholder="From"
-                                label="From"
+                                placeholder={t("filters.from")}
+                                label={t("filters.from")}
                                 name={from}
                                 className="w-100 mb-3 form-control"
                                 value={formData[from] || ""}
@@ -157,12 +170,12 @@ const CustomFilters = (props) => {
                               />
                               {toTitle && (
                                 <label className="filterLabel w-100 mb-0">
-                                  {toTitle}
+                                  {toTitle === "To" ? t("filters.to") : toTitle}
                                 </label>
                               )}
                               <input
                                 type="date"
-                                placeholder="To"
+                                placeholder={t("filters.to")}
                                 name={to}
                                 className="w-100 form-control"
                                 value={formData[to] || ""}
@@ -178,7 +191,9 @@ const CustomFilters = (props) => {
                       {props.checkboxOptions?.map((option, index) => (
                         <React.Fragment key={index}>
                           <div className="checkboxWrapper mb-3" key={index}>
-                            <label className="filterLabel mb-3">{`Filter by ${option.title}`}</label>
+                            <label className="filterLabel mb-3">
+                              {t("filters.filter_by_title", { title: option.title })}
+                            </label>
                             {option.options.map((checkbox, idx) => (
                               <div className="form-check ps-0 mb-2" key={idx}>
                                 <label className="radio-checkbox-container">
@@ -200,7 +215,7 @@ const CustomFilters = (props) => {
                       ))}
                     </div>
                     <div className="my-3">
-                      {props?.selectOptions?.map((option, index) => (
+                      {selectOptions?.map((option, index) => (
                         <div className="my-3" key={index}>
                           {option?.main_title && (
                             <h5 className="filterLabel w-100 mb-2 fw-medium text-capitalize">
@@ -228,12 +243,12 @@ const CustomFilters = (props) => {
                       <CustomButton
                         onClick={handleApply}
                         variant="primary flex-grow-1"
-                        text="Apply"
+                        text={t("filters.apply")}
                       />
                       <CustomButton
                         onClick={handleClear}
                         variant="secondary flex-grow-1"
-                        text="Clear"
+                        text={t("filters.clear")}
                       />
                     </div>
                   </div>

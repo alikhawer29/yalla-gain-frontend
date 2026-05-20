@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -13,6 +14,7 @@ import { getDetails, post } from "../../../Services/Api";
 import "./style.css";
 
 const BookingView = ({ showModal, reasonModal, closeModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [status, setStatus] = useState("Pending");
   const [detail, setDetail] = useState(null);
@@ -104,7 +106,7 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="View Report">
+    <DashboardLayout pageTitle={t('pages.view_report')}>
       <div className="container-fluid">
         <div className="dashCard report-view">
           <h2 className="mainTitle mb-4">

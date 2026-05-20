@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -10,6 +11,7 @@ import CustomButton from "../../../Components/CustomButton";
 import "./style.css";
 
 const formatType = (value = "") => {
+  const { t } = useTranslation();
     if (!value) return "-";
     return value.charAt(0).toUpperCase() + value.slice(1);
 };
@@ -64,11 +66,11 @@ const ServiceCategoryView = ({ showModal }) => {
     const statusValue = normalizeStatus(data?.status);
 
     return (
-        <DashboardLayout pageTitle="Service Category Management">
+        <DashboardLayout pageTitle={t('sidebar.service_category_management')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h2 className="mainTitle mb-0"><BackButton2 />View Category</h2>
+                        <h2 className="mainTitle mb-0"><BackButton2 />{t('pages.view_category')}</h2>
                         <div className="d-flex align-items-center gap-3">
                             <Select
                                 className={`tabel-select status${statusValue === "1" ? "Active" : "Inactive"}`}

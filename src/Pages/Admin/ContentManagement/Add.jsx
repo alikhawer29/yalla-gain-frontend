@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -13,6 +14,7 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { getDetails, post } from "../../../Services/Api";
 
 const AddContent = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [muscleOptions, setMuscleOptions] = useState([]);
@@ -60,7 +62,7 @@ const AddContent = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <h2 className="mainTitle mb-4">

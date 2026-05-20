@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import Toast, { showToast } from "../Toast";
 import "./style.css";
 
 const StepTwo = ({ apiEndpoint, resendEndpoint, navigateTo }) => {
+  const { t } = useTranslation();
     const navigate = useNavigate();
     const [load, setLoad] = useState(false);
     const [data, setForgotPasswordData] = useState({});

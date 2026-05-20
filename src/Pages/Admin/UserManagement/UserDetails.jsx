@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -40,6 +41,7 @@ const profileSkeletonProps = {
 const UserDetails = ({
   showModal /*, filters, setFilters, pagination, updatePagination */,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [imageLoading, setImageLoading] = useState(true);
@@ -251,7 +253,7 @@ const UserDetails = ({
   }, [profileData]);
 
   return (
-    <DashboardLayout pageTitle="User Details">
+    <DashboardLayout pageTitle={t('pages.user_details')}>
       <div className="user-details">
         <div className="row dashCard mb-5">
           <div className="col-12 mb-4">
@@ -392,7 +394,7 @@ const UserDetails = ({
         </div>
         <div className="row dashCard mb-3">
           <div className="col-12">
-            <h2 className="mainTitle">Booking Logs</h2>
+            <h2 className="mainTitle">{t('pages.booking_logs')}</h2>
           </div>
           <div className="col-12">
             <CustomTable
@@ -469,7 +471,7 @@ const UserDetails = ({
         </div>
         <div className="row dashCard mb-3">
           <div className="col-12">
-            <h2 className="mainTitle">Challenges</h2>
+            <h2 className="mainTitle">{t('pages.challenges')}</h2>
           </div>
           <div className="col-12">
             <CustomTable
@@ -532,7 +534,7 @@ const UserDetails = ({
         </div>
         <div className="row dashCard mb-3">
           <div className="col-12">
-            <h2 className="mainTitle">Subscription Logs</h2>
+            <h2 className="mainTitle">{t('pages.subscription_logs')}</h2>
           </div>
           <div className="col-12">
             <CustomTable

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -62,6 +63,7 @@ const doctorProfileSkeletonProps = {
 };
 
 const DoctorDetails = ({ showModal }) => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [doctorProfileLoading, setDoctorProfileLoading] = useState(true);
@@ -218,21 +220,43 @@ const DoctorDetails = ({ showModal }) => {
 
   const infoItems = useMemo(
     () => [
-      { label: "User Name", value: details.name },
-      { label: "Gender", value: details.gender },
-      { label: "Phone Number", value: details.phoneValue },
-      { label: "Email Address", value: details.email },
-      { label: "State", value: details.state },
-      { label: "City", value: details.city },
-      { label: "Bio", value: details.bio },
-      { label: "Language", value: details.language },
+      { key: "user_name", label: t("fields.user_name"), value: details.name },
+      { key: "gender", label: t("fields.gender"), value: details.gender },
+      { key: "phone", label: t("fields.phone_number"), value: details.phoneValue },
+      { key: "email", label: t("fields.email_address"), value: details.email },
+      { key: "state", label: t("fields.state"), value: details.state },
+      { key: "city", label: t("fields.city"), value: details.city },
+      { key: "bio", label: t("fields.bio"), value: details.bio },
+      { key: "language", label: t("fields.language"), value: details.language },
       {
-        label: "Specialization and Experience",
-        value: details.experienceList.length ? details.experienceList : "-",
+        key: "experience",
+        label: t("fields.specialization_experience"),
+        value: details.experienceList,
       },
     ],
-    [details],
+    [details, t],
   );
+
+  const renderInfoValue = (item) => {
+    const { key, value } = item;
+    if (key === "experience") {
+      if (!Array.isArray(value) || !value.length) return "-";
+      return value.map((exp) => (
+        <div key={exp.id}>
+          {exp.specialization} ({exp.experience} {t("common.years")})
+        </div>
+      ));
+    }
+    if (key === "phone" && typeof value === "string") {
+      return (
+        <>
+          {getCountryFlag(value, details.countryCode)}
+          {value}
+        </>
+      );
+    }
+    return value ?? "-";
+  };
 
   const handleStatusChange = (e, userId) => {
     const newStatusValue = e;
@@ -265,13 +289,13 @@ const DoctorDetails = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Doctor Details">
+    <DashboardLayout pageTitle={t('pages.doctor_details')}>
       <div className="container-fluid">
         <div className="dashCard doctor-request-view doctor-details-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <h2 className="mainTitle mb-4">
               <BackButton2 />
-              Doctor Details
+              {t("pages.doctor_details")}
             </h2>
             {doctorProfileLoading ? (
               <Skeleton
@@ -437,27 +461,11 @@ const DoctorDetails = ({ showModal }) => {
 
               <div className="doctor-info-grid">
                 <div className="row">
-                  {infoItems.map(({ label, value }) => (
-                    <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                  {infoItems.map((item) => (
+                    <div className="col-xl-3 col-md-6 mb-3" key={item.key}>
                       <div className="detail-box">
-                        <h6>{label}</h6>
-                        <p className="mb-0">
-                          {label === "Phone Number" &&
-                            typeof value === "string" && (
-                              <span>
-                                {getCountryFlag(value, details.countryCode)}
-                              </span>
-                            )}
-                          {label === "Specialization and Experience" &&
-                          Array.isArray(value)
-                            ? value.map((item) => (
-                                <div key={item.id}>
-                                  {item.specialization} ({item.experience}{" "}
-                                  years)
-                                </div>
-                              ))
-                            : value}
-                        </p>
+                        <h6>{item.label}</h6>
+                        <p className="mb-0">{renderInfoValue(item)}</p>
                       </div>
                     </div>
                   ))}
@@ -502,7 +510,7 @@ const DoctorDetails = ({ showModal }) => {
 
         <div className="dashCard mt-4">
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-            <h3 className="mainTitle mb-0">Booking Logs</h3>
+            <h3 className="mainTitle mb-0">{t('pages.booking_logs')}</h3>
           </div>
           <CustomTable
             filters={filters}

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -8,6 +9,7 @@ import { Dropdown } from "react-bootstrap";
 import "./style.css";
 
 const PostView = ({ showModal }) => {
+  const { t } = useTranslation();
     const { id } = useParams();
     const [detail, setDetail] = useState(null);
 
@@ -59,7 +61,7 @@ const PostView = ({ showModal }) => {
     };
 
     return (
-        <DashboardLayout pageTitle="User Post">
+        <DashboardLayout pageTitle={t('pages.user_post')}>
             <div className="container-fluid">
                 <div className="dashCard">
                     <div className="d-flex align-items-center justify-content-between mb-3">

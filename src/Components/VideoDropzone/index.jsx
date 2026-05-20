@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./style.css";
 import { images } from "../../Assets";
 
@@ -10,6 +11,7 @@ const VideoDropzone = ({
   initialUrl = "",
   onChange,
 }) => {
+  const { t } = useTranslation();
   const [preview, setPreview] = useState("");
   const [file, setFile] = useState(null);
   const inputRef = useRef(null);

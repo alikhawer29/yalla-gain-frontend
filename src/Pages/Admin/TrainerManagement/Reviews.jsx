@@ -1,4 +1,5 @@
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,6 +31,7 @@ const INITIAL_STATS = {
 };
 
 const TrainerReviews = () => {
+  const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
 

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { buildPlanPreview } from "./planFormHelpers";
 
 const PlanPreviewCard = ({ values, eyebrow = "Plan features" }) => {

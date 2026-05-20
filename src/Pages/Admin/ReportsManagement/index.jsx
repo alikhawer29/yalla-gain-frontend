@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -18,6 +19,7 @@ import { getAll } from "../../../Services/Api";
 import "./style.css";
 
 const mapStatus = (status) => {
+  const { t } = useTranslation();
   if (typeof status === "number") return status === 1 ? "Pending" : "Resolved";
   if (!status) return "Pending";
   const s = String(status).toLowerCase();
@@ -103,12 +105,12 @@ const ReportsManagement = ({
   }, [activeTab, filters]);
 
   return (
-    <DashboardLayout pageTitle="Reports Management">
+    <DashboardLayout pageTitle={t('sidebar.reports_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
-              <h2 className="mainTitle mb-4">Reports Management</h2>
+              <h2 className="mainTitle mb-4">{t('sidebar.reports_management')}</h2>
 
               <div className="d-flex flex-wrap gap-2 mb-4 logs-type-group">
                 {TABS.map((tab) => (

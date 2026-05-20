@@ -1,4 +1,5 @@
 import { FieldArray, Form, Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useMemo } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -20,6 +21,7 @@ import {
 import { post } from "../../../Services/Api";
 
 const stringFromField = (field) => {
+  const { t } = useTranslation();
   if (field == null) return "";
   if (typeof field === "string") return field;
   return field.name || field.slug || "";

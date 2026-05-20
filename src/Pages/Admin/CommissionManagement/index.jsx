@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomInput from "../../../Components/CustomInput";
 import CustomButton from "../../../Components/CustomButton";
@@ -16,6 +17,7 @@ const CommissionManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const [activeType, setActiveType] = useState("doctor"); // 'doctor' | 'trainer'
   const [rate, setRate] = useState("");
   const [rows, setRows] = useState([]);
@@ -97,13 +99,13 @@ const CommissionManagement = ({
   };
 
   return (
-    <DashboardLayout pageTitle="Commission Management">
+    <DashboardLayout pageTitle={t('sidebar.commission_management')}>
       <div className="container-fluid">
         {/* Management Card */}
         <div className="dashCard mb-4">
           <div className="row">
             <div className="col-12">
-              <h2 className="mainTitle mb-4">Commission Management</h2>
+              <h2 className="mainTitle mb-4">{t('sidebar.commission_management')}</h2>
               <div className="d-flex flex-wrap gap-2 mb-4">
                 <button
                   type="button"
@@ -152,7 +154,7 @@ const CommissionManagement = ({
         <div className="dashCard">
           <div className="row">
             <div className="col-12">
-              <h2 className="mainTitle mb-3">Commission Logs</h2>
+              <h2 className="mainTitle mb-3">{t('pages.commission_logs')}</h2>
               <CustomTable
                 filters={filters}
                 setFilters={setFilters}

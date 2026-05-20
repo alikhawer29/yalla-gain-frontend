@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { translateOptions } from "../../Utils/i18nHelpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./index.css";
 
 export const Select = (props) => {
+  const { t, i18n } = useTranslation();
   const [selectedValue, setSelectedValue] = useState("");
+  const children = useMemo(
+    () => translateOptions(props?.children, t),
+    [props?.children, t, i18n.language]
+  );
 
   useEffect(() => {
     setSelectedValue(props.value ?? "");
@@ -58,7 +65,7 @@ export const Select = (props) => {
         >
           {props?.mainLabel && <option value="">{props?.mainLabel}</option>}
 
-          {props?.children?.map((item) => (
+          {children?.map((item) => (
             <option
               key={item?.value}
               value={item?.value}

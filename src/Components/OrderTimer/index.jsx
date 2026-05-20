@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const OrderTimer = ({ estimatedMinutes, orderId }) => {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(0);
   const makingTimeInMilliseconds = estimatedMinutes * 60 * 1000;
 

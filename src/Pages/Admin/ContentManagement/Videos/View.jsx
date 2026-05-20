@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../../Components/BackButton/BackButton2";
@@ -9,6 +10,7 @@ import { statusOptions } from "../../../../Config/TableStatus";
 import "./style.css";
 
 const VideoView = ({ showModal }) => {
+  const { t } = useTranslation();
   const { videoId } = useParams();
   const navigate = useNavigate();
   const [video, setVideo] = useState(null);
@@ -41,7 +43,7 @@ const VideoView = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Content Management">
+    <DashboardLayout pageTitle={t('sidebar.content_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="d-flex justify-content-between align-items-center mb-3">

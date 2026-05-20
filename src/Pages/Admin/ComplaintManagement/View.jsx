@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -7,6 +8,7 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import "./style.css";
 
 const ComplaintView = () => {
+  const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [detail, setDetail] = useState(null);
@@ -30,12 +32,12 @@ const ComplaintView = () => {
     }, [id]);
 
     return (
-        <DashboardLayout pageTitle="Complaint Management">
+        <DashboardLayout pageTitle={t('sidebar.complaint_management')}>
             <div className="container-fluid">
                 <div className="dashCard query-view">
                     <div className="row">
                         <div className="col-12">
-                            <h2 className="mainTitle mb-4"><BackButton2 />View Complain</h2>
+                            <h2 className="mainTitle mb-4"><BackButton2 />{t('pages.view_complain')}</h2>
                             {!detail ? (
                                 <p className="mb-0">{isSubmitting ? "Loading..." : "No details available"}</p>
                             ) : (

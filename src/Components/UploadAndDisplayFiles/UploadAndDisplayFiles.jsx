@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaXmark } from "react-icons/fa6";
 import { HiOutlineDocument } from "react-icons/hi2";
 import Styles from "./UploadAndDisplayFiles.module.css";
@@ -15,6 +16,7 @@ const UploadAndDisplayFiles = ({
   errorFromParent = "",
   height = "",
 }) => {
+  const { t } = useTranslation();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState("");
   const [initialized, setInitialized] = useState(false); // New flag

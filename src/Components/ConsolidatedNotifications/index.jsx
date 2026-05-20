@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Col, Row } from "react-bootstrap";
 import { notificationOptions } from "../../Config/TableStatus";
 import withPagination from "../../HOC/withPagination";
@@ -20,6 +21,7 @@ const ConsolidatedNotifications = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState("");

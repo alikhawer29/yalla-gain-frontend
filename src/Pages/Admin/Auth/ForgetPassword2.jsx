@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { AuthLayout } from "../../../Components/Layouts/AdminLayout/Auth";
 import StepTwo from "../../../Components/ForgetPasswordComponents/StepTwo";
 import { usePageTitle } from "../../../Utils/helper";

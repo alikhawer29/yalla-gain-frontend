@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../../Hooks/useAuth";
 import { generateLinks } from "../../../../Utils/helper";
+import { useTranslation } from "react-i18next";
 import "./style.css";
 import { images } from "../../../../Assets";
 
@@ -9,6 +10,7 @@ export const Sidebar = (props) => {
   const [user, setUser] = useState({});
   const urlPath = window.location.pathname;
   const { role } = useAuth();
+  const { t } = useTranslation();
   const [headerLogo, setHeaderLogo] = useState(images.HeaderLogo);
   useEffect(() => {
     setUser(role);
@@ -20,6 +22,11 @@ export const Sidebar = (props) => {
   }, [props.sideclassName]);
   
   let Links = generateLinks(role);
+
+  const translateSidebarName = (name) => {
+    const key = name.toLowerCase().replace(/ /g, '_');
+    return t(`sidebar.${key}`);
+  };
 
   return (
     <>
@@ -36,7 +43,7 @@ export const Sidebar = (props) => {
                 <span className="sideIcon">
                   <element.image />
                 </span>
-                <span className="sideLinkText">{element.name}</span>
+                <span className="sideLinkText">{translateSidebarName(element.name)}</span>
               </Link>
             </li>
           ))}

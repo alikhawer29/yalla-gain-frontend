@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { CChart } from "@coreui/react-chartjs";
+import { useTranslation } from "react-i18next";
 import { Select } from "../Select";
-import { monthly, months } from "../../Config/TableStatus";
 import { generateNextFiveYears } from "../../Utils/helper";
 
+const MONTH_KEYS = [
+  "jan", "feb", "mar", "apr", "may", "jun",
+  "jul", "aug", "sep", "oct", "nov", "dec",
+];
+
 export const Graph = (props) => {
+  const { t, i18n } = useTranslation();
+  const monthLabels = useMemo(
+    () => MONTH_KEYS.map((key) => t(`dashboard.months.${key}`)),
+    [t, i18n.language]
+  );
   const [selectedValue, setSelectedValue] = useState(props.selectedValue);
   const [selectedValueTwo, setSelectedValueTwo] = useState(
     props.selectedValueTwo
@@ -56,6 +66,7 @@ export const Graph = (props) => {
         style={{ minHeight: "400px", height: "100%" }}
       >
         <CChart
+          key={i18n.language}
           type={props.type}
           height={90}
           options={{
@@ -80,7 +91,7 @@ export const Graph = (props) => {
               x: {
                 title: {
                   display: true,
-                  text: "Months",
+                  text: t("dashboard.months_title"),
                   color: "#fff", // white color
                   font: {
                     size: 16, // Font size 16px
@@ -92,22 +103,9 @@ export const Graph = (props) => {
           }}
           style={{ height: "400px" }}
           data={{
-            labels: props?.label
-              ? props?.label
-              : [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-              ],
+            labels: Array.isArray(props?.chartLabels)
+              ? props.chartLabels
+              : monthLabels,
 
             tension: "0.5",
             datasets: [

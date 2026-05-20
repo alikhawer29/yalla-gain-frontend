@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -78,7 +79,7 @@ const AddChallenge = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Challenge Management">
+    <DashboardLayout pageTitle={t('sidebar.challenge_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

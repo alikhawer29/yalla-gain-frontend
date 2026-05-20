@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -33,7 +34,7 @@ const PlanAdd = ({ showModal }) => {
   };
 
   return (
-    <DashboardLayout pageTitle="Subscription Management">
+    <DashboardLayout pageTitle={t('sidebar.subscription_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row">

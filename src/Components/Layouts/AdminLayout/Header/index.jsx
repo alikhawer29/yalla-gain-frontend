@@ -19,8 +19,12 @@ import HeaderNotification from "../../../HeaderNotification";
 import Toast, { showToast } from "../../../Toast";
 import "./style.css";
 import { images } from "../../../../Assets";
+import LanguageSwitcher from "../../../LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export const Header = (props) => {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language?.startsWith("ar");
   const navigate = useNavigate();
   const { role, user } = useAuth();
   const handleLogout = useLogout();
@@ -56,7 +60,7 @@ export const Header = (props) => {
   }, []);
 
   const logout = async () => {
-    showToast("Logout Successfully", "success");
+    showToast(t("toast.logout_success"), "success");
     await handleLogout(role);
     setTimeout(() => {
       navigate(`/${role}`);
@@ -78,21 +82,16 @@ export const Header = (props) => {
           id="basic-navbar-nav"
           className="customCollapse order-3"
         >
-          <Nav className="ms-auto">
+          <Nav className={`header-nav-actions ${isRtl ? "header-nav-actions--rtl" : "ms-auto"}`}>
+            <LanguageSwitcher />
             <Link
-              className="customerSupportIcon me-2 position-relative"
+              className={`customerSupportIcon ${isRtl ? "ms-2" : "me-2"} position-relative`}
               to={"/admin/chat"}
             >
               <ChatIconAdmin />
               {unreadChatsCount > 0 && (
                 <span
-                  className="badge"
-                  style={{
-                    position: "absolute",
-                    top: -10,
-                    right: -10,
-                    backgroundColor: "#FFA500",
-                  }}
+                  className="badge chat-unread-badge"
                 >
                   {unreadChatsCount > 9 ? "9+" : unreadChatsCount}
                 </span>
@@ -109,15 +108,15 @@ export const Header = (props) => {
               >
                 <div className="userImage d-flex align-items-center">
                   <img src={user?.photo} alt="" className="img-fluid" />
-                  <h6 className="ms-2 mb-0 whiteColor">
+                  <h6 className={`${isRtl ? "me-2" : "ms-2"} mb-0 whiteColor`}>
                     {user?.first_name} {user?.last_name}
                   </h6>
                 </div>
               </Dropdown.Toggle>
-              <Dropdown.Menu className="userMenu whiteColor" align="end">
+              <Dropdown.Menu className="userMenu whiteColor" align={isRtl ? "start" : "end"}>
                 <Link className="userMenuItem" to={`/${role}/profile`}>
                   <FontAwesomeIcon className="me-2 yellow-text" icon={faUser} />{" "}
-                  Profile
+                  {t("header.profile")}
                 </Link>
                 <Link
                   onClick={() => setShowModal(true)}
@@ -127,7 +126,7 @@ export const Header = (props) => {
                     className="me-1 yellow-text"
                     icon={faSignOut}
                   />{" "}
-                  Logout
+                  {t("header.logout")}
                 </Link>
               </Dropdown.Menu>
             </Dropdown>
@@ -151,8 +150,8 @@ export const Header = (props) => {
           logout();
           setShowModal(false);
         }}
-        heading="Logout?"
-        para="Are you sure you want to logout?"
+        heading={t("header.logout_title")}
+        para={t("header.logout_para")}
       />
     </header>
   );

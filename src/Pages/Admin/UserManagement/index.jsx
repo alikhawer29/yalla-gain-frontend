@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -23,6 +24,7 @@ const UserManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [statusLoading, setStatusLoading] = useState({});
   const queryClient = useQueryClient();
@@ -66,9 +68,9 @@ const UserManagement = ({
         
         showModal(
           null,
-          `User status has been changed to ${
-            variables.status === "1" ? "Active" : "Inactive"
-          } successfully.`,
+          t("user.status_changed_success", {
+            status: variables.status === "1" ? t("status.active") : t("status.inactive"),
+          }),
           null,
           true,
         );
@@ -96,9 +98,9 @@ const UserManagement = ({
     const newStatusValue = e;
     showModal(
       null,
-      `Are you sure you want to change this user's status to ${
-        newStatusValue === "1" ? "Active" : "Inactive"
-      }?`,
+      t("user.status_change_confirm", {
+        status: newStatusValue === "1" ? t("status.active") : t("status.inactive"),
+      }),
       () => onConfirmStatusChange(userId, newStatusValue),
     );
   }, [showModal]);
@@ -117,12 +119,12 @@ const UserManagement = ({
   }, [error]);
 
   return (
-    <DashboardLayout pageTitle="User Management">
+    <DashboardLayout pageTitle={t('sidebar.user_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="row mb-2">
             <div className="col-12">
-              <h2 className="mainTitle mb-0">User Management</h2>
+              <h2 className="mainTitle mb-0">{t('sidebar.user_management')}</h2>
             </div>
           </div>
           <div className="row mb-3">
@@ -135,7 +137,7 @@ const UserManagement = ({
                     pagination={pagination}
                     dateFilters={[
                       {
-                        title: "Registration Date",
+                        title: t("fields.registration_date"),
                         from: "from",
                         to: "to",
                         fromTitle: "From",

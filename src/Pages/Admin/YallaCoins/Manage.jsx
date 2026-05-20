@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
@@ -18,6 +19,7 @@ const CoinManagement = ({
   pagination,
   updatePagination,
 }) => {
+  const { t } = useTranslation();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [rows, setRows] = useState([]);
   const [amount, setAmount] = useState("");
@@ -65,7 +67,7 @@ const CoinManagement = ({
   };
 
   return (
-    <DashboardLayout pageTitle="Yalla Coin Logs">
+    <DashboardLayout pageTitle={t('sidebar.yalla_coin_logs')}>
       <div className="container-fluid">
         {/* Coin amount form */}
         <div className="dashCard mb-4">
@@ -97,7 +99,7 @@ const CoinManagement = ({
 
         {/* Logs table */}
         <div className="dashCard">
-          <h3 className="mainTitle mb-3">Set Amount Logs</h3>
+          <h3 className="mainTitle mb-3">{t('pages.set_amount_logs')}</h3>
           <CustomTable
             filters={filters}
             setFilters={setFilters}

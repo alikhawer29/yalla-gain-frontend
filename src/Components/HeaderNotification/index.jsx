@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +16,7 @@ const HeaderNotification = ({
     getNotification,
     viewAllLink,
 }) => {
+  const { t } = useTranslation();
     const { role } = useAuth();
     const [notifications, setNotifications] = useState(notificationData);
     const [isOpen, setIsOpen] = useState(false);

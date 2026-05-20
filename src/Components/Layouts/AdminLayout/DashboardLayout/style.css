@@ -17,10 +17,22 @@
   margin-left: 60px;
 }
 
+/* RTL Support */
+[dir="rtl"] .dashboardBody {
+  margin-left: 0;
+  margin-right: 310px;
+}
+
+[dir="rtl"] .dashboardBody.expanded {
+  margin-left: 0;
+  margin-right: 60px;
+}
+
 @media screen and (max-width: 767px) {
   .dashboardBody.expanded,
   .dashboardBody {
     margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 @media screen and (max-width: 575px) {

@@ -1,4 +1,5 @@
 import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ const LoginForm = ({
     validationSchema,
     additionalField,
 }) => {
+  const { t } = useTranslation();
     const [load, setLoad] = useState(false);
     const navigate = useNavigate();
     const login = useLogin();
@@ -45,7 +47,7 @@ const LoginForm = ({
         } catch (error) {
             // Handle error if login fails
             console.error("Error during login:", error);
-            showToast("An error occurred during login. Please try again.", "error");
+            showToast(t("toast.login_error"), "error");
         }
 
         stopSubmitting();
@@ -73,11 +75,11 @@ const LoginForm = ({
                     <Toast />
                     <div className="mb-3">
                         <CustomInput
-                            label="Email Address"
+                            label={t("auth.email")}
                             id="email"
                             type="email"
                             required
-                            placeholder="Enter Email Address"
+                            placeholder={t("auth.email_placeholder")}
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -85,11 +87,11 @@ const LoginForm = ({
                         />
                     </div>
                     <CustomInput
-                        label="Password"
+                        label={t("auth.password")}
                         id="password"
                         type="password"
                         required
-                        placeholder="Enter Password"
+                        placeholder={t("auth.password_placeholder")}
                         value={values.password}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -100,7 +102,7 @@ const LoginForm = ({
                             type={"checkbox"}
                             name="rememberMe"
                             id="rememberMe"
-                            label={`Remember Me`}
+                            label={t("auth.rememberMe")}
                         />
                         <Link
                             to={`${actor ? "/" + actor : ""}/forget-password`}
@@ -110,7 +112,7 @@ const LoginForm = ({
                                 type="button"
                                 className="notButton underlineOnHover text-white text-decoration-underline fw-medium"
                             >
-                                Forgot Password?
+                                {t("auth.forgotPassword")}
                             </button>
                         </Link>
                     </div>
@@ -119,8 +121,8 @@ const LoginForm = ({
                         <CustomButton
                             variant="primary"
                             className="w-100"
-                            text="Log In"
-                            pendingText="Loading..."
+                            text={t("auth.login_button")}
+                            pendingText={t("auth.loading")}
                             isPending={isSubmitting}
                             type="submit"
                         />

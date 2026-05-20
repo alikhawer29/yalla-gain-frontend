@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -15,6 +16,7 @@ import { Select } from "../../../Components/Select";
 import withModal from "../../../HOC/withModal";
 
 const TrainerServices = ({ showModal }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const doctor = useMemo(
@@ -141,14 +143,14 @@ const TrainerServices = ({ showModal }) => {
   }, [filters]);
 
   return (
-    <DashboardLayout pageTitle="Trainer Services">
+    <DashboardLayout pageTitle={t('pages.trainer_services')}>
       <div className="container-fluid">
         <div className="dashCard doctor-services-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
             <div className="d-flex align-items-center gap-3">
               <BackButton2 />
               <div>
-                <h2 className="mainTitle mb-1">Trainer Services</h2>
+                <h2 className="mainTitle mb-1">{t('pages.trainer_services')}</h2>
                 {/* <p className="detail-subtitle mb-0">Services offered by {doctor.name}</p> */}
               </div>
             </div>

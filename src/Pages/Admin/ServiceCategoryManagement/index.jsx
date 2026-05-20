@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
@@ -12,6 +13,7 @@ import { serviceCategoryHeaders } from "../../../Config/TableHeaders";
 import { getAll, post } from "../../../Services/Api";
 
 const formatType = (value = "") => {
+  const { t } = useTranslation();
   if (!value) return "-";
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
@@ -167,11 +169,11 @@ const ServiceCategoryManagement = ({
   );
 
   return (
-    <DashboardLayout pageTitle="Service Category Management">
+    <DashboardLayout pageTitle={t('sidebar.service_category_management')}>
       <div className="container-fluid">
         <div className="dashCard">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mainTitle mb-0">Service Category Management</h2>
+            <h2 className="mainTitle mb-0">{t('sidebar.service_category_management')}</h2>
             <button
               type="button"
               className="btn btn-primary"

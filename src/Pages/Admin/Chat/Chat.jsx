@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { Container } from "react-bootstrap";
@@ -84,6 +85,7 @@ const isImageFile = (file) =>
   file instanceof File && file.type?.startsWith("image/");
 
 const ClickableChatImage = ({ src, alt = "Chat image", className, onOpen }) => {
+  const { t } = useTranslation();
   if (!src) return null;
 
   return (

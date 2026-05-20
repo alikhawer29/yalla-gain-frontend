@@ -1,8 +1,10 @@
 import { Pagination } from "react-bootstrap";
 import "./style.css";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 const CustomPagination = ({ pagination, setFilters }) => {
+  const { t } = useTranslation();
   const { perPage, totalRecords, currentPage, totalPages } = pagination;
 
   // Ensure perPage is a number and not a string
@@ -89,16 +91,19 @@ const CustomPagination = ({ pagination, setFilters }) => {
       <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center flex-wrap gap-2">
         <div className="">
           <p className="paginationText">
-            Showing {totalRecords > 0 ? startItem : 0} to {endItem} Out Of{" "}
-            {totalRecords} Entries
+            {t("pagination.showing", {
+              start: totalRecords > 0 ? startItem : 0,
+              end: endItem,
+              total: totalRecords,
+            })}
           </p>
         </div>
         <div className="">
           <Pagination>
             {/* <Pagination.First onClick={handleFirstPage} /> */}
-            <Pagination.Prev onClick={handlePrevPage}>Previous</Pagination.Prev>
+            <Pagination.Prev onClick={handlePrevPage}>{t("pagination.previous")}</Pagination.Prev>
             {items}
-            <Pagination.Next onClick={handleNextPage}>Next</Pagination.Next>
+            <Pagination.Next onClick={handleNextPage}>{t("pagination.next")}</Pagination.Next>
             {/* <Pagination.Last onClick={handleLastPage} /> */}
           </Pagination>
         </div>

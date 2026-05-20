@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   faAngleLeft,
   faAngleRight,
@@ -25,8 +26,10 @@ import HeaderNotification from "../../../HeaderNotification";
 import Toast, { showToast } from "../../../Toast";
 import "./style.css";
 import { getAll } from "../../../../Services/Api";
+import LanguageSwitcher from "../../../LanguageSwitcher";
 
 export const Header = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -141,6 +144,7 @@ export const Header = () => {
             <Navbar.Brand as={Link} to={"/"} className="me-3">
               <img src={images.Logo} alt="" />
             </Navbar.Brand>
+            <LanguageSwitcher />
             <Offcanvas
               className="main-nav-wrap flex-grow-1 me-0 me-lg-3"
               show={show}
