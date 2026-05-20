@@ -49,6 +49,17 @@
   text-decoration: underline;
 }
 
+.appointment-rejection-box {
+  width: 100%;
+}
+
+.appointment-rejection-reason {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
 @media (max-width: 576px) {
   .type-chip,
   .status-chip {

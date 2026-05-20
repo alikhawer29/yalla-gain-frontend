@@ -254,8 +254,11 @@ export const sellerType = (type) => {
 };
 
 export const timeFormat = (time) => {
-    return moment(time, "HH:mm").format("hh:mm A");
-    // return moment(time).local().format("hh:mm A");
+    if (!time) return "";
+    const parsed = moment(time, ["HH:mm:ss", "HH:mm"], true);
+    if (parsed.isValid()) return parsed.format("hh:mm A");
+    const loose = moment(time, ["hh:mm A", "h:mm A"], true);
+    return loose.isValid() ? loose.format("hh:mm A") : String(time);
 };
 
 export const timeFormat2 = (time) => {
@@ -443,7 +446,13 @@ export const capitalizeFirstLetter = (string) => {
 
 export const capitalizeStatus = (status) => {
     if (!status) return "";
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return String(status)
+        .split("_")
+        .map(
+            (word) =>
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        )
+        .join(" ");
 };
 
 export const getFileType = (fileName) => {

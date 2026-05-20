@@ -65,38 +65,44 @@ const UserDetails = ({
   });
 
   // Profile data query
-  const { data: profileResponse, isLoading: profileLoading, error: profileError } = useQuery({
-    queryKey: ['user', id],
+  const {
+    data: profileResponse,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useQuery({
+    queryKey: ["user", id],
     queryFn: () => getDetails(`/user/${id}`),
     enabled: !!id,
   });
 
   // Booking logs query
   const { data: bookingResponse, isLoading: bookingLoading } = useQuery({
-    queryKey: ['appointments', id, bookingFilters],
+    queryKey: ["appointments", id, bookingFilters],
     queryFn: () => getAll(`/appointments/${id}`, bookingFilters),
     enabled: !!id,
   });
 
   // Challenge logs query
   const { data: challengeResponse, isLoading: challengeLoading } = useQuery({
-    queryKey: ['challenge', id, challengeFilters],
+    queryKey: ["challenge", id, challengeFilters],
     queryFn: () => getAll(`/challenge/${id}/listing`, challengeFilters),
     enabled: !!id,
   });
 
   // Subscription logs query
-  const { data: subscriptionResponse, isLoading: subscriptionLoading } = useQuery({
-    queryKey: ['subscription-logs', id, subscriptionFilters],
-    queryFn: () => getAll(`/subscription-logs/${id}`, subscriptionFilters),
-    enabled: !!id,
-  });
+  const { data: subscriptionResponse, isLoading: subscriptionLoading } =
+    useQuery({
+      queryKey: ["subscription-logs", id, subscriptionFilters],
+      queryFn: () => getAll(`/subscription-logs/${id}`, subscriptionFilters),
+      enabled: !!id,
+    });
 
   // Status update mutation
   const statusMutation = useMutation({
-    mutationFn: ({ userId, status }) => post(`/user/${userId}/status`, { status }),
+    mutationFn: ({ userId, status }) =>
+      post(`/user/${userId}/status`, { status }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['user', id]);
+      queryClient.invalidateQueries(["user", id]);
       showModal(
         "Successful",
         `User status has been changed successfully.`,
@@ -184,7 +190,9 @@ const UserDetails = ({
   // Memoized profile data
   const profileData = useMemo(() => {
     const payload = profileResponse?.data;
-    return payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
+    return payload && typeof payload === "object" && !Array.isArray(payload)
+      ? payload
+      : {};
   }, [profileResponse]);
 
   useEffect(() => {
@@ -213,24 +221,31 @@ const UserDetails = ({
     }
   }, [profileError]);
 
-  const handleStatusChange = useCallback((e, userId) => {
-    const newStatusValue = e;
-    showModal(
-      `Mark as ${newStatusValue === "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${newStatusValue === "1" ? "Active" : "Inactive"}?`,
-      () => statusMutation.mutate({ userId, status: newStatusValue }),
-    );
-  }, [showModal, statusMutation]);
+  const handleStatusChange = useCallback(
+    (e, userId) => {
+      const newStatusValue = e;
+      showModal(
+        `Mark as ${newStatusValue === "1" ? "Active" : "Inactive"}`,
+        `Are you sure you want to change this user's status to ${newStatusValue === "1" ? "Active" : "Inactive"}?`,
+        () => statusMutation.mutate({ userId, status: newStatusValue }),
+      );
+    },
+    [showModal, statusMutation],
+  );
 
   // Memoized detail fields
   const detailFields = useMemo(() => {
-    const { email, phone, first_name, last_name, dob, dialing_code } = profileData;
-    const displayName = [first_name, last_name].filter(Boolean).join(" ").trim();
+    const { email, phone, first_name, last_name, dob, dialing_code } =
+      profileData;
+    const displayName = [first_name, last_name]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
     const displayPhone = [dialing_code, phone].filter(Boolean).join("");
     return [
       { label: "User Name", value: displayName || "—" },
       { label: "Phone Number", value: displayPhone || "—", isPhone: true },
-      { label: "Date Of Birth", value: dob ?? "—" },
+      // { label: "Date Of Birth", value: dob ?? "—" },
       { label: "Email Address", value: email ?? "—" },
     ];
   }, [profileData]);
@@ -330,7 +345,7 @@ const UserDetails = ({
                     <img
                       src={profileData?.photo ?? images.placeholder}
                       alt="User"
-                      style={{ display: imageLoading ? 'none' : 'block' }}
+                      style={{ display: imageLoading ? "none" : "block" }}
                       loading="lazy"
                       onLoad={() => {
                         setImageLoading(false);
@@ -410,19 +425,19 @@ const UserDetails = ({
                     key={item?.id}
                     {...(item?.id
                       ? clickableTableRowNavProps(
-                        navigate,
-                        `/admin/appointments/${item.id}`,
-                      )
+                          navigate,
+                          `/admin/appointments/${item.id}`,
+                        )
                       : {})}
                   >
                     <td>
                       {serialNum(
                         (bookingFilters.page - 1) * bookingFilters.per_page +
-                        index +
-                        1,
+                          index +
+                          1,
                       )}
                     </td>
-                    <td>{item?.booking_id}</td>
+                    <td>#{item?.id}</td>
                     <td>{capitalizeStatus(item?.service?.user?.type)}</td>
                     <td>{item?.appointment_date}</td>
                     <td>
@@ -487,9 +502,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (challengeFilters.page - 1) *
-                        challengeFilters.per_page +
-                        index +
-                        1,
+                          challengeFilters.per_page +
+                          index +
+                          1,
                       )}
                     </td>
                     <td>{item?.challenge?.title}</td>
@@ -550,9 +565,9 @@ const UserDetails = ({
                     <td>
                       {serialNum(
                         (subscriptionFilters.page - 1) *
-                        subscriptionFilters.per_page +
-                        index +
-                        1,
+                          subscriptionFilters.per_page +
+                          index +
+                          1,
                       )}
                     </td>
                     <td>{item?.subscription_plan?.title}</td>
@@ -574,7 +589,9 @@ const UserDetails = ({
                               : "",
                       }}
                     >
-                      {capitalizeStatus(item?.is_active == true ? "Active" : "Expired")}
+                      {capitalizeStatus(
+                        item?.is_active == true ? "Active" : "Expired",
+                      )}
                     </td>
                   </tr>
                 ))}

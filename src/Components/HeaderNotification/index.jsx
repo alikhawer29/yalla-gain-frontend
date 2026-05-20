@@ -6,6 +6,7 @@ import { faBell as faBellNoti } from "@fortawesome/free-regular-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { dateFormat, humanReadable } from "../../Utils/helper";
+import { getNotificationTargetPath } from "../../Utils/notificationRoutes";
 import { useAuth } from "../../Hooks/useAuth";
 import { getAll, post } from "../../Services/Api";
 
@@ -103,28 +104,6 @@ const HeaderNotification = ({
             fetchUnreadCount();
         } catch (error) {
             console.error("Error handling notification action:", error);
-        }
-    };
-
-    const getNotificationTargetPath = (notification) => {
-        const targetType = notification?.target_type;
-        const targetId = notification?.target_id;
-
-        if (!targetType || !targetId) return null;
-
-        switch (targetType) {
-            case "user":
-                return `/admin/user-management/${targetId}`;
-            case "doctor":
-                return `/admin/doctor-management/${targetId}`;
-            case "trainer":
-                return `/admin/trainer-management/${targetId}`;
-            case "appointment":
-                return `/admin/appointments/${targetId}`;
-            case "feedback":
-                return `/admin/query-management/${targetId}`;
-            default:
-                return null;
         }
     };
 

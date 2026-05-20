@@ -6,10 +6,12 @@ import BackButton from "../../../Components/BackButton";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import {
+  capitalizeFirstLetter,
   capitalizeStatus,
   dateFormat,
   getCountryFlag,
   isNullOrEmpty,
+  timeFormat,
 } from "../../../Utils/helper";
 import { getDetails } from "../../../Services/Api";
 import "./style.css";
@@ -61,12 +63,26 @@ const AppointmentDetails = () => {
   const providerName =
     [provider.first_name, provider.last_name].filter(Boolean).join(" ") || "-";
   const contactNumber = `${appointmentDetails.dialing_code || ""}${appointmentDetails.phone || ""}`;
-  const appointmentTime =
-    appointmentDetails.appointment_start_time &&
-    appointmentDetails.appointment_end_time
-      ? `${appointmentDetails.appointment_start_time} - ${appointmentDetails.appointment_end_time}`
-      : "";
-  const statusRaw = appointmentDetails.status || "";
+  const formatAppointmentTimeRange = (start, end) => {
+    if (start && end) return `${timeFormat(start)} - ${timeFormat(end)}`;
+    if (start) return timeFormat(start);
+    if (end) return timeFormat(end);
+    return "-";
+  };
+  const appointmentTime = formatAppointmentTimeRange(
+    appointmentDetails.appointment_start_time,
+    appointmentDetails.appointment_end_time,
+  );
+  const hasRescheduled = Boolean(
+    appointmentDetails.rescheduled_appointment_date,
+  );
+  const rescheduledTime = hasRescheduled
+    ? formatAppointmentTimeRange(
+        appointmentDetails.rescheduled_appointment_start_time,
+        appointmentDetails.rescheduled_appointment_end_time,
+      )
+    : "";
+  const statusRaw = (appointmentDetails.status || "").toLowerCase();
   const status =
     statusRaw === "upcoming"
       ? "Upcoming"
@@ -74,7 +90,10 @@ const AppointmentDetails = () => {
         ? "In-Progress"
         : statusRaw === "past"
           ? "Past"
-          : statusRaw;
+          : statusRaw === "rejected"
+            ? "Rejected"
+            : appointmentDetails.status || "";
+  const isRejected = statusRaw === "rejected";
   return (
     <DashboardLayout pageTitle="Appointment Details">
       <div className="container-fluid">
@@ -94,12 +113,12 @@ const AppointmentDetails = () => {
                   <div className="d-flex flex-md-row flex-column">
                     <div className="flex-grow-1 order-1 order-md-0">
                       <div className="row">
-                        <div className="col-xxl-10 col-lg-8">
+                        <div className="col-xxl-12 col-lg-8">
                           <div className="row my-2">
                             {[
                               {
                                 label: "Booking ID:",
-                                value: appointmentDetails.booking_id,
+                                value: `#${appointmentDetails.id}`,
                               },
                               {
                                 label: "Booking Date:",
@@ -109,8 +128,9 @@ const AppointmentDetails = () => {
                               },
                               {
                                 label: "Session Type:",
-                                value:
+                                value: capitalizeFirstLetter(
                                   appointmentDetails.service?.user?.type || "-",
+                                ),
                               },
                               {
                                 label: "Category:",
@@ -126,6 +146,20 @@ const AppointmentDetails = () => {
                                 label: "Appointment Time:",
                                 value: appointmentTime,
                               },
+                              ...(hasRescheduled
+                                ? [
+                                    {
+                                      label: "Rescheduled Appointment Date:",
+                                      value: dateFormat(
+                                        appointmentDetails.rescheduled_appointment_date,
+                                      ),
+                                    },
+                                    {
+                                      label: "Rescheduled Appointment Time:",
+                                      value: rescheduledTime,
+                                    },
+                                  ]
+                                : []),
                               {
                                 label: "Appointment Charges:",
                                 value:
@@ -175,13 +209,15 @@ const AppointmentDetails = () => {
                         <span
                           style={{
                             color:
-                              status === "Upcoming"
-                                ? "#FFFFFF"
-                                : status === "In-Progress"
+                              status === "Rejected"
+                                ? "#FF4F25"
+                                : status === "Upcoming"
                                   ? "#FFFFFF"
-                                  : status === "Past"
+                                  : status === "In-Progress"
                                     ? "#FFFFFF"
-                                    : "#FF4F25",
+                                    : status === "Past"
+                                      ? "#FFFFFF"
+                                      : "#FF4F25",
                           }}
                           className={`ms-3 fw-semibold`}
                         >
@@ -192,6 +228,18 @@ const AppointmentDetails = () => {
                   </div>
                 </div>
               </div>
+              {isRejected && appointmentDetails.rejection_reason && (
+                <div className="row mt-3">
+                  <div className="col-12">
+                    <div className="detail-box appointment-rejection-box">
+                      <h6>Rejection Reason</h6>
+                      <p className="mb-0 appointment-rejection-reason">
+                        {appointmentDetails.rejection_reason}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="row mt-md-3 mt-0">
                 <div className="col-xxl-8">
                   <div className="row">

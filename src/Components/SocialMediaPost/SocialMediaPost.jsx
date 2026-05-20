@@ -18,6 +18,21 @@ import {
 import withModal from "../../HOC/withModal";
 import { images } from "../../Assets";
 
+const ClickablePostImage = ({ src, alt = "Post image", className = "", onOpen }) => {
+  if (!src) return null;
+
+  return (
+    <button
+      type="button"
+      className={`post-image-button ${className}`.trim()}
+      onClick={() => onOpen?.(src)}
+      aria-label="View full image"
+    >
+      <img src={src} alt={alt} className="grid-img" />
+    </button>
+  );
+};
+
 const SocialMediaPost = ({
   postId,
   postData,
@@ -29,6 +44,7 @@ const SocialMediaPost = ({
 }) => {
   const [showReactions, setShowReactions] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
 
   const { user, content, interactions, comments } = postData;
   const [usersReacted, setUsersReacted] = useState(
@@ -98,6 +114,19 @@ const SocialMediaPost = ({
   };
 
   useEffect(() => {
+    if (!lightboxSrc) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setLightboxSrc(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [lightboxSrc]);
+
+  useEffect(() => {
     const loadReactions = async () => {
       if (
         showReactions &&
@@ -128,11 +157,16 @@ const SocialMediaPost = ({
   const renderImageGrid = (imgs) => {
     if (!imgs || imgs.length === 0) return null;
     const count = imgs.length;
+    const openImage = (src) => setLightboxSrc(src);
 
     if (count === 1) {
       return (
         <div className="post-image-grid single">
-          <img src={imgs[0]} alt="post" className="grid-img" />
+          <ClickablePostImage
+            src={imgs[0]}
+            alt="Post"
+            onOpen={openImage}
+          />
         </div>
       );
     }
@@ -140,8 +174,8 @@ const SocialMediaPost = ({
     if (count === 2) {
       return (
         <div className="post-image-grid double">
-          <img src={imgs[0]} alt="post" className="grid-img" />
-          <img src={imgs[1]} alt="post" className="grid-img" />
+          <ClickablePostImage src={imgs[0]} alt="Post 1" onOpen={openImage} />
+          <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
         </div>
       );
     }
@@ -149,10 +183,15 @@ const SocialMediaPost = ({
     if (count === 3) {
       return (
         <div className="post-image-grid triple">
-          <img src={imgs[0]} alt="post" className="grid-img large" />
+          <ClickablePostImage
+            src={imgs[0]}
+            alt="Post 1"
+            className="large"
+            onOpen={openImage}
+          />
           <div className="grid-stack">
-            <img src={imgs[1]} alt="post" className="grid-img" />
-            <img src={imgs[2]} alt="post" className="grid-img" />
+            <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
+            <ClickablePostImage src={imgs[2]} alt="Post 3" onOpen={openImage} />
           </div>
         </div>
       );
@@ -161,15 +200,29 @@ const SocialMediaPost = ({
     // 4 or more
     return (
       <div className="post-image-grid multi">
-        <img src={imgs[0]} alt="post" className="grid-img large" />
+        <ClickablePostImage
+          src={imgs[0]}
+          alt="Post 1"
+          className="large"
+          onOpen={openImage}
+        />
         <div className="grid-stack">
-          <img src={imgs[1]} alt="post" className="grid-img" />
+          <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
           <div className="grid-row">
-             <img src={imgs[2]} alt="post" className="grid-img" />
-             <div className="grid-img overflow-wrapper">
-                <img src={imgs[3]} alt="post" className="grid-img" />
-                {count > 4 && <div className="overlay">+{count - 4}</div>}
-             </div>
+            <ClickablePostImage src={imgs[2]} alt="Post 3" onOpen={openImage} />
+            <div className="overflow-wrapper">
+              <ClickablePostImage src={imgs[3]} alt="Post 4" onOpen={openImage} />
+              {count > 4 && (
+                <button
+                  type="button"
+                  className="overlay overlay-button"
+                  onClick={() => openImage(imgs[3])}
+                  aria-label={`View image, ${count - 4} more`}
+                >
+                  +{count - 4}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -353,6 +406,31 @@ const SocialMediaPost = ({
           ))}
         </div>
       </CustomModal>
+
+      {lightboxSrc && (
+        <div
+          className="post-image-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <button
+            type="button"
+            className="post-image-lightbox-close"
+            aria-label="Close image"
+            onClick={() => setLightboxSrc(null)}
+          >
+            <IoClose size={28} />
+          </button>
+          <img
+            src={lightboxSrc}
+            alt="Full size"
+            className="post-image-lightbox-img"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </>
   );
 };

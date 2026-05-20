@@ -472,24 +472,27 @@ const TrainerDetails = ({ showModal }) => {
                 </div>
               </div>
 
-              <div className="Trainer-certification mt-5 detail-box">
+              <div className="doctor-certification mt-5 detail-box">
                 <h3 className="section-title mb-3">Certification Detail</h3>
                 {details.certifications.map((cert, index) => (
                   <div
                     className="row g-4 align-items-center"
                     key={cert.id || index}
                   >
-                    <div className="col-xl-5">
+                    <div className="col-xl-3">
                       <div className="detail-box mb-3">
                         <h6>Institute Name</h6>
                         <p className="mb-0">{cert.institute_name}</p>
                       </div>
+                    </div>
+                    <div className="col-xl-3">
                       <div className="detail-box">
                         <h6>Certificate Title</h6>
                         <p className="mb-0">{cert.certificate_title}</p>
                       </div>
                     </div>
-                    <div className="col-xl-7">
+                    <div className="col-xl-3"></div>
+                    <div className="col-xl-6">
                       <div className="certificate-preview doctor-certificate-preview">
                         <img
                           src={cert.certificate_picture}
@@ -538,24 +541,13 @@ const TrainerDetails = ({ showModal }) => {
           >
             <tbody>
               {bookings.map((item, index) => {
-                const rowIndex = serialNum(
+                const offset =
                   (pagination.currentPage - 1) *
-                    (pagination.perPage || filters.per_page || 10) +
-                    index +
-                    1,
-                );
-                const bookingId = item.booking_id || "-";
-                const serviceTitle =
-                  item.service?.title || item.service_category || "-";
-                const appointmentDate =
-                  item.appointment_date || item.date || item.created_at || "-";
-                const appointmentTime =
-                  item.appointment_start_time && item.appointment_end_time
-                    ? `${item.appointment_start_time} - ${item.appointment_end_time}`
-                    : "";
-                const amountPaid = item.amount_paid || item.charges || "-";
-                const label = formatStatusLabel(item.status);
-                const statusClass = `status${label.replace(/\s+/g, "")}`;
+                  (pagination.perPage || filters.per_page || 10);
+                const label =
+                  item.status === "past" || item.status === "completed"
+                    ? "Past"
+                    : formatStatusLabel(item.status);
 
                 return (
                   <tr
@@ -567,13 +559,22 @@ const TrainerDetails = ({ showModal }) => {
                         )
                       : {})}
                   >
-                    <td>{rowIndex}</td>
-                    <td>{bookingId}</td>
-                    <td>{serviceTitle}</td>
-                    <td>{appointmentDate}</td>
-                    <td>{amountPaid}</td>
+                    <td>{serialNum(offset + index + 1)}</td>
+                    <td>#{item.id || "-"}</td>
                     <td>
-                      <span className={`statusChip ${statusClass}`}>
+                      {item.service?.title || item.service_category || "-"}
+                    </td>
+                    <td>
+                      {item.appointment_date ||
+                        item.date ||
+                        item.created_at ||
+                        "-"}
+                    </td>
+                    <td>{item.amount_paid || item.charges || "-"}</td>
+                    <td>
+                      <span
+                        className={`statusChip status${label.replace(/\s+/g, "")}`}
+                      >
                         {label}
                       </span>
                     </td>

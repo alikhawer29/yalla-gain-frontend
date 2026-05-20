@@ -75,6 +75,29 @@ function formatChatMessageDateTime(message) {
   return timeStr || dateStr || "";
 }
 
+const IMAGE_PATH_REGEX = /\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?.*)?$/i;
+
+const isImagePath = (path) =>
+  typeof path === "string" && IMAGE_PATH_REGEX.test(path);
+
+const isImageFile = (file) =>
+  file instanceof File && file.type?.startsWith("image/");
+
+const ClickableChatImage = ({ src, alt = "Chat image", className, onOpen }) => {
+  if (!src) return null;
+
+  return (
+    <button
+      type="button"
+      className={Styles.chatImageButton}
+      onClick={() => onOpen(src)}
+      aria-label="Open image"
+    >
+      <img src={src} alt={alt} className={className} />
+    </button>
+  );
+};
+
 const CHAT_SOCKET_URL =
   (typeof process !== "undefined" && process.env.REACT_APP_CHAT_SOCKET_URL) ||
   "https://custom-dev.onlinetestingserver.com:2170";
@@ -193,10 +216,24 @@ const Chat = ({ showModal }) => {
   const [chatFilter, setChatFilter] = useState("all");
   /** Deep link: doctor has no thread yet (could not open / create chat). */
   const [pendingDoctorProfile, setPendingDoctorProfile] = useState(null);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
 
   const socketRef = useRef(null);
   const activeChatIdRef = useRef(null);
   const activeChatRef = useRef(null);
+
+  useEffect(() => {
+    if (!lightboxSrc) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setLightboxSrc(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [lightboxSrc]);
   const authUserRef = useRef(null);
   const fetchChatListRef = useRef(null);
   const pendingDoctorProfileRef = useRef(null);
@@ -559,7 +596,12 @@ const Chat = ({ showModal }) => {
                   <ul>
                     {sideData?.map((chat, index) => (
                       <div
-                        className={`${Styles.sidebarChat} ${activeChat?.id === chat.id ? `isOpen` : `close`}`}
+                        className={`${Styles.sidebarChat} ${
+                          activeChat?.id != null &&
+                          String(activeChat.id) === String(chat.id)
+                            ? Styles.isOpen
+                            : ""
+                        }`}
                         key={chat.id}
                         onClick={() => handleUserClick(chat)}
                       >
@@ -656,17 +698,20 @@ const Chat = ({ showModal }) => {
                                     <p className={``}>{message?.message}</p>
                                   )}
                                   {message.images &&
-                                    message.images.map((file, index) => (
-                                      <div
-                                        className={`my-3 ${Styles.uploadImg}`}
-                                        key={`img-${index}`}
-                                      >
-                                        <img
-                                          src={URL.createObjectURL(file)}
-                                          alt={`Uploaded File`}
-                                        />
-                                      </div>
-                                    ))}
+                                    message.images.map((file, index) =>
+                                      isImageFile(file) ? (
+                                        <div
+                                          className={`my-3 ${Styles.uploadImg}`}
+                                          key={`img-${index}`}
+                                        >
+                                          <ClickableChatImage
+                                            src={URL.createObjectURL(file)}
+                                            alt={file.name || "Chat image"}
+                                            onOpen={setLightboxSrc}
+                                          />
+                                        </div>
+                                      ) : null,
+                                    )}
                                   {message.documents &&
                                     message.documents.map((doc, index) => (
                                       <div
@@ -702,10 +747,12 @@ const Chat = ({ showModal }) => {
                                         className={`my-3 ${Styles.uploadImg}`}
                                         key={`api-file-${idx}`}
                                       >
-                                        {f.path?.match(
-                                          /\.(jpg|jpeg|png|gif|webp)$/i,
-                                        ) ? (
-                                          <img src={f.path} alt="attachment" />
+                                        {isImagePath(f.path) ? (
+                                          <ClickableChatImage
+                                            src={f.path}
+                                            alt="attachment"
+                                            onOpen={setLightboxSrc}
+                                          />
                                         ) : (
                                           <a
                                             href={f.path}
@@ -783,76 +830,84 @@ const Chat = ({ showModal }) => {
                         </ScrollToBottom>
                       </div>
 
-                      {/* Image previews */}
-                      {imageFiles.length > 0 && (
-                        <div className={imageFiles ? Styles.uploadedFiles : ``}>
-                          {imageFiles.map((file, index) => (
-                            <div
-                              key={`preview-img-${index}`}
-                              className={`${Styles.isFileVisible}`}
-                            >
-                              <div className={`${Styles.fileVisible}`}>
-                                <img
-                                  src={URL.createObjectURL(file)}
-                                  alt="Preview"
-                                  className="img-fluid"
-                                  onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = images.adminProfileImg;
-                                  }}
-                                />
-                                <button
-                                  onClick={() =>
-                                    setImageFiles((prev) =>
-                                      prev.filter((_, i) => i !== index),
-                                    )
-                                  }
-                                  className={`${Styles.deleteBtn}`}
-                                >
-                                  <FaXmark />
-                                </button>
-                              </div>
+                      <div className={Styles.inputArea}>
+                        <div className={Styles.inputComposer}>
+                          {(imageFiles.length > 0 ||
+                            documentFiles.length > 0) && (
+                            <div className={Styles.inputAttachments}>
+                              {imageFiles.length > 0 && (
+                                <div className={Styles.inputAttachmentsImages}>
+                                  {imageFiles.map((file, index) => (
+                                    <div
+                                      key={`preview-img-${index}`}
+                                      className={Styles.inputAttachmentThumb}
+                                    >
+                                      <ClickableChatImage
+                                        src={URL.createObjectURL(file)}
+                                        alt="Preview"
+                                        className={Styles.inputAttachmentThumbImg}
+                                        onOpen={setLightboxSrc}
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          setImageFiles((prev) =>
+                                            prev.filter((_, i) => i !== index),
+                                          )
+                                        }
+                                        className={Styles.deleteBtn}
+                                        aria-label="Remove image"
+                                      >
+                                        <FaXmark />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              {documentFiles.length > 0 && (
+                                <ul className={Styles.inputAttachmentsDocs}>
+                                  {documentFiles.map((file, index) => (
+                                    <li
+                                      key={`preview-doc-${index}`}
+                                      className={Styles.inputAttachmentDoc}
+                                    >
+                                      <span className={Styles.inputAttachmentDocIcon}>
+                                        {getFileIcon(file.name)}
+                                      </span>
+                                      <span
+                                        className={Styles.inputAttachmentDocName}
+                                        title={file.name}
+                                      >
+                                        {file.name}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          setDocumentFiles((prev) =>
+                                            prev.filter((_, i) => i !== index),
+                                          )
+                                        }
+                                        className={Styles.documentDeleteBtn}
+                                        aria-label="Remove document"
+                                      >
+                                        <FaXmark />
+                                      </button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      )}
-                      {/* Document previews */}
-                      {documentFiles.length > 0 && (
-                        <ul className="uploaded-file-list mb-0 mt-2 px-sm-3 px-2">
-                          {documentFiles.map((file, index) => (
-                            <li
-                              key={index}
-                              className="uploaded-file-item d-flex gap-2 align-items-center"
-                              style={{ listStyle: "none" }}
-                            >
-                              <div className="d-flex align-items-center">
-                                {getFileIcon(file.name)}
-                                <span className="file-name ms-1">
-                                  {file.name}
-                                </span>
-                              </div>
-                              <button
-                                onClick={() =>
-                                  setDocumentFiles((prev) =>
-                                    prev.filter((_, i) => i !== index),
-                                  )
-                                }
-                                className={`${Styles.documentDeleteBtn}`}
-                              >
-                                <FaXmark />
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <div className={`${Styles["input-area"]}`}>
-                        <input
-                          type="text"
-                          placeholder="Type A Message..."
-                          value={messageInput}
-                          onChange={(e) => setMessageInput(e.target.value)}
-                        />
-                        <div className={`${Styles["input-area-inner"]}`}>
+                          )}
+                          <div className={Styles.inputRow}>
+                            <input
+                              type="text"
+                              placeholder="Type A Message..."
+                              value={messageInput}
+                              onChange={(e) =>
+                                setMessageInput(e.target.value)
+                              }
+                            />
+                            <div className={Styles.inputAreaInner}>
                           <div className={`${Styles.fileUpload}`}>
                             <label htmlFor={`uploader`}>
                               <svg
@@ -942,6 +997,8 @@ const Chat = ({ showModal }) => {
                             {/* <SendIcon /> */}
                             <FaTelegramPlane color="#118076" />
                           </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -968,6 +1025,30 @@ const Chat = ({ showModal }) => {
           </div>
         </Container>
       </section>
+      {lightboxSrc && (
+        <div
+          className={Styles.imageLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <button
+            type="button"
+            className={Styles.imageLightboxClose}
+            aria-label="Close image"
+            onClick={() => setLightboxSrc(null)}
+          >
+            <FaXmark size={22} />
+          </button>
+          <img
+            src={lightboxSrc}
+            alt="Full size"
+            className={Styles.imageLightboxImg}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </DashboardLayout>
   );
 };

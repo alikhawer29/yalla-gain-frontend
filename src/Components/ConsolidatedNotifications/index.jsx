@@ -11,6 +11,7 @@ import { useAuth } from "../../Hooks/useAuth";
 import { getAll, post } from "../../Services/Api";
 import CustomPagination from "../CustomPagination";
 import { useNavigate } from "react-router-dom";
+import { getNotificationTargetPath } from "../../Utils/notificationRoutes";
 
 const ConsolidatedNotifications = ({
   apiEndpoint,
@@ -80,28 +81,6 @@ const ConsolidatedNotifications = ({
     }
   };
 
-  const getNotificationTargetPath = (notification) => {
-    const targetType = notification?.target_type;
-    const targetId = notification?.target_id;
-
-    if (!targetType || !targetId) return null;
-
-    switch (targetType) {
-      case "user":
-        return `/admin/user-management/${targetId}`;
-      case "doctor":
-        return `/admin/doctor-management/${targetId}`;
-      case "trainer":
-        return `/admin/trainer-management/${targetId}`;
-      case "appointment":
-        return `/admin/appointments/${targetId}`;
-      case "feedback":
-        return `/admin/query-management/${targetId}`;
-      default:
-        return null;
-    }
-  };
-
   const handleNotificationNavigate = async (notificationId) => {
     const notification = notifications.find((n) => n.id === notificationId);
     if (!notification) return;
@@ -116,7 +95,9 @@ const ConsolidatedNotifications = ({
         await post(`/notification/read`, { uuid: notificationId });
         setNotifications((prevData) =>
           prevData.map((n) =>
-            n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n,
+            n.id === notificationId
+              ? { ...n, read_at: new Date().toISOString() }
+              : n,
           ),
         );
       } catch (e) {
@@ -182,7 +163,7 @@ const ConsolidatedNotifications = ({
                     text={notification?.data?.body || notification?.message}
                     name={notification?.data?.title || notification?.title}
                     date={dateFormat(notification?.created_at)}
-                        time={humanReadable(notification?.created_at)}
+                    time={humanReadable(notification?.created_at)}
                     read={
                       notification?.read_at !== undefined
                         ? notification?.read_at

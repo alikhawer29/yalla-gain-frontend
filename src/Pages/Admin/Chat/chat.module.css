@@ -236,43 +236,147 @@
   border-radius: 10px;
 }
 
-.input-area {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 1.4rem 0.8rem;
-  /* border-top: 1px solid #e5eaef; */
-  /* background-color: rgba(239, 239, 239, 0.5); */
+.inputArea {
+  padding: 1rem 0.8rem 1.4rem;
 }
 
-.input-area-inner {
-  position: absolute;
-  right: 25px;
+.inputComposer {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #118076;
+  border-radius: 10px;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.inputComposer:focus-within {
+  border-color: #118076;
+  box-shadow: 0 0 0 1px rgba(17, 128, 118, 0.35);
+}
+
+.inputAttachments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid rgba(17, 128, 118, 0.35);
+  background: rgba(0, 0, 0, 0.2);
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.inputAttachmentsImages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inputAttachmentThumb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.inputAttachmentThumb .deleteBtn {
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.inputAttachmentThumb .chatImageButton {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.inputAttachmentThumbImg,
+.inputAttachmentThumb .chatImageButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.inputAttachmentsDocs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inputAttachmentDoc {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inputAttachmentDocIcon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.inputAttachmentDocName {
+  flex: 1;
+  min-width: 0;
+  color: #fff;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.65rem 0.5rem 0.75rem;
+}
+
+.inputAreaInner {
   display: flex;
   align-items: center;
   gap: 6px;
-  background-color: #333;
+  flex-shrink: 0;
 }
 
-.input-area input {
+.inputRow input {
   flex: 1;
-  padding: 15px;
-  border: 1px solid #118076;
+  min-width: 0;
+  padding: 10px 8px;
+  border: none;
   background-color: transparent;
   color: #fff;
-  border-radius: 10px;
-  /* padding-left: 35px; */
+  border-radius: 0;
   font-family: "SF Pro Display", sans-serif !important;
   font-size: 16px;
   font-weight: 400;
 }
 
-.input-area input:focus {
-  border: 1px solid #118076 !important;
+.inputRow input:focus {
   outline: 0;
+  box-shadow: none;
 }
 
-.input-area input::placeholder {
+.inputRow input::placeholder {
   color: #999 !important;
   font-size: 16px;
   font-style: normal;
@@ -282,13 +386,15 @@
   font-family: "SF Pro Display", sans-serif;
 }
 
-.input-area button {
-  padding: 0px;
-  margin-left: 5px;
+.inputAreaInner button,
+.inputRow button {
+  padding: 0;
+  margin-left: 0;
   background: transparent;
   color: var(--gradient15);
   border: none;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .fileUpload {
@@ -300,15 +406,7 @@
   cursor: pointer;
 }
 
-.uploadedFiles {
-  border: 2px solid var(--gradient15) !important;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  overflow-x: auto;
-}
-
+/* Legacy attachment preview classes (kept for message bubbles) */
 .isFileVisible {
   padding: 5px 5px;
 }
@@ -425,10 +523,14 @@
   color: #fff;
 }
 
-.isOpen {
-  background: #ffeccc;
-  border-radius: 10px;
-  box-shadow: 0px 4px 55px 0px rgba(0, 0, 0, 0.1);
+.sidebarChat.isOpen {
+  background: rgba(17, 128, 118, 0.28);
+  border-left: 3px solid #118076;
+  padding-left: 21px;
+}
+
+.sidebarChat.isOpen:hover {
+  background: rgba(17, 128, 118, 0.35);
 }
 
 p.noti-tag-time {
@@ -529,6 +631,76 @@ p.noti-tag-time {
   border-radius: 10px;
 }
 
+.chatImageButton {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.chatImageButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.chatImageButton:hover img {
+  opacity: 0.9;
+}
+
+.imageLightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
+}
+
+.imageLightboxClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+}
+
+.imageLightboxClose:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.imageLightboxImg {
+  max-width: min(92vw, 1200px);
+  max-height: min(88vh, 900px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: default;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
 .camInputImg {
   filter: brightness(0);
 }
@@ -604,15 +776,18 @@ p.noti-tag-time {
     font-size: 15px;
   }
 
-  .input-area-inner {
+  .inputAreaInner {
     gap: 2px;
-    right: 18px;
   }
 
-  .input-area input {
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  .inputRow input {
+    padding: 8px 4px;
+    font-size: 14px;
+  }
+
+  .inputAttachmentThumb {
+    width: 56px;
+    height: 56px;
   }
 
   .chatDashCard {

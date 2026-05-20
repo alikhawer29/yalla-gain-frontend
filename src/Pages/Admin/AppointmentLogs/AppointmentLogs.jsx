@@ -363,7 +363,7 @@ const AppointmentLogs = () => {
                       : {})}
                   >
                     <td>{row.index}</td>
-                    <td>{row.bookingId}</td>
+                    <td>#{row.appointmentId}</td>
                     <td>{row.userName}</td>
                     <td>{row.serviceCategory}</td>
                     <td>{row.providerName}</td>
