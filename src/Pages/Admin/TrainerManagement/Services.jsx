@@ -157,7 +157,7 @@ const TrainerServices = ({ showModal }) => {
           <CustomTable
             filters={filters}
             setFilters={setFilters}
-            loading={false}
+            loading={isSubmitting}
             headers={doctorServicesHeaders}
             pagination={pagination}
             selectOptions={[

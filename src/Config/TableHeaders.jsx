@@ -230,8 +230,8 @@ export const complaintLogsHeaders = [
 export const reportsBookingHeaders = [
   { key: "id", title: "S.No" },
   { key: "booking_id", title: "Booking ID" },
-  { key: "name", title: "Name" },
-  { key: "user_type", title: "User Type" },
+  { key: "name", title: "Reported By" },
+  { key: "user_type", title: "Reported Against" },
   { key: "booking_date", title: "Booking Date" },
   { key: "reported_on", title: "Reported On" },
   { key: "charges", title: "Charges" },

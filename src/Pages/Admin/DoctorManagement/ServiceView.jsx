@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -48,19 +50,24 @@ const formatBookingStatus = (value) => {
     return label.charAt(0).toUpperCase() + label.slice(1);
 };
 
+const serviceViewSkeletonProps = {
+    baseColor: "rgba(255, 255, 255, 0.12)",
+    highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
 const DoctorServiceView = ({ showModal }) => {
     const { id, serviceId } = useParams();
     const navigate = useNavigate();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
     const [service, setService] = useState(null);
     const [bookings, setBookings] = useState([]);
-    const [bookingLoading, setBookingLoading] = useState(false);
+    const [bookingLoading, setBookingLoading] = useState(true);
     const [filters, setFilters] = useState({ page: 1, per_page: 10, search: "", status: "", from: "", to: "" });
     const [pagination, updatePagination] = usePagination(1, 10);
 
     const fetchService = async () => {
         try {
-            startSubmitting(true);
+            startSubmitting();
             const response = await getAll(`/doctor/${serviceId}/service/view`);
             if (response?.status) {
                 setService(response.data);
@@ -71,7 +78,7 @@ const DoctorServiceView = ({ showModal }) => {
             console.error("Error fetching doctor service details:", error);
             setService(null);
         } finally {
-            stopSubmitting(false);
+            stopSubmitting();
         }
     };
 
@@ -209,20 +216,28 @@ const DoctorServiceView = ({ showModal }) => {
                             View Service
                         </h2>
                         <div className="d-flex flex-column align-items-end gap-2">
-                            {/* <span className={`statusChip ${statusClassName}`}>{serviceDetails.statusLabel}</span> */}
-                            <div className="status-action">
-                                <Select
-                                    className={`tabel-select status${serviceDetails?.status ? "Active" : "Inactive"}`}
-                                    id={`status${serviceId}`}
-                                    name="status"
-                                    label=""
-                                    value={serviceDetails?.status ? "1" : "0"}
-                                    onChange={(e) => handleStatusChange(e, serviceId)}
-                                    labelclass="me-2 mb-0"
-                                >
-                                    {statusOptions}
-                                </Select>
-                            </div>
+                            {isSubmitting ? (
+                                <Skeleton
+                                    width={160}
+                                    height={44}
+                                    borderRadius={8}
+                                    {...serviceViewSkeletonProps}
+                                />
+                            ) : (
+                                <div className="status-action">
+                                    <Select
+                                        className={`tabel-select status${serviceDetails?.status ? "Active" : "Inactive"}`}
+                                        id={`status${serviceId}`}
+                                        name="status"
+                                        label=""
+                                        value={serviceDetails?.status ? "1" : "0"}
+                                        onChange={(e) => handleStatusChange(e, serviceId)}
+                                        labelclass="me-2 mb-0"
+                                    >
+                                        {statusOptions}
+                                    </Select>
+                                </div>
+                            )}
                             {/* <button
                                 className="btn btn-outline-primary"
                                 onClick={() => navigate(`/admin/doctor-management/${id}/services`)}
@@ -235,68 +250,137 @@ const DoctorServiceView = ({ showModal }) => {
 
 
 
-                    <div className="service-hero mb-4">
-                        <img src={serviceDetails.banner} alt={serviceDetails.category} />
-                    </div>
+                    {isSubmitting ? (
+                        <>
+                            <div className="service-hero mb-4">
+                                <Skeleton
+                                    height={280}
+                                    borderRadius={12}
+                                    {...serviceViewSkeletonProps}
+                                />
+                            </div>
+                            <div className="row mb-2">
+                                {[1, 2, 3].map((i) => (
+                                    <div
+                                        className={
+                                            i === 3
+                                                ? "col-xl-6 col-md-6 mb-3"
+                                                : "col-xl-3 col-md-6 mb-3"
+                                        }
+                                        key={`service-detail-sk-${i}`}
+                                    >
+                                        <div className="detail-box">
+                                            <Skeleton
+                                                width="55%"
+                                                height={16}
+                                                {...serviceViewSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width={i === 3 ? "95%" : "80%"}
+                                                height={22}
+                                                {...serviceViewSkeletonProps}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <Skeleton
+                                width={80}
+                                height={28}
+                                {...serviceViewSkeletonProps}
+                                className="mb-3"
+                            />
+                            <div className="row">
+                                {Array.from({ length: 4 }, (_, i) => (
+                                    <div
+                                        className="col-xl-3 col-md-6 mb-3"
+                                        key={`service-slot-sk-${i}`}
+                                    >
+                                        <div className="detail-box">
+                                            <Skeleton
+                                                width="50%"
+                                                height={16}
+                                                {...serviceViewSkeletonProps}
+                                                className="mb-2"
+                                            />
+                                            <Skeleton
+                                                width="70%"
+                                                height={20}
+                                                {...serviceViewSkeletonProps}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="service-hero mb-4">
+                                <img
+                                    src={serviceDetails.banner}
+                                    alt={serviceDetails.category}
+                                />
+                            </div>
 
-                    <div className="row mb-2">
-                        {/* <div className="col-xl-4">
-                            <div className="info-tile">
-                                <span className="info-label">Service</span>
-                                <p className="info-value mb-0">{serviceDetails.title}</p>
-                            </div>
-                            <div className="info-tile mt-3">
-                                <span className="info-label">Service Charges</span>
-                                <p className="info-value mb-0">{serviceDetails.charges} Yalla Coins</p>
-                            </div>
-                        </div> */}
-                        <div className="col-xl-3 col-md-6 mb-3">
-                            <div className="detail-box">
-                                <h6>Service Category</h6>
-                                <p className="mb-0">{serviceDetails.title}</p>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-md-6 mb-3">
-                            <div className="detail-box">
-                                <h6>Service Charges</h6>
-                                <p className="mb-0">{serviceDetails.charges} Yalla Coins</p>
-                            </div>
-                        </div>
-                        <div className="col-xl-6 col-md-6 mb-3">
-                            <div className="detail-box">
-                                <h6>Description</h6>
-                                <p className="mb-0">{serviceDetails.description}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4 className="f-white-color">Slots</h4>
-
-                    <div className="row">
-                        {serviceDetails.slots.length ? (
-                            serviceDetails.slots.map((slotGroup) => (
-                                // <div className="slot-card" key={slotGroup.day}>
-                                //     <span className="slot-day">{slotGroup.day}</span>
-                                //     {slotGroup.slots.map((slot) => (
-                                //         <><span className="slot-time" key={slot.id || slot.time}>{slot.time}</span><br /></>
-                                //     ))}
-                                // </div>
+                            <div className="row mb-2">
                                 <div className="col-xl-3 col-md-6 mb-3">
                                     <div className="detail-box">
-                                        <h6>{slotGroup.day}</h6>
-                                        {slotGroup.slots.map((slot) => (
-                                            <p className="mb-0">{slot.time}</p>
-                                        ))}
+                                        <h6>Service Category</h6>
+                                        <p className="mb-0">{serviceDetails.title}</p>
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="slot-card">
-                                <span className="slot-day">-</span>
-                                <span className="slot-time">No slots available</span>
+                                <div className="col-xl-3 col-md-6 mb-3">
+                                    <div className="detail-box">
+                                        <h6>Service Charges</h6>
+                                        <p className="mb-0">
+                                            {serviceDetails.charges} Yalla Coins
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="col-xl-6 col-md-6 mb-3">
+                                    <div className="detail-box">
+                                        <h6>Description</h6>
+                                        <p className="mb-0">
+                                            {serviceDetails.description}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                        )}
-                    </div>
+
+                            <h4 className="f-white-color">Slots</h4>
+
+                            <div className="row">
+                                {serviceDetails.slots.length ? (
+                                    serviceDetails.slots.map((slotGroup) => (
+                                        <div
+                                            className="col-xl-3 col-md-6 mb-3"
+                                            key={slotGroup.day}
+                                        >
+                                            <div className="detail-box">
+                                                <h6>{slotGroup.day}</h6>
+                                                {slotGroup.slots.map((slot) => (
+                                                    <p
+                                                        className="mb-0"
+                                                        key={slot.id || slot.time}
+                                                    >
+                                                        {slot.time}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="slot-card">
+                                        <span className="slot-day">-</span>
+                                        <span className="slot-time">
+                                            No slots available
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
 
                 </div>
 

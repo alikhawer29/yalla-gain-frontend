@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomTable from "../../../Components/CustomTable";
-import { doctorDetailsMap, doctorServices } from "./doctorData";
 import { doctorServicesHeaders } from "../../../Config/TableHeaders";
 import { usePagination } from "../../../Hooks/usePagination";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
@@ -17,14 +16,6 @@ import withModal from "../../../HOC/withModal";
 const DoctorServices = ({ showModal }) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const doctor = useMemo(
-    () => doctorDetailsMap[id] ?? doctorDetailsMap["01"],
-    [id],
-  );
-  const servicesSource = useMemo(
-    () => doctorServices[id] ?? doctorServices["01"],
-    [id],
-  );
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
 
   const [filters, setFilters] = useState({
@@ -35,55 +26,13 @@ const DoctorServices = ({ showModal }) => {
   });
   const [pagination, updatePagination] = usePagination(1, 10);
   const [rows, setRows] = useState([]);
-  const [pageMeta, setPageMeta] = useState({
-    currentPage: 1,
-    perPage: 10,
-    totalRecords: servicesSource.length,
-  });
 
-  useEffect(() => {
-    const perPage = Number(filters.per_page) || 10;
-    const currentPage = Number(filters.page) || 1;
-    const normalizedSearch = filters.search?.trim().toLowerCase() ?? "";
-    const statusFilter = filters.status?.trim();
-
-    const filtered = servicesSource.filter((service) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        service.serviceCategory.toLowerCase().includes(normalizedSearch);
-      const matchesStatus =
-        !statusFilter ||
-        service.status.toLowerCase() === statusFilter.toLowerCase();
-      return matchesSearch && matchesStatus;
-    });
-
-    const totalRecords = filtered.length;
-    const totalPages = Math.max(1, Math.ceil(totalRecords / perPage));
-
-    if (currentPage > totalPages) {
-      setFilters((prev) => ({ ...prev, page: totalPages }));
-      return;
-    }
-
-    const startIndex = (currentPage - 1) * perPage;
-    const paginated = filtered.slice(startIndex, startIndex + perPage);
-
-    setRows(paginated);
-    setPageMeta({ currentPage, perPage, totalRecords });
-    updatePagination({
-      showData: Math.min(totalRecords, startIndex + paginated.length),
-      currentPage,
-      totalRecords,
-      totalPages,
-      perPage,
-    });
-  }, [filters, servicesSource, setFilters, updatePagination]);
-
-  const startIndex = (pageMeta.currentPage - 1) * pageMeta.perPage;
+  const startIndex =
+    (pagination.currentPage - 1) * (pagination.perPage || filters.per_page);
 
   const fetchServices = async () => {
     try {
-      startSubmitting(true);
+      startSubmitting();
       const url = `/doctor/${id}/services`;
       const response = await getAll(url, filters);
       // const response = subscriptionLogsData;
@@ -101,7 +50,7 @@ const DoctorServices = ({ showModal }) => {
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
-      stopSubmitting(false);
+      stopSubmitting();
     }
   };
 
@@ -152,7 +101,7 @@ const DoctorServices = ({ showModal }) => {
           <CustomTable
             filters={filters}
             setFilters={setFilters}
-            loading={false}
+            loading={isSubmitting}
             headers={doctorServicesHeaders}
             pagination={pagination}
             selectOptions={[

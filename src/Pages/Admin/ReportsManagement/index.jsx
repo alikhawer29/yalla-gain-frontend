@@ -147,16 +147,20 @@ const ReportsManagement = ({
                   {activeTab === "booking"
                     ? rows.map((item, index) => {
                         const appt = item?.appointment || {};
-                        const reportUser = item?.user || appt?.user || {};
-                        const provider = appt?.service?.user || {};
+                        const reportedBy = item?.reported_by || {};
+                        const reportedAgainst = item?.reported_against || {};
                         const bookingId = appt?.id || "-";
                         const name =
-                          [reportUser?.first_name, reportUser?.last_name]
+                          [reportedBy?.first_name, reportedBy?.last_name]
                             .filter(Boolean)
                             .join(" ") || "-";
-                        const userType = provider?.type
-                          ? capitalizeFirstLetter(provider.type)
-                          : "-";
+                        const reportedAgainstName =
+                          [
+                            reportedAgainst?.first_name,
+                            reportedAgainst?.last_name,
+                          ]
+                            .filter(Boolean)
+                            .join(" ") || "-";
                         const bookingDate =
                           appt?.appointment_date || appt?.created_at || "-";
                         const reportedOn = item?.created_at || "-";
@@ -180,8 +184,16 @@ const ReportsManagement = ({
                               )}
                             </td>
                             <td>#{bookingId}</td>
-                            <td>{name}</td>
-                            <td>{userType}</td>
+                            <td>
+                              {name}{" "}
+                              {reportedBy?.type ? `(${reportedBy?.type})` : ""}
+                            </td>
+                            <td>
+                              {reportedAgainstName}{" "}
+                              {reportedAgainst?.type
+                                ? `(${reportedAgainst?.type})`
+                                : ""}
+                            </td>
                             <td>{dateFormat(bookingDate)}</td>
                             <td>{dateFormat(reportedOn)}</td>
                             <td>{charges} Yalla Coins</td>

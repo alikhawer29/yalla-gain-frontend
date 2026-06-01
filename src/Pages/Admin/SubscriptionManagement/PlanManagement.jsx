@@ -141,8 +141,12 @@ const PlanManagement = ({
                         )}
                       </td>
                       <td>{item?.title}</td>
-                      <td>{item?.duration}</td>
-                      <td>$ {item?.price}</td>
+                      <td>
+                        {item?.plan_type === "free"
+                          ? "Unlimited"
+                          : item?.duration}
+                      </td>
+                      <td>{item?.price} Yalla Coins</td>
                       <td>{item?.created_at}</td>
                       <td>{item?.last_modified_on}</td>
                       <td onClick={(e) => e.stopPropagation()}>
