@@ -1,3 +1,50 @@
+.query-management-table .customTable {
+  overflow-x: hidden;
+}
+
+.query-management-table .customTable table {
+  table-layout: fixed;
+  width: 100%;
+  white-space: normal !important;
+}
+
+.query-management-table .customTable table th,
+.query-management-table .customTable table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.query-management-table .customTable table th:nth-child(1),
+.query-management-table .customTable table td:nth-child(1) {
+  width: 7%;
+}
+
+.query-management-table .customTable table th:nth-child(2),
+.query-management-table .customTable table td:nth-child(2) {
+  width: 14%;
+}
+
+.query-management-table .customTable table th:nth-child(3),
+.query-management-table .customTable table td:nth-child(3) {
+  width: 18%;
+}
+
+.query-management-table .customTable table th:nth-child(4),
+.query-management-table .customTable table td:nth-child(4) {
+  width: 24%;
+}
+
+.query-management-table .customTable table th:nth-child(5),
+.query-management-table .customTable table td:nth-child(5) {
+  width: 27%;
+}
+
+.query-management-table .customTable table th:nth-child(6),
+.query-management-table .customTable table td:nth-child(6) {
+  width: 10%;
+}
+
 .query-view .detail-label {
   color: #ffffff;
   font-weight: 600;

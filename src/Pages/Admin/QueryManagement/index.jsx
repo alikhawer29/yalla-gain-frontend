@@ -7,6 +7,7 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { getAll } from "../../../Services/Api";
 import { queryLogsHeaders } from "../../../Config/TableHeaders";
+import "./style.css";
 
 const QueryManagement = ({ filters, setFilters, pagination, updatePagination }) => {
   const navigate = useNavigate();
@@ -56,33 +57,49 @@ const QueryManagement = ({ filters, setFilters, pagination, updatePagination }) 
                   <h2 className="mainTitle mb-0">Query Management</h2>
                 </div>
               </div>
-              <CustomTable
-                filters={filters}
-                setFilters={setFilters}
-                loading={isSubmitting}
-                headers={queryLogsHeaders}
-                pagination={pagination}
-                dateFilters={[{ title: "Date", from: "from", to: "to", fromTitle: "From", toTitle: "To" }]}
-              >
-                <tbody>
-                  {rows.map((item, index) => (
-                    <tr
-                      key={item.id}
-                      {...clickableTableRowNavProps(
-                        navigate,
-                        `/admin/query-management/${item.id}`,
-                      )}
-                    >
-                      <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                      <td>{item?.name}</td>
-                      <td>{item?.email}</td>
-                      <td>{item?.subject}</td>
-                      <td>{item?.message}</td>
-                      <td>{item?.created_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </CustomTable>
+              <div className="query-management-table">
+                <CustomTable
+                  filters={filters}
+                  setFilters={setFilters}
+                  loading={isSubmitting}
+                  headers={queryLogsHeaders}
+                  pagination={pagination}
+                  dateFilters={[
+                    {
+                      title: "Date",
+                      from: "from",
+                      to: "to",
+                      fromTitle: "From",
+                      toTitle: "To",
+                    },
+                  ]}
+                >
+                  <tbody>
+                    {rows.map((item, index) => (
+                      <tr
+                        key={item.id}
+                        {...clickableTableRowNavProps(
+                          navigate,
+                          `/admin/query-management/${item.id}`,
+                        )}
+                      >
+                        <td>
+                          {serialNum(
+                            (filters.page - 1) * filters.per_page + index + 1,
+                          )}
+                        </td>
+                        <td title={item?.name}>{item?.name || "-"}</td>
+                        <td title={item?.email}>{item?.email || "-"}</td>
+                        <td title={item?.subject}>{item?.subject || "-"}</td>
+                        <td title={item?.message}>{item?.message || "-"}</td>
+                        <td title={item?.created_at}>
+                          {item?.created_at || "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </CustomTable>
+              </div>
             </div>
           </div>
         </div>

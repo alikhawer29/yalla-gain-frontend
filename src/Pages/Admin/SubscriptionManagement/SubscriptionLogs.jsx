@@ -7,6 +7,7 @@ import { subscriptionAdminLogsHeaders } from "../../../Config/TableHeaders";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { serialNum } from "../../../Utils/helper";
+import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 import { getAll } from "../../../Services/Api";
 
 const SubscriptionLogs = ({ filters, setFilters, pagination, updatePagination }) => {
@@ -72,7 +73,9 @@ const SubscriptionLogs = ({ filters, setFilters, pagination, updatePagination })
                                             <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
                                             <td>{item?.user?.first_name} {item?.user?.last_name}</td>
                                             <td>{item?.user?.email}</td>
-                                            <td>{item?.subscription_plan?.title}</td>
+                                            <td>
+                                              {formatSubscriptionPlanDisplayName(item)}
+                                            </td>
                                             <td style={{ color: item?.is_active ? "#4CD964" : "#FF5C5C" }}>{item?.is_active ? "Active" : "Expired"}</td>
                                             <td>$ {item.price_paid}</td>
                                             <td>{item?.subscribed_on}</td>

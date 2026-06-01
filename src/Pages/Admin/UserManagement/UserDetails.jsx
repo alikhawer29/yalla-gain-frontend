@@ -31,6 +31,7 @@ import {
   serialNum,
   capitalizeStatus,
 } from "../../../Utils/helper";
+import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 
 const profileSkeletonProps = {
   baseColor: "#e8e8e8",
@@ -570,7 +571,7 @@ const UserDetails = ({
                           1,
                       )}
                     </td>
-                    <td>{item?.subscription_plan?.title}</td>
+                    <td>{formatSubscriptionPlanDisplayName(item)}</td>
                     <td>{item?.subscription_plan?.duration}</td>
                     <td>
                       {item?.price_paid != null && item?.price_paid !== ""

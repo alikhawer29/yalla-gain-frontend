@@ -1,120 +1,142 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
-import { getDetails, post } from "../../../Services/Api";
+import SocialMediaPost from "../../../Components/SocialMediaPost/SocialMediaPost";
+import { getDetails } from "../../../Services/Api";
+import {
+    deleteComment,
+    deletePost,
+    fetchPostComments,
+    fetchPostReactions,
+    mapApiPostToUI,
+} from "../../../Utils/postUiMapper";
 import withModal from "../../../HOC/withModal";
-import { Dropdown } from "react-bootstrap";
-import "./style.css";
 
-const PostView = ({ showModal }) => {
+const postSkeletonProps = {
+    baseColor: "rgba(255, 255, 255, 0.12)",
+    highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
+const PostView = () => {
     const { id } = useParams();
-    const [detail, setDetail] = useState(null);
+    const navigate = useNavigate();
+    const [postData, setPostData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDetail = async () => {
             try {
+                setLoading(true);
                 const res = await getDetails(`/post/${id}/detail`);
                 if (res?.status && res?.data) {
-                    const d = res.data;
-                    setDetail({
-                        id: d.id,
-                        user: d.user,
-                        post: {
-                            title: d.title,
-                            media: Array.isArray(d.post_media) ? d.post_media.map((m) => m.path) : [],
-                            reaction_count: d.reaction_count,
-                            comment_count: d.comment_count,
-                            time_ago: d.time_ago,
-                        },
-                    });
+                    setPostData(mapApiPostToUI(res.data));
+                } else {
+                    setPostData(null);
                 }
             } catch (e) {
                 console.error("Error fetching post detail:", e);
+                setPostData(null);
+            } finally {
+                setLoading(false);
             }
         };
         fetchDetail();
     }, [id]);
 
-    const media = useMemo(() => (detail?.post?.media || []), [detail]);
+    const onDeletePost = async (postId) => {
+        const res = await deletePost(postId);
+        if (res?.status) {
+            navigate(-1);
+        }
+        return res;
+    };
 
-    const handleDelete = () => {
-        showModal(
-            "Delete Post",
-            "Are you sure you want to delete this post?",
-            async () => {
-                try {
-                    const res = await post(`/post/${id}/delete`, {});
-                    if (res?.status) {
-                        showModal(null, "Post deleted successfully", null, true);
-                    } else {
-                        showModal("Failed", res?.message || "Could not delete post.", null, true);
-                    }
-                } catch (e) {
-                    console.error("Error deleting post:", e);
-                    showModal("Failed", "Could not delete post.", null, true);
-                }
-            }
-        );
+    const onDeleteComment = async (commentId, postId) => {
+        const res = await deleteComment(commentId);
+        if (res?.status && postData?.postId === postId) {
+            setPostData((prev) =>
+                prev
+                    ? {
+                          ...prev,
+                          interactions: {
+                              ...prev.interactions,
+                              comments: Math.max(
+                                  0,
+                                  (prev.interactions.comments || 0) - 1,
+                              ),
+                          },
+                      }
+                    : prev,
+            );
+        }
+        return res;
     };
 
     return (
         <DashboardLayout pageTitle="User Post">
-            <div className="container-fluid">
-                <div className="dashCard">
-                    <div className="d-flex align-items-center justify-content-between mb-3">
-                        <h2 className="mainTitle mb-0"><BackButton2 /> User Post</h2>
-                        <Dropdown align="end">
-                            <Dropdown.Toggle variant="secondary" className="btn btn-secondary" bsPrefix="btn">•••</Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={handleDelete}>Delete Post</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-
-                    <div className="post-card">
-                        <div className="post-header d-flex align-items-center gap-3 mb-2">
-                            <div className="detail-box-img">
-                                <img src={detail?.user?.photo} alt="user" />
-                            </div>
-                            <div className="flex-grow-1">
-                                <div className="fw-semibold text-white">
-                                    {detail ? `${detail?.user?.first_name ?? ""} ${detail?.user?.last_name ?? ""}`.trim() : "User"}
-                                </div>
-                                <div className="text-grey small">{detail?.post?.time_ago || ""}</div>
-                            </div>
-                        </div>
-
-                        {detail?.post?.title && (
-                            <p className="text-light mb-3">{detail?.post?.title}</p>
-                        )}
-
-                        <div className="post-media-grid mb-3">
-                            {media.length ? (
-                                media.map((src, idx) => (
-                                    <div className="post-media" key={idx}>
-                                        <img src={src} alt={`media-${idx}`} />
-                                    </div>
-                                ))
-                            ) : (
-                                <>
-                                    <div className="post-media placeholder" />
-                                    <div className="post-media placeholder" />
-                                    <div className="post-media placeholder" />
-                                </>
-                            )}
-                        </div>
-
-                        <div className="d-flex justify-content-between text-light">
-                            <div>👍😂😢{detail?.post?.reaction_count ? `${detail?.post?.reaction_count} Likes` : ""}</div>
-                            <div>{detail?.post?.comment_count ? `${detail?.post?.comment_count} Comments` : ""}</div>
-                        </div>
-                    </div>
+            <div className="container-fluid dashCard">
+                <div className="row my-4">
+                    <h2 className="mainTitle mb-4">
+                        <BackButton2 />
+                        User Post
+                    </h2>
                 </div>
+
+                {loading ? (
+                    <div className="social-post">
+                        <div className="d-flex gap-3 mb-3">
+                            <Skeleton
+                                circle
+                                width={50}
+                                height={50}
+                                {...postSkeletonProps}
+                            />
+                            <div className="flex-grow-1">
+                                <Skeleton
+                                    width={160}
+                                    height={20}
+                                    {...postSkeletonProps}
+                                    className="mb-2"
+                                />
+                                <Skeleton
+                                    width={100}
+                                    height={14}
+                                    {...postSkeletonProps}
+                                />
+                            </div>
+                        </div>
+                        <Skeleton
+                            width="80%"
+                            height={18}
+                            {...postSkeletonProps}
+                            className="mb-3"
+                        />
+                        <Skeleton
+                            height={320}
+                            borderRadius={12}
+                            {...postSkeletonProps}
+                        />
+                    </div>
+                ) : postData ? (
+                    <SocialMediaPost
+                        postId={postData.postId}
+                        postData={postData}
+                        onConfirmDeletePost={() => onDeletePost(postData.postId)}
+                        onConfirmDeleteComment={(commentId) =>
+                            onDeleteComment(commentId, postData.postId)
+                        }
+                        onFetchReactions={fetchPostReactions}
+                        onFetchComments={fetchPostComments}
+                    />
+                ) : (
+                    <p className="text-white mb-0">Post not found.</p>
+                )}
             </div>
         </DashboardLayout>
     );
 };
 
 export default withModal(PostView);
-

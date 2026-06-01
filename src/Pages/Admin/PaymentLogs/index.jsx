@@ -5,6 +5,7 @@ import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
+import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 import {
   paymentLogsBookingHeaders,
   subscriptionAdminLogsHeaders,
@@ -106,7 +107,7 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
             id: r?.id ?? idx,
             name: `${r?.user?.first_name ?? ""} ${r?.user?.last_name ?? ""}`.trim(),
             email: r?.user?.email ?? "-",
-            plan: r?.subscription_plan?.title || "-",
+            plan: formatSubscriptionPlanDisplayName(r),
             active: !!r?.is_active,
             price: `${r?.price_paid ?? r?.subscription_plan?.price ?? "-"} Yalla Coins`,
             purchase: r?.subscribed_on ?? "-",

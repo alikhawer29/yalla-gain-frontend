@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown } from "react-bootstrap";
 import { FaEllipsisH, FaTrash } from "react-icons/fa";
 import Like from "./reactions/like.svg?react";
@@ -15,6 +15,10 @@ import {
   formatNumber,
   sumReactions,
 } from "../../Utils/helper";
+import {
+  buildReactionCountsFromList,
+  normalizeReactionType,
+} from "../../Utils/postMedia";
 import withModal from "../../HOC/withModal";
 import { images } from "../../Assets";
 
@@ -30,6 +34,35 @@ const ClickablePostImage = ({ src, alt = "Post image", className = "", onOpen })
     >
       <img src={src} alt={alt} className="grid-img" />
     </button>
+  );
+};
+
+const PostMediaCell = ({ item, alt, className = "", onOpenImage }) => {
+  if (!item?.path) return null;
+
+  if (item.isVideo) {
+    return (
+      <div
+        className={`post-media-cell post-media-cell--video ${className}`.trim()}
+      >
+        <video
+          src={item.path}
+          controls
+          playsInline
+          preload="metadata"
+          className="grid-video"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <ClickablePostImage
+      src={item.path}
+      alt={alt}
+      className={className}
+      onOpen={onOpenImage}
+    />
   );
 };
 
@@ -127,45 +160,87 @@ const SocialMediaPost = ({
   }, [lightboxSrc]);
 
   useEffect(() => {
-    const loadReactions = async () => {
-      if (
-        showReactions &&
-        usersReacted?.length === 0 &&
-        typeof onFetchReactions === "function"
-      ) {
-        const list = await onFetchReactions(postId);
-        if (Array.isArray(list)) setUsersReacted(list);
-      }
+    if (!showReactions) {
+      setUsersReacted([]);
+      return undefined;
+    }
+    if (typeof onFetchReactions !== "function") return undefined;
+
+    let cancelled = false;
+    (async () => {
+      const list = await onFetchReactions(postId);
+      if (!cancelled && Array.isArray(list)) setUsersReacted(list);
+    })();
+
+    return () => {
+      cancelled = true;
     };
-    loadReactions();
-  }, [showReactions]);
+  }, [showReactions, postId, onFetchReactions]);
 
   useEffect(() => {
-    const loadComments = async () => {
-      if (
-        showComments &&
-        commentsState?.length === 0 &&
-        typeof onFetchComments === "function"
-      ) {
-        const list = await onFetchComments(postId);
-        if (Array.isArray(list)) setCommentsState(list);
-      }
-    };
-    loadComments();
-  }, [showComments]);
+    if (!showComments) return undefined;
+    if (typeof onFetchComments !== "function") return undefined;
 
-  const renderImageGrid = (imgs) => {
-    if (!imgs || imgs.length === 0) return null;
-    const count = imgs.length;
+    let cancelled = false;
+    (async () => {
+      const list = await onFetchComments(postId);
+      if (!cancelled && Array.isArray(list)) setCommentsState(list);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showComments, postId, onFetchComments]);
+
+  const mediaItems = useMemo(() => {
+    if (Array.isArray(content.media) && content.media.length > 0) {
+      return content.media;
+    }
+    if (Array.isArray(content.image) && content.image.length > 0) {
+      return content.image.map((path) => ({
+        path,
+        isVideo: /\.(mp4|mov|webm|ogg|avi|mkv)(\?|$)/i.test(String(path)),
+      }));
+    }
+    return [];
+  }, [content.media, content.image]);
+
+  const reactionSummary = useMemo(() => {
+    if (usersReacted.length > 0) {
+      return buildReactionCountsFromList(usersReacted);
+    }
+    return interactions.reactions || {};
+  }, [usersReacted, interactions.reactions]);
+
+  const totalReactions =
+    interactions.reactionCount != null
+      ? Number(interactions.reactionCount) || 0
+      : sumReactions(
+          Object.keys(reactionSummary).length > 0
+            ? reactionSummary
+            : interactions.reactions || {},
+        );
+
+  const postTimeLabel =
+    user.timeAgo ||
+    (user.timestamp
+      ? calculateTimePassed(new Date(user.timestamp))
+      : "");
+
+  const renderMediaGrid = (items) => {
+    if (!items || items.length === 0) return null;
+    const count = items.length;
     const openImage = (src) => setLightboxSrc(src);
 
     if (count === 1) {
       return (
-        <div className="post-image-grid single">
-          <ClickablePostImage
-            src={imgs[0]}
+        <div
+          className={`post-image-grid single ${items[0].isVideo ? "has-video" : ""}`}
+        >
+          <PostMediaCell
+            item={items[0]}
             alt="Post"
-            onOpen={openImage}
+            onOpenImage={openImage}
           />
         </div>
       );
@@ -174,8 +249,8 @@ const SocialMediaPost = ({
     if (count === 2) {
       return (
         <div className="post-image-grid double">
-          <ClickablePostImage src={imgs[0]} alt="Post 1" onOpen={openImage} />
-          <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
+          <PostMediaCell item={items[0]} alt="Post 1" onOpenImage={openImage} />
+          <PostMediaCell item={items[1]} alt="Post 2" onOpenImage={openImage} />
         </div>
       );
     }
@@ -183,40 +258,39 @@ const SocialMediaPost = ({
     if (count === 3) {
       return (
         <div className="post-image-grid triple">
-          <ClickablePostImage
-            src={imgs[0]}
+          <PostMediaCell
+            item={items[0]}
             alt="Post 1"
             className="large"
-            onOpen={openImage}
+            onOpenImage={openImage}
           />
           <div className="grid-stack">
-            <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
-            <ClickablePostImage src={imgs[2]} alt="Post 3" onOpen={openImage} />
+            <PostMediaCell item={items[1]} alt="Post 2" onOpenImage={openImage} />
+            <PostMediaCell item={items[2]} alt="Post 3" onOpenImage={openImage} />
           </div>
         </div>
       );
     }
 
-    // 4 or more
     return (
       <div className="post-image-grid multi">
-        <ClickablePostImage
-          src={imgs[0]}
+        <PostMediaCell
+          item={items[0]}
           alt="Post 1"
           className="large"
-          onOpen={openImage}
+          onOpenImage={openImage}
         />
         <div className="grid-stack">
-          <ClickablePostImage src={imgs[1]} alt="Post 2" onOpen={openImage} />
+          <PostMediaCell item={items[1]} alt="Post 2" onOpenImage={openImage} />
           <div className="grid-row">
-            <ClickablePostImage src={imgs[2]} alt="Post 3" onOpen={openImage} />
+            <PostMediaCell item={items[2]} alt="Post 3" onOpenImage={openImage} />
             <div className="overflow-wrapper">
-              <ClickablePostImage src={imgs[3]} alt="Post 4" onOpen={openImage} />
-              {count > 4 && (
+              <PostMediaCell item={items[3]} alt="Post 4" onOpenImage={openImage} />
+              {count > 4 && !items[3]?.isVideo && (
                 <button
                   type="button"
                   className="overlay overlay-button"
-                  onClick={() => openImage(imgs[3])}
+                  onClick={() => openImage(items[3].path)}
                   aria-label={`View image, ${count - 4} more`}
                 >
                   +{count - 4}
@@ -240,7 +314,7 @@ const SocialMediaPost = ({
         {poll.options.map((opt, i) => {
           const percentage = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
           return (
-            <div key={i} className="poll-option-wrapper">
+            <div key={opt.id ?? i} className="poll-option-wrapper">
               <div className="poll-option-info">
                  <span className="option-text">{opt.text}</span>
                  <span className="option-votes">{opt.votes} {opt.votes === 1 ? 'vote' : 'votes'}</span>
@@ -277,7 +351,7 @@ const SocialMediaPost = ({
             />
             <div className="user-info">
               <h4 className="user-name">{user.name}</h4>
-              <p className="post-time">{calculateTimePassed(new Date(user.timestamp))}</p>
+              <p className="post-time">{postTimeLabel}</p>
             </div>
           </div>
           <Dropdown align="end">
@@ -297,21 +371,37 @@ const SocialMediaPost = ({
 
         <div className="post-body">
           <p className="post-text">{content.text}</p>
-          {content.poll?.isPoll ? renderPoll(content.poll) : renderImageGrid(content.image)}
+          {content.poll?.isPoll
+            ? renderPoll(content.poll)
+            : renderMediaGrid(mediaItems)}
         </div>
 
         <div className="post-footer">
-          <div className="footer-left" onClick={() => setShowReactions(true)}>
+          <div
+            className={`footer-left ${totalReactions > 0 ? "" : "is-disabled"}`}
+            onClick={() => totalReactions > 0 && setShowReactions(true)}
+            role={totalReactions > 0 ? "button" : undefined}
+          >
             <div className="reaction-icons">
-               <Like className="mini-reaction" />
-               <Love className="mini-reaction" />
-               <Haha className="mini-reaction" />
+              {Object.entries(reactionSummary)
+                .filter(([, count]) => count > 0)
+                .slice(0, 3)
+                .map(([type]) => {
+                  const Icon = reactionsIcons[type] || Like;
+                  return <Icon key={type} className="mini-reaction" />;
+                })}
+              {totalReactions === 0 && <Like className="mini-reaction" />}
             </div>
             <span className="reaction-count">
-              {formatNumber(sumReactions(interactions.reactions))} Likes
+              {formatNumber(totalReactions)}{" "}
+              {totalReactions === 1 ? "Like" : "Likes"}
             </span>
           </div>
-          <div className="footer-right" onClick={() => setShowComments(true)}>
+          <div
+            className={`footer-right ${interactions.comments > 0 ? "" : "is-disabled"}`}
+            onClick={() => interactions.comments > 0 && setShowComments(true)}
+            role={interactions.comments > 0 ? "button" : undefined}
+          >
             <span className="comment-count">
               {formatNumber(interactions.comments)} Comments
             </span>
@@ -334,33 +424,48 @@ const SocialMediaPost = ({
           </button>
         </div>
         <div className="modal-reactions-summary my-3">
-           {Object.entries(interactions.reactions).map(([type, count]) => (
-             count > 0 && (
-               <div key={type} className="reaction-pill">
+          {Object.entries(reactionSummary).map(
+            ([type, count]) =>
+              count > 0 && (
+                <div key={type} className="reaction-pill">
                   {(() => {
-                    const Icon = reactionsIcons[type];
+                    const Icon = reactionsIcons[type] || Like;
                     return <Icon width={18} height={18} />;
                   })()}
                   <span>{formatNumber(count)}</span>
-               </div>
-             )
-           ))}
+                </div>
+              ),
+          )}
         </div>
         <div className="modal-user-list custom-scroll">
-          {usersReacted?.map((r, idx) => (
-            <div key={idx} className="modal-user-item">
-              <div className="avatar-wrapper">
-                <img src={r?.profileImage} alt={r.name} onError={(e) => e.target.src = images.adminProfileImg} />
-                <div className="reaction-badge">
-                  {(() => {
-                    const Icon = reactionsIcons[r.reacted || "like"];
-                    return <Icon width={14} height={14} />;
-                  })()}
+          {usersReacted?.length > 0 ? (
+            usersReacted.map((r) => {
+              const reactionKey = normalizeReactionType(r.reacted);
+              const Icon = reactionsIcons[reactionKey] || Like;
+              return (
+                <div key={r.userId ?? r.name} className="modal-user-item">
+                  <div className="avatar-wrapper">
+                    <img
+                      src={r?.profileImage}
+                      alt={r.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = images.adminProfileImg;
+                      }}
+                    />
+                    <div className="reaction-badge">
+                      <Icon width={14} height={14} />
+                    </div>
+                  </div>
+                  <span className="user-name">{r.name}</span>
                 </div>
-              </div>
-              <span className="user-name">{r.name}</span>
-            </div>
-          ))}
+              );
+            })
+          ) : (
+            <p className="text-center text-secondary mb-0 py-3">
+              No reactions found.
+            </p>
+          )}
         </div>
       </CustomModal>
 
@@ -379,14 +484,18 @@ const SocialMediaPost = ({
           </button>
         </div>
         <div className="modal-user-list custom-scroll mt-3">
-          {commentsState?.map((comment, idx) => (
-            <div key={idx} className="comment-item">
+          {commentsState?.length > 0 ? (
+            commentsState.map((comment) => (
+            <div key={comment.commentId ?? comment.userId} className="comment-item">
               <img src={comment?.userProfileImage} alt={comment.userName} className="comment-avatar" onError={(e) => e.target.src = images.adminProfileImg} />
               <div className="comment-details">
                 <div className="comment-header">
                   <h6 className="comment-user-name">{comment.userName}</h6>
                   <Dropdown align="end">
-                    <Dropdown.Toggle as="div" className="comment-menu-toggle">
+                    <Dropdown.Toggle
+                      as="div"
+                      className="comment-menu-toggle no-caret"
+                    >
                       <FaEllipsisH size={14} />
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="comment-dropdown">
@@ -403,7 +512,12 @@ const SocialMediaPost = ({
                 )}
               </div>
             </div>
-          ))}
+          ))
+          ) : (
+            <p className="text-center text-secondary mb-0 py-3">
+              No comments found.
+            </p>
+          )}
         </div>
       </CustomModal>
 
