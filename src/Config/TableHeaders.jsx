@@ -191,6 +191,14 @@ export const commissionLogsHeaders = [
   { key: "updated_on", title: "Update On" },
 ];
 
+// Consultation fee logs table headers
+export const consultationFeeLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "consultation_fee", title: "Consultation Fee" },
+  { key: "updated_on", title: "Update On" },
+];
+
+
 // Payout logs table headers
 export const payoutLogsHeaders = [
   { key: "id", title: "S.No" },

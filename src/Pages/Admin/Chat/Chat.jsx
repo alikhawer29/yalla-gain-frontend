@@ -13,6 +13,7 @@ import {
   FaFilePdf,
   FaFilePowerpoint,
   FaFileWord,
+  FaSpinner,
   FaTelegramPlane,
 } from "react-icons/fa";
 
@@ -217,6 +218,7 @@ const Chat = ({ showModal }) => {
   /** Deep link: doctor has no thread yet (could not open / create chat). */
   const [pendingDoctorProfile, setPendingDoctorProfile] = useState(null);
   const [lightboxSrc, setLightboxSrc] = useState(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const socketRef = useRef(null);
   const activeChatIdRef = useRef(null);
@@ -499,9 +501,10 @@ const Chat = ({ showModal }) => {
   };
 
   const handleSend = async () => {
-    if (!activeChat?.id) return;
+    if (!activeChat?.id || sendingMessage) return;
     if (!messageInput && imageFiles.length < 1 && documentFiles.length < 1)
       return;
+    setSendingMessage(true);
     try {
       const files = [...imageFiles, ...documentFiles];
       const res = await post(`/chat/sendMessage`, {
@@ -521,8 +524,17 @@ const Chat = ({ showModal }) => {
       setImageFiles([]);
       setDocumentFiles([]);
       fetchChatList();
-    } catch (e) {}
+    } catch (e) {
+      // keep composer content on failure
+    } finally {
+      setSendingMessage(false);
+    }
   };
+
+  const hasComposerContent =
+    Boolean(messageInput?.trim()) ||
+    imageFiles.length > 0 ||
+    documentFiles.length > 0;
 
   return (
     <DashboardLayout>
@@ -850,6 +862,7 @@ const Chat = ({ showModal }) => {
                                       />
                                       <button
                                         type="button"
+                                        disabled={sendingMessage}
                                         onClick={() =>
                                           setImageFiles((prev) =>
                                             prev.filter((_, i) => i !== index),
@@ -882,6 +895,7 @@ const Chat = ({ showModal }) => {
                                       </span>
                                       <button
                                         type="button"
+                                        disabled={sendingMessage}
                                         onClick={() =>
                                           setDocumentFiles((prev) =>
                                             prev.filter((_, i) => i !== index),
@@ -903,11 +917,18 @@ const Chat = ({ showModal }) => {
                               type="text"
                               placeholder="Type A Message..."
                               value={messageInput}
+                              disabled={sendingMessage}
                               onChange={(e) =>
                                 setMessageInput(e.target.value)
                               }
                             />
-                            <div className={Styles.inputAreaInner}>
+                            <div
+                              className={`${Styles.inputAreaInner}${
+                                sendingMessage
+                                  ? ` ${Styles.inputAreaInnerDisabled}`
+                                  : ""
+                              }`}
+                            >
                           <div className={`${Styles.fileUpload}`}>
                             <label htmlFor={`uploader`}>
                               <svg
@@ -934,6 +955,7 @@ const Chat = ({ showModal }) => {
                               accept="image/*"
                               multiple
                               hidden={true}
+                              disabled={sendingMessage}
                             />
                           </div>
                           <div className="file-upload mt-2">
@@ -980,22 +1002,29 @@ const Chat = ({ showModal }) => {
                               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                               multiple
                               hidden
+                              disabled={sendingMessage}
                               onChange={handleDocumentChange}
                             />
                           </div>
                           <button
+                            type="button"
                             className={`${Styles["send-btn"]}`}
-                            disabled={
-                              !(
-                                messageInput ||
-                                imageFiles.length ||
-                                documentFiles.length
-                              )
+                            disabled={!hasComposerContent || sendingMessage}
+                            aria-busy={sendingMessage}
+                            aria-label={
+                              sendingMessage ? "Sending message" : "Send message"
                             }
                             onClick={handleSend}
                           >
-                            {/* <SendIcon /> */}
-                            <FaTelegramPlane color="#118076" />
+                            {sendingMessage ? (
+                              <FaSpinner
+                                color="#118076"
+                                className={Styles.sendBtnSpinner}
+                                aria-hidden
+                              />
+                            ) : (
+                              <FaTelegramPlane color="#118076" aria-hidden />
+                            )}
                           </button>
                             </div>
                           </div>

@@ -705,9 +705,38 @@ p.noti-tag-time {
   filter: brightness(0);
 }
 
+.send-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .send-btn svg {
   width: 35px;
   height: 35px;
+}
+
+.sendBtnSpinner {
+  animation: chatSendSpin 0.75s linear infinite;
+}
+
+@keyframes chatSendSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.inputAreaInnerDisabled {
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .documentDeleteBtn {

@@ -12,10 +12,20 @@ const toPayloadFlag = (value) => (value ? 1 : 0);
 export const toFormFlag = (value) =>
   value === 1 || value === "1" || value === true;
 
-const sessionUnit = (duration) => (duration === "yearly" ? "year" : "month");
+export const normalizePlanDuration = (duration) => {
+  const d = String(duration || "monthly").toLowerCase();
+  if (d === "yearly" || d === "annual" || d === "year") return "yearly";
+  return "monthly";
+};
+
+const isYearlyDuration = (duration) =>
+  normalizePlanDuration(duration) === "yearly";
+
+/** Sessions label in preview & features — always per month */
+const SESSION_PERIOD_LABEL = "month";
 
 const pointsSuffix = (duration) =>
-  duration === "yearly" ? "Points/year" : "Points/month";
+  isYearlyDuration(duration) ? "Points/year" : "Points/month";
 
 export const getAppAccessLabel = (planType) => {
   if (planType === "free") return "Limited Access";
@@ -26,8 +36,7 @@ export const getAppAccessLabel = (planType) => {
 /** Live preview lines for Section 4 */
 export const buildPlanPreview = (values) => {
   const free = isFreePlan(values.plan_type);
-  const duration = values.duration || "monthly";
-  const unit = sessionUnit(duration);
+  const duration = normalizePlanDuration(values.duration);
   const trainer = Number(values.trainer_sessions) || 0;
   const doctor = Number(values.doctor_sessions) || 0;
   const points = Number(values.yalla_points) || 0;
@@ -50,7 +59,7 @@ export const buildPlanPreview = (values) => {
   if (!free && trainer > 0) {
     items.push({
       type: "included",
-      text: `Trainer Consultations — ${trainer}/${unit}`,
+      text: `Trainer Consultations — ${trainer}/${SESSION_PERIOD_LABEL}`,
     });
   } else if (free) {
     items.push({ type: "excluded", text: "Trainer Consultations" });
@@ -59,7 +68,7 @@ export const buildPlanPreview = (values) => {
   if (!free && doctor > 0) {
     items.push({
       type: "included",
-      text: `Doctor Consultations — ${doctor}/${unit}`,
+      text: `Doctor Consultations — ${doctor}/${SESSION_PERIOD_LABEL}`,
     });
   } else if (free) {
     items.push({ type: "excluded", text: "Doctor Consultations" });
@@ -92,8 +101,7 @@ export const buildPlanPreview = (values) => {
 /** API features[] strings — auto-generated from config */
 export const generateFeaturesList = (values) => {
   const free = isFreePlan(values.plan_type);
-  const duration = values.duration || "monthly";
-  const unit = sessionUnit(duration);
+  const duration = normalizePlanDuration(values.duration);
   const trainer = Number(values.trainer_sessions) || 0;
   const doctor = Number(values.doctor_sessions) || 0;
   const points = Number(values.yalla_points) || 0;
@@ -108,13 +116,17 @@ export const generateFeaturesList = (values) => {
   if (free || trainer <= 0) {
     lines.push("Trainer Consultations: Not included");
   } else {
-    lines.push(`Trainer Consultations: ${trainer} sessions/${unit}`);
+    lines.push(
+      `Trainer Consultations: ${trainer} sessions/${SESSION_PERIOD_LABEL}`,
+    );
   }
 
   if (free || doctor <= 0) {
     lines.push("Doctor Consultations: Not included");
   } else {
-    lines.push(`Doctor Consultations: ${doctor} sessions/${unit}`);
+    lines.push(
+      `Doctor Consultations: ${doctor} sessions/${SESSION_PERIOD_LABEL}`,
+    );
   }
 
   lines.push(
@@ -183,7 +195,7 @@ export const handleDurationChange = (duration, planType, setFieldValue) => {
 };
 
 const mapDurationFieldsToPayload = (values, free) => {
-  const yearly = values.duration === "yearly";
+  const yearly = isYearlyDuration(values.duration);
   const trainer = Number(values.trainer_sessions) || 0;
   const doctor = Number(values.doctor_sessions) || 0;
   const points = Number(values.yalla_points) || 0;
@@ -191,10 +203,8 @@ const mapDurationFieldsToPayload = (values, free) => {
   return {
     yalla_points_monthly: free || yearly ? 0 : points,
     yalla_points_annual: free || !yearly ? 0 : points,
-    trainer_sessions_monthly: free || yearly ? 0 : trainer,
-    doctor_sessions_monthly: free || yearly ? 0 : doctor,
-    trainer_sessions_annual: free || !yearly ? 0 : trainer,
-    doctor_sessions_annual: free || !yearly ? 0 : doctor,
+    trainer_sessions_monthly: free ? 0 : trainer,
+    doctor_sessions_monthly: free ? 0 : doctor,
   };
 };
 
@@ -218,12 +228,8 @@ export const buildPlanPayload = (values) => {
 export const mapPlanToForm = (d) => {
   const planType = (d.plan_type || "gold").toLowerCase();
   const free = isFreePlan(planType);
-  const duration = free
-    ? null
-    : d.duration
-      ? String(d.duration).toLowerCase()
-      : "monthly";
-  const yearly = duration === "yearly";
+  const duration = free ? null : normalizePlanDuration(d.duration || "monthly");
+  const yearly = isYearlyDuration(duration);
 
   const preset = getPlanPreset(planType, duration);
 
@@ -232,12 +238,14 @@ export const mapPlanToForm = (d) => {
     duration,
     price: free ? 0 : (d.price?.toString() ?? ""),
     has_trial: toFormFlag(d.has_trial),
-    trainer_sessions: yearly
-      ? (d.trainer_sessions_annual ?? preset.trainer_sessions)
-      : (d.trainer_sessions_monthly ?? preset.trainer_sessions),
-    doctor_sessions: yearly
-      ? (d.doctor_sessions_annual ?? preset.doctor_sessions)
-      : (d.doctor_sessions_monthly ?? preset.doctor_sessions),
+    trainer_sessions:
+      d.trainer_sessions_monthly ??
+      d.trainer_sessions_annual ??
+      preset.trainer_sessions,
+    doctor_sessions:
+      d.doctor_sessions_monthly ??
+      d.doctor_sessions_annual ??
+      preset.doctor_sessions,
     yalla_points: yearly
       ? (d.yalla_points_annual ?? preset.yalla_points)
       : (d.yalla_points_monthly ?? preset.yalla_points),
