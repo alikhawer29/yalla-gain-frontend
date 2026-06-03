@@ -5,6 +5,7 @@ import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/Dashboa
 import CustomTable from "../../../Components/CustomTable";
 import { doctorServiceBookingHeaders } from "../../../Config/TableHeaders";
 import { usePagination } from "../../../Hooks/usePagination";
+import BookingStatusText from "../../../Components/BookingStatusText";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { getAll, post } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
@@ -40,12 +41,6 @@ const formatSlotRange = (start, end) => {
     if (!start && !end) return "-";
     if (start && end) return `${start} - ${end}`;
     return start || end || "-";
-};
-
-const formatBookingStatus = (value) => {
-    if (!value) return "-";
-    const label = value.toString().replace(/_/g, " ");
-    return label.charAt(0).toUpperCase() + label.slice(1);
 };
 
 const TrainerServiceView = ({ showModal }) => {
@@ -320,6 +315,7 @@ const TrainerServiceView = ({ showModal }) => {
                                 { value: "", text: "All" },
                                 { value: "pending", text: "Pending" },
                                 { value: "upcoming", text: "Upcoming" },
+                                { value: "in-progress", text: "In-Progress" },
                                 { value: "past", text: "Past" },
                                 { value: "approved", text: "Approved" },
                             ],
@@ -336,9 +332,6 @@ const TrainerServiceView = ({ showModal }) => {
                                     || "-";
                                 const appointmentDate = item.appointment_date || item.date || item.created_at || "-";
                                 const charges = item.amount_paid || item.charges || "-";
-                                const statusLabel = formatBookingStatus(item.status);
-                                const statusClass = `status${statusLabel.replace(/\s+/g, "")}`;
-
                                 return (
                                     <tr
                                         key={item.id || index}
@@ -355,7 +348,7 @@ const TrainerServiceView = ({ showModal }) => {
                                         <td>{appointmentDate}</td>
                                         <td>{charges}</td>
                                         <td>
-                                            <span className={`statusChip ${statusClass}`}>{statusLabel}</span>
+                                            <BookingStatusText status={item.status} />
                                         </td>
                                     </tr>
                                 );

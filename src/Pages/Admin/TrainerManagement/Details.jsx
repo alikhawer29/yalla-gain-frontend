@@ -7,6 +7,7 @@ import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/Dashboa
 import CustomTable from "../../../Components/CustomTable";
 import withModal from "../../../HOC/withModal";
 import { getDetails, getAll, post } from "../../../Services/Api";
+import BookingStatusText from "../../../Components/BookingStatusText";
 import {
   clickableTableRowNavProps,
   serialNum,
@@ -544,11 +545,6 @@ const TrainerDetails = ({ showModal }) => {
                 const offset =
                   (pagination.currentPage - 1) *
                   (pagination.perPage || filters.per_page || 10);
-                const label =
-                  item.status === "past" || item.status === "completed"
-                    ? "Past"
-                    : formatStatusLabel(item.status);
-
                 return (
                   <tr
                     key={item.id || index}
@@ -572,11 +568,13 @@ const TrainerDetails = ({ showModal }) => {
                     </td>
                     <td>{item.amount_paid || item.charges || "-"}</td>
                     <td>
-                      <span
-                        className={`statusChip status${label.replace(/\s+/g, "")}`}
-                      >
-                        {label}
-                      </span>
+                      <BookingStatusText
+                        status={
+                          item.status === "past" || item.status === "completed"
+                            ? "past"
+                            : item.status
+                        }
+                      />
                     </td>
                   </tr>
                 );

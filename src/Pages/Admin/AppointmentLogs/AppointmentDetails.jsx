@@ -5,9 +5,9 @@ import { Link, useParams } from "react-router-dom";
 import BackButton from "../../../Components/BackButton";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
+import BookingStatusText from "../../../Components/BookingStatusText";
 import {
   capitalizeFirstLetter,
-  capitalizeStatus,
   dateFormat,
   getCountryFlag,
   isNullOrEmpty,
@@ -73,9 +73,7 @@ const AppointmentDetails = () => {
     appointmentDetails.appointment_start_time,
     appointmentDetails.appointment_end_time,
   );
-  const hasRescheduled = Boolean(
-    appointmentDetails.rescheduled_appointment_date,
-  );
+  const hasRescheduled = appointmentDetails.is_rescheduled;
   const rescheduledTime = hasRescheduled
     ? formatAppointmentTimeRange(
         appointmentDetails.rescheduled_appointment_start_time,
@@ -83,17 +81,15 @@ const AppointmentDetails = () => {
       )
     : "";
   const statusRaw = (appointmentDetails.status || "").toLowerCase();
-  const status =
-    statusRaw === "upcoming"
-      ? "Upcoming"
-      : statusRaw === "in-progress"
-        ? "In-Progress"
-        : statusRaw === "past"
-          ? "Past"
-          : statusRaw === "rejected"
-            ? "Rejected"
-            : appointmentDetails.status || "";
   const isRejected = statusRaw === "rejected";
+  const ratingValue = Number(appointmentDetails.ratings);
+  const ratingStars = Number.isFinite(ratingValue)
+    ? Math.min(5, Math.max(0, Math.round(ratingValue)))
+    : 0;
+  const showRatingSection =
+    (statusRaw === "past" || appointmentDetails.status === "Past") &&
+    (ratingStars > 0 || appointmentDetails.review);
+
   return (
     <DashboardLayout pageTitle="Appointment Details">
       <div className="container-fluid">
@@ -206,23 +202,11 @@ const AppointmentDetails = () => {
                         >
                           Status:
                         </label>
-                        <span
-                          style={{
-                            color:
-                              status === "Rejected"
-                                ? "#FF4F25"
-                                : status === "Upcoming"
-                                  ? "#FFFFFF"
-                                  : status === "In-Progress"
-                                    ? "#FFFFFF"
-                                    : status === "Past"
-                                      ? "#FFFFFF"
-                                      : "#FF4F25",
-                          }}
-                          className={`ms-3 fw-semibold`}
-                        >
-                          {capitalizeStatus(status)}
-                        </span>
+                        <BookingStatusText
+                          status={appointmentDetails.status}
+                          variant="text"
+                          className="ms-3 fw-semibold"
+                        />
                       </div>
                     </div>
                   </div>
@@ -316,27 +300,29 @@ const AppointmentDetails = () => {
                   </div>
                 </div>
               </div>
-              {appointmentDetails.status == "Past" && (
+              {showRatingSection && (
                 <div className="row mt-3">
-                  <div className="col-12">
-                    <h2>Rating</h2>
-                    {Array(parseInt(appointmentDetails.ratings))
-                      .fill()
-                      .map((_, index) => (
+                  {ratingStars > 0 && (
+                    <div className="col-12">
+                      <h2>Rating</h2>
+                      {Array.from({ length: ratingStars }, (_, index) => (
                         <FontAwesomeIcon
                           key={index}
                           icon={faStar}
                           size="xl"
-                          style={{ color: "#FFA929", cursor: "pointer" }}
+                          style={{ color: "#FFA929" }}
                         />
                       ))}
-                  </div>
-                  <div className="col-xxl-4 mt-3">
-                    <div className="detail-box">
-                      <h6>Review</h6>
-                      <p className="mb-0">{appointmentDetails.review}</p>
                     </div>
-                  </div>
+                  )}
+                  {appointmentDetails.review && (
+                    <div className="col-xxl-4 mt-3">
+                      <div className="detail-box">
+                        <h6>Review</h6>
+                        <p className="mb-0">{appointmentDetails.review}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

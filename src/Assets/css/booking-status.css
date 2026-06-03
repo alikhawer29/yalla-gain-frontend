@@ -1,0 +1,49 @@
+/* Booking / appointment status text colors */
+.statusChip.statusPending,
+.booking-status--pending {
+  color: #fdb332 !important;
+}
+
+.statusChip.statusUpcoming,
+.booking-status--upcoming {
+  color: #ff7b7b !important;
+}
+
+.statusChip.statusPast,
+.booking-status--past {
+  color: #999999 !important;
+}
+
+.statusChip.statusApproved,
+.booking-status--approved {
+  color: #4cd964 !important;
+}
+
+.statusChip.statusInProgress,
+.booking-status--in-progress {
+  color: #4a9eff !important;
+}
+
+.statusChip.statusRejected,
+.booking-status--rejected {
+  color: #ff4f25 !important;
+}
+
+.statusChip.statusRescheduled,
+.booking-status--rescheduled {
+  color: #b388ff !important;
+}
+
+.statusChip.statusCancelled,
+.booking-status--cancelled {
+  color: #8b8b8b !important;
+}
+
+.statusChip.statusDefault,
+.booking-status--default {
+  color: #ffffff !important;
+}
+
+.booking-status-text {
+  font-weight: 600;
+}

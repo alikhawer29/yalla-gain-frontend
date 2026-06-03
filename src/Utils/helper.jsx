@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import { images } from "../Assets";
+import {
+  formatBookingStatusLabel,
+  getBookingStatusChipClass,
+  getBookingStatusColor,
+} from "./bookingStatus";
 import Dashboard from "../Assets/images/svg/dashboard.svg?react";
 import UserManagement from "../Assets/images/svg/userManagement.svg?react";
 import DoctorManagement from "../Assets/images/svg/doctorManagement.svg?react";
@@ -396,16 +401,16 @@ export const getStatusText = (status) => {
 };
 
 export const getStatusDetailText = (statusDetail) => {
-  switch (statusDetail) {
-    case "Upcoming":
-      return <span className="upcoming-text">{statusDetail}</span>;
-    case "In-Progress":
-      return <span className="pending-text">{statusDetail}</span>;
-    case "Past":
-      return <span className="past-text">{statusDetail}</span>;
-    default:
-      return statusDetail;
-  }
+  const label = formatBookingStatusLabel(statusDetail);
+  if (label === "-") return statusDetail;
+  return (
+    <span
+      className="booking-status-text"
+      style={{ color: getBookingStatusColor(statusDetail) }}
+    >
+      {label}
+    </span>
+  );
 };
 
 export const getOrderStatus = (statusDetail) => {
@@ -779,15 +784,24 @@ export function flattenDateFilters(filters) {
 }
 
 export const statusClassMap = {
-  Pending: "text-warning",
-  Requested: "text-warning",
-  Upcoming: "upcoming_color",
-  Rejected: "text-danger",
-  Past: "text-danger",
-  Completed: "completed_color",
-  Approved: "text-success",
-  InProgress: "text-success",
+  Pending: "statusPending",
+  Requested: "statusPending",
+  Upcoming: "statusUpcoming",
+  Rejected: "statusRejected",
+  Past: "statusPast",
+  Completed: "statusPast",
+  Approved: "statusApproved",
+  "In-Progress": "statusInProgress",
+  InProgress: "statusInProgress",
+  Rescheduled: "statusRescheduled",
+  Cancelled: "statusCancelled",
 };
+
+export {
+  formatBookingStatusLabel,
+  getBookingStatusChipClass,
+  getBookingStatusColor,
+} from "./bookingStatus";
 export const statusClassMap2 = {
   Delivered: "text-success",
   Cancelled: "text-danger",

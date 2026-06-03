@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./Assets/css/style.css";
+import "./Assets/css/booking-status.css";
 import "./Assets/css/animate.min.css";
 import "./Assets/css/fonts.css";
 

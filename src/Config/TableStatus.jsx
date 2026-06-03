@@ -983,6 +983,10 @@ export const appointmentsStatus = [
     text: "All",
   },
   {
+    value: "pending",
+    text: "Pending",
+  },
+  {
     value: "upcoming",
     text: "Upcoming",
   },
@@ -993,6 +997,10 @@ export const appointmentsStatus = [
   {
     value: "past",
     text: "Past",
+  },
+  {
+    value: "approved",
+    text: "Approved",
   },
   {
     value: "cancelled",

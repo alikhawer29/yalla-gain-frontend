@@ -25,6 +25,7 @@ import withModal from "../../../HOC/withModal";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { usePagination } from "../../../Hooks/usePagination";
 import { getAll, getDetails, post } from "../../../Services/Api";
+import BookingStatusText from "../../../Components/BookingStatusText";
 import {
   clickableTableRowNavProps,
   getCountryFlag,
@@ -446,21 +447,8 @@ const UserDetails = ({
                         ? `${item.amount_paid} Yalla Coins`
                         : "—"}
                     </td>
-                    <td
-                      style={{
-                        color:
-                          item.status === "pending"
-                            ? "#FDB332"
-                            : item.status === "upcoming"
-                              ? "#FF5C5C"
-                              : item.status === "past"
-                                ? "#999999"
-                                : item.status === "rejected"
-                                  ? "#8d0707"
-                                  : "#4CD964",
-                      }}
-                    >
-                      {capitalizeStatus(item?.status)}
+                    <td>
+                      <BookingStatusText status={item?.status} variant="text" />
                     </td>
                   </tr>
                 ))}

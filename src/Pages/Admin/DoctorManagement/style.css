@@ -22,19 +22,35 @@
 }
 
 .statusUpcoming {
-  color: #d27231;
+  color: #ff7b7b;
 }
 
 .statusPast {
-  color: #1fb5ff;
+  color: #999999;
 }
 
 .statusApproved {
-  color: #0dcf38;
+  color: #4cd964;
+}
+
+.statusInProgress {
+  color: #4a9eff;
 }
 
 .statusRejected {
-  color: #ff5e5e;
+  color: #ff4f25;
+}
+
+.statusRescheduled {
+  color: #b388ff;
+}
+
+.statusCancelled {
+  color: #8b8b8b;
+}
+
+.statusDefault {
+  color: #ffffff;
 }
 
 .detail-box h3 {
