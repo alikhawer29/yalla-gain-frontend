@@ -311,7 +311,7 @@ const UserDetails = ({
                   <div className="col-xxl-9 col-lg-11">
                     <div className="row mb-4">
                       {detailFields.map(({ label }) => (
-                        <div className="col-xl-3 col-md-6 mb-3" key={label}>
+                        <div className="col-xl-4 col-lg-4 col-md-6 col-12 mb-3" key={label}>
                           <div className="detail-box">
                             <Skeleton
                               width="55%"
@@ -371,17 +371,32 @@ const UserDetails = ({
                 </div>
                 <div className="row">
                   <div className="col-xxl-9 col-lg-11">
-                    <div className="row mb-4 gy-3">
+                    <div className="row mb-4 gy-3 user-detail-fields">
                       {detailFields.map(({ label, value, isPhone }) => (
-                        <div className="col-xl-3 col-md-6" key={label}>
-                          <div className="detail-box">
+                        <div className="col-xl-4 col-lg-4 col-md-6 col-12" key={label}>
+                          <div className="detail-box user-detail-field">
                             <h6 className="">{label}</h6>
-                            <p className=" mb-0">
-                              {isPhone && value && value !== "—" && (
-                                <span>{getCountryFlag(value)}</span>
-                              )}{" "}
-                              {value}
-                            </p>
+                            {isPhone ? (
+                              <p className="mb-0 user-detail-phone">
+                                {value && value !== "—" ? (
+                                  <>
+                                    <span className="user-detail-phone__flag">
+                                      {getCountryFlag(
+                                        value,
+                                        profileData?.country_code,
+                                      )}
+                                    </span>
+                                    <span className="user-detail-phone__number">
+                                      {value}
+                                    </span>
+                                  </>
+                                ) : (
+                                  "—"
+                                )}
+                              </p>
+                            ) : (
+                              <p className="mb-0">{value}</p>
+                            )}
                           </div>
                         </div>
                       ))}

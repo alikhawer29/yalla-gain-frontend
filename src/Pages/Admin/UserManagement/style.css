@@ -68,6 +68,43 @@
   color: #fff;
 }
 
+.user-details .user-detail-field {
+  height: 100%;
+}
+
+.user-details .user-detail-field h6 {
+  margin-bottom: 0.5rem;
+}
+
+.user-details .user-detail-field p {
+  line-height: 1.4;
+}
+
+.user-details .user-detail-phone {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-details .user-detail-phone__flag {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.user-details .user-detail-phone__flag img {
+  display: block;
+  vertical-align: middle;
+}
+
+.user-details .user-detail-phone__number {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
 @media screen and (max-width: 1199px) {
   .over-flow-x {
     overflow-x: scroll;
@@ -78,10 +115,5 @@
   .user-details .detail-box {
     min-width: 100%;
     margin-bottom: 1rem;
-  }
-  
-  .user-details .col-md-6 {
-    flex: 0 0 100%;
-    max-width: 100%;
   }
 }
