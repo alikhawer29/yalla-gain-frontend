@@ -3,7 +3,16 @@ import {
   getPlanDisplayTitle,
   NUMERIC_BENEFIT_FIELDS,
 } from "./planConfig";
-import { isFreePlan, mapPlanToForm, toFormFlag } from "./planFormHelpers";
+import {
+  formatPlanCoinRate,
+  formatPlanCoins,
+  formatPlanPrice,
+  getPlanCoinRate,
+  getPlanCoins,
+  isFreePlan,
+  mapPlanToForm,
+  toFormFlag,
+} from "./planFormHelpers";
 import PlanPreviewCard from "./PlanPreviewCard";
 
 const ViewSection = ({ title, subtitle, children }) => (
@@ -57,6 +66,8 @@ const PlanViewDetails = ({ plan }) => {
   const free = isFreePlan(values.plan_type);
   const yearly = values.duration === "yearly";
   const periodLabel = yearly ? "per year" : "per month";
+  const coinRate = getPlanCoinRate(plan);
+  const coins = getPlanCoins(plan);
 
   const getToggleIncluded = (toggle) => {
     if (toggle.alwaysIncluded) return true;
@@ -96,9 +107,18 @@ const PlanViewDetails = ({ plan }) => {
             />
           )}
           {!free && (
+            <InfoTile label="Price" value={formatPlanPrice(plan)} />
+          )}
+          {!free && (
             <InfoTile
-              label="Price"
-              value={`$${Number(plan.price ?? 0).toLocaleString()}`}
+              label="Coin Rate (per Yalla Coin)"
+              value={formatPlanCoinRate(coinRate)}
+            />
+          )}
+          {!free && (
+            <InfoTile
+              label="Converted Coins"
+              value={formatPlanCoins(coins)}
             />
           )}
           {!free && (

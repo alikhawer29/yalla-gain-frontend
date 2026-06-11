@@ -112,6 +112,8 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
             price: `${r?.price_paid ?? r?.subscription_plan?.price ?? "-"} Yalla Coins`,
             purchase: r?.subscribed_on ?? "-",
             expiry: r?.expired_on ?? "-",
+            planDuration: r?.subscription_plan?.duration ?? "-",
+            is_trial: r?.is_trial ?? false,
           }));
           setRows(normalized);
 
@@ -274,7 +276,10 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                           </td>
                           <td>{item.name}</td>
                           <td>{item.email}</td>
-                          <td>{item.plan}</td>
+                          <td>
+                            {item.plan}
+                            {item.is_trial ? null : ` - ${item.planDuration}`}
+                          </td>
                           <td
                             style={{
                               color: item.active ? "#4CD964" : "#FF5C5C",

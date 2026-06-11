@@ -159,8 +159,11 @@ const AppointmentDetails = () => {
                               {
                                 label: "Appointment Charges:",
                                 value:
-                                  `${appointmentDetails.amount_paid} Yalla Coins` ||
-                                  "-",
+                                  appointmentDetails?.payment_type ===
+                                  "subscription_included"
+                                    ? `Included in Plan`
+                                    : `${appointmentDetails.amount_paid} Yalla Coins` ||
+                                      "-",
                               },
                               {
                                 label: "Sub Category:",

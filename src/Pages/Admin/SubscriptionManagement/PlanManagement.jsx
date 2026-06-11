@@ -11,6 +11,14 @@ import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import { getAll, post } from "../../../Services/Api";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
+import {
+  formatPlanCoinRate,
+  formatPlanCoins,
+  formatPlanPrice,
+  getPlanCoinRate,
+  getPlanCoins,
+  isFreePlan,
+} from "./planFormHelpers";
 
 const PlanManagement = ({
   showModal,
@@ -146,7 +154,21 @@ const PlanManagement = ({
                           ? "Unlimited"
                           : item?.duration}
                       </td>
-                      <td>{item?.price} Yalla Coins</td>
+                      <td>
+                        {isFreePlan(item?.plan_type)
+                          ? "Free"
+                          : formatPlanPrice(item)}
+                      </td>
+                      <td>
+                        {isFreePlan(item?.plan_type)
+                          ? "—"
+                          : formatPlanCoinRate(getPlanCoinRate(item))}
+                      </td>
+                      <td>
+                        {isFreePlan(item?.plan_type)
+                          ? "—"
+                          : formatPlanCoins(getPlanCoins(item))}
+                      </td>
                       <td>{item?.created_at}</td>
                       <td>{item?.last_modified_on}</td>
                       <td onClick={(e) => e.stopPropagation()}>

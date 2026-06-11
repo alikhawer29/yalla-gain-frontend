@@ -19,15 +19,15 @@ const CustomButton = ({
       style={style}
       className={`btn btn-${variant} ${className}`}
       onClick={!isPending ? onClick : null}
-      disabled={disabled || isPending}
+      disabled={isPending || disabled}
     >
-      {isPending && (
+      {/* {isPending && (
         <span
           className="spinner-border spinner-border-sm"
           role="status"
           aria-hidden="true"
         ></span>
-      )}
+      )} */}
       <span className="">{isPending ? loadingText : children || text}</span>
 
       {/* {isPending ? loadingText : children || text} */}

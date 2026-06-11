@@ -6,7 +6,11 @@ import CustomTable from "../../../Components/CustomTable";
 import { doctorServiceBookingHeaders } from "../../../Config/TableHeaders";
 import { usePagination } from "../../../Hooks/usePagination";
 import BookingStatusText from "../../../Components/BookingStatusText";
-import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
+import {
+  clickableTableRowNavProps,
+  serialNum,
+  timeFormat,
+} from "../../../Utils/helper";
 import { getAll, post } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { images } from "../../../Assets";
@@ -39,8 +43,8 @@ const formatDay = (value) => {
 
 const formatSlotRange = (start, end) => {
     if (!start && !end) return "-";
-    if (start && end) return `${start} - ${end}`;
-    return start || end || "-";
+    if (start && end) return `${timeFormat(start)} - ${timeFormat(end)}`;
+    return timeFormat(start || end) || "-";
 };
 
 const TrainerServiceView = ({ showModal }) => {

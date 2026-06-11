@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import CustomInput from "../../../Components/CustomInput";
 import { Select } from "../../../Components/Select";
 import CustomButton from "../../../Components/CustomButton";
+import { getDetails } from "../../../Services/Api";
 import {
   DURATION_OPTIONS,
   FEATURE_TOGGLES,
@@ -8,6 +10,7 @@ import {
   PLAN_TYPE_OPTIONS,
 } from "./planConfig";
 import {
+  convertPriceToCoins,
   handleDurationChange,
   handlePlanTypeChange,
   isFreePlan,
@@ -64,6 +67,48 @@ const PlanForm = ({
 }) => {
   const free = isFreePlan(values.plan_type);
   const periodHint = values.duration === "yearly" ? "per year" : "per month";
+  const [coinRateLoading, setCoinRateLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchCoinRate = async () => {
+      setCoinRateLoading(true);
+      try {
+        const res = await getDetails("/coin-rate");
+        if (!cancelled && res?.status && res?.data?.amount != null) {
+          setFieldValue("coin_rate", res.data.amount);
+        }
+      } catch (error) {
+        console.error("Error fetching coin rate:", error);
+      } finally {
+        if (!cancelled) setCoinRateLoading(false);
+      }
+    };
+    fetchCoinRate();
+    return () => {
+      cancelled = true;
+    };
+  }, [setFieldValue]);
+
+  useEffect(() => {
+    if (free) {
+      if (values.coins !== "" && values.coins !== 0) {
+        setFieldValue("coins", "");
+      }
+      return;
+    }
+    const nextCoins = convertPriceToCoins(values.price, values.coin_rate);
+    const nextValue = nextCoins === "" ? "" : String(nextCoins);
+    if (String(values.coins ?? "") !== nextValue) {
+      setFieldValue("coins", nextValue);
+    }
+  }, [values.price, values.coin_rate, values.plan_type, free, setFieldValue]);
+
+  const coinRateDisplay = coinRateLoading
+    ? "Loading..."
+    : values.coin_rate !== "" && values.coin_rate != null
+      ? `AED ${values.coin_rate}`
+      : "—";
 
   return (
     <div className="plan-form-layout">
@@ -115,41 +160,71 @@ const PlanForm = ({
         </div>
 
         {!free && (
-          <div className="row mt-3">
-            <div className="col-md-6">
-              <CustomInput
-                wrapperClass="mb-0"
-                label="Price"
-                placeholder="Enter price"
-                name="price"
-                type="number"
-                min={0}
-                step="0.01"
-                value={values.price}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.price && errors.price}
-                required
-              />
+          <>
+            <div className="row mt-3">
+              <div className="col-md-6">
+                <CustomInput
+                  wrapperClass="mb-0"
+                  label="Price"
+                  placeholder="Enter price"
+                  name="price"
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={values.price}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.price && errors.price}
+                  required
+                />
+              </div>
+              <div className="col-md-6 d-flex align-items-end">
+                <label className="plan-trial-toggle w-100">
+                  <span className="plan-trial-toggle__label">Enable Trial</span>
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="has_trial"
+                      checked={values.has_trial}
+                      onChange={(e) =>
+                        setFieldValue("has_trial", e.target.checked)
+                      }
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
-            <div className="col-md-6 d-flex align-items-end">
-              <label className="plan-trial-toggle w-100">
-                <span className="plan-trial-toggle__label">Enable Trial</span>
-                <div className="form-check form-switch mb-0">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="has_trial"
-                    checked={values.has_trial}
-                    onChange={(e) =>
-                      setFieldValue("has_trial", e.target.checked)
-                    }
-                  />
-                </div>
-              </label>
+            <div className="row mt-3">
+              <div className="col-md-6">
+                <CustomInput
+                  wrapperClass="mb-0"
+                  label="Coin Rate (per Yalla Coin)"
+                  name="coin_rate_display"
+                  type="text"
+                  value={coinRateDisplay}
+                  readOnly
+                  inputclass="plan-readonly-input"
+                />
+              </div>
+              <div className="col-md-6">
+                <CustomInput
+                  wrapperClass="mb-0"
+                  label="Converted Coins (User will spend this coins when purchasing the plan.)"
+                  name="coins"
+                  type="text"
+                  value={
+                    values.coins !== "" && values.coins != null
+                      ? values.coins
+                      : "—"
+                  }
+                  readOnly
+                  inputclass="plan-readonly-input"
+                />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </PlanFormSection>
 

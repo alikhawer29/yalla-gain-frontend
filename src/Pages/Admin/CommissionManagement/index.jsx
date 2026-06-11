@@ -47,8 +47,6 @@ const CommissionManagement = ({
       if (response?.status) {
         const data = response?.data || [];
         setRows(data);
-        // default current rate from most recent record
-        // if (data?.length) setRate(String(data[0]?.commission_percentage ?? ""));
 
         const meta = response?.meta || {};
         const total = meta?.total ?? data?.length ?? 0;
@@ -118,6 +116,13 @@ const CommissionManagement = ({
                   onClick={() => setActiveType("trainer")}
                 >
                   Trainer
+                </button>
+                <button
+                  type="button"
+                  className={`btn min-width-120 ${activeType === "transaction" ? "btn-primary" : "btn-secondary"}`}
+                  onClick={() => setActiveType("transaction")}
+                >
+                  Transaction Commission
                 </button>
               </div>
 
@@ -192,5 +197,4 @@ const CommissionManagement = ({
   );
 };
 
-const additionalFilters = { from: "", to: "" };
-export default withFilters(CommissionManagement, additionalFilters);
+export default withFilters(CommissionManagement);

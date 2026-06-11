@@ -7,6 +7,42 @@ import {
 
 export const isFreePlan = (planType) => planType === "free";
 
+/** Price ÷ per-coin rate (from /coin-rate). */
+export const convertPriceToCoins = (price, rate) => {
+  const p = Number(price);
+  const r = Number(rate);
+  if (!Number.isFinite(p) || p <= 0 || !Number.isFinite(r) || r <= 0) {
+    return "";
+  }
+  return Math.round(p / r);
+};
+
+export const getPlanCoinRate = (plan) =>
+  plan?.rate ?? plan?.coin_rate ?? "";
+
+export const getPlanCoins = (plan) => {
+  const saved = plan?.coins;
+  if (saved !== "" && saved != null) return saved;
+  return convertPriceToCoins(plan?.price, getPlanCoinRate(plan));
+};
+
+export const formatPlanCoinRate = (rate) => {
+  if (rate === "" || rate == null) return "—";
+  return `AED ${rate}`;
+};
+
+export const formatPlanCoins = (coins) => {
+  if (coins === "" || coins == null) return "—";
+  return `${coins} Yalla Coins`;
+};
+
+export const formatPlanPrice = (plan) => {
+  if (isFreePlan(plan?.plan_type)) return "Free";
+  const price = plan?.price;
+  if (price === "" || price == null) return "—";
+  return `AED ${Number(price).toLocaleString()}`;
+};
+
 const toPayloadFlag = (value) => (value ? 1 : 0);
 
 export const toFormFlag = (value) =>
@@ -151,6 +187,8 @@ export const getInitialPlanValues = (planType = "free", duration = null) => {
     plan_type: planType,
     duration: planType === "free" ? null : duration || "monthly",
     price: planType === "free" ? 0 : "",
+    coin_rate: "",
+    coins: "",
     has_trial: false,
     trainer_sessions: preset.trainer_sessions,
     doctor_sessions: preset.doctor_sessions,
@@ -175,6 +213,7 @@ export const handlePlanTypeChange = (planType, setFieldValue, values = {}) => {
   if (planType === "free") {
     setFieldValue("duration", null);
     setFieldValue("price", 0);
+    setFieldValue("coins", "");
     setFieldValue("has_trial", false);
     applyPlanPreset("free", null, setFieldValue);
     return;
@@ -211,10 +250,19 @@ const mapDurationFieldsToPayload = (values, free) => {
 export const buildPlanPayload = (values) => {
   const free = isFreePlan(values.plan_type);
 
+  const rate = free ? 0 : Number(values.coin_rate) || 0;
+  const coins = free
+    ? 0
+    : Number(values.coins) ||
+      convertPriceToCoins(values.price, values.coin_rate) ||
+      0;
+
   return {
     plan_type: values.plan_type,
     duration: free ? null : values.duration,
     price: free ? 0 : Number(values.price),
+    rate,
+    coins,
     has_trial: free ? 0 : toPayloadFlag(values.has_trial),
     ...mapDurationFieldsToPayload(values, free),
     has_spotify: toPayloadFlag(values.has_spotify),
@@ -237,6 +285,8 @@ export const mapPlanToForm = (d) => {
     plan_type: planType,
     duration,
     price: free ? 0 : (d.price?.toString() ?? ""),
+    coin_rate: d.rate ?? d.coin_rate ?? "",
+    coins: d.coins ?? "",
     has_trial: toFormFlag(d.has_trial),
     trainer_sessions:
       d.trainer_sessions_monthly ??

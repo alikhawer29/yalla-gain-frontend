@@ -295,6 +295,7 @@ const AppointmentLogs = () => {
           providerName,
           bookingDate,
           charges,
+          paymentType: item?.payment_type,
         };
       }),
     [records, startIndex],
@@ -368,7 +369,12 @@ const AppointmentLogs = () => {
                     <td>{row.serviceCategory}</td>
                     <td>{row.providerName}</td>
                     <td>{row.bookingDate}</td>
-                    <td>{row.charges}</td>
+                    <td>
+                      {" "}
+                      {row.paymentType === "subscription_included"
+                        ? `Included in Plan`
+                        : `${row.charges} Yalla Coins` || "-"}
+                    </td>
                   </tr>
                 ))
               ) : (
