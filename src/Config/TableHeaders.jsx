@@ -144,6 +144,10 @@ export const subscriptionLogsHeaders = [
     title: "Subscription Duration",
   },
   {
+    key: "coins_spent",
+    title: "Coins Spent",
+  },
+  {
     key: "total_payment",
     title: "Total Payment",
   },
@@ -199,7 +203,6 @@ export const consultationFeeLogsHeaders = [
   { key: "consultation_fee", title: "Consultation Fee" },
   { key: "updated_on", title: "Update On" },
 ];
-
 
 // Payout logs table headers
 export const payoutLogsHeaders = [

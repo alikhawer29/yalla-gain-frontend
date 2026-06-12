@@ -311,7 +311,10 @@ const UserDetails = ({
                   <div className="col-xxl-9 col-lg-11">
                     <div className="row mb-4">
                       {detailFields.map(({ label }) => (
-                        <div className="col-xl-4 col-lg-4 col-md-6 col-12 mb-3" key={label}>
+                        <div
+                          className="col-xl-4 col-lg-4 col-md-6 col-12 mb-3"
+                          key={label}
+                        >
                           <div className="detail-box">
                             <Skeleton
                               width="55%"
@@ -373,7 +376,10 @@ const UserDetails = ({
                   <div className="col-xxl-9 col-lg-11">
                     <div className="row mb-4 gy-3 user-detail-fields">
                       {detailFields.map(({ label, value, isPhone }) => (
-                        <div className="col-xl-4 col-lg-4 col-md-6 col-12" key={label}>
+                        <div
+                          className="col-xl-4 col-lg-4 col-md-6 col-12"
+                          key={label}
+                        >
                           <div className="detail-box user-detail-field">
                             <h6 className="">{label}</h6>
                             {isPhone ? (
@@ -458,9 +464,11 @@ const UserDetails = ({
                     <td>{capitalizeStatus(item?.service?.user?.type)}</td>
                     <td>{item?.appointment_date}</td>
                     <td>
-                      {item?.amount_paid != null && item?.amount_paid !== ""
-                        ? `${item.amount_paid} Yalla Coins`
-                        : "—"}
+                      {item?.payment_type === "subscription_included"
+                        ? "Included in Plan"
+                        : item?.amount_paid != null && item?.amount_paid !== ""
+                          ? `${item.amount_paid} Yalla Coins`
+                          : "—"}
                     </td>
                     <td>
                       <BookingStatusText status={item?.status} variant="text" />
@@ -575,11 +583,21 @@ const UserDetails = ({
                       )}
                     </td>
                     <td>{formatSubscriptionPlanDisplayName(item)}</td>
-                    <td>{item?.subscription_plan?.duration}</td>
                     <td>
-                      {item?.price_paid != null && item?.price_paid !== ""
-                        ? `$${item.price_paid}`
-                        : "—"}
+                      {item?.is_trial
+                        ? `${item?.subscription_plan?.trial_days} Days`
+                        : item?.subscription_plan?.duration || "—"}
+                    </td>
+                    <td>
+                      {item?.is_trial
+                        ? "Free Trial"
+                        : item?.price_paid != null && item?.price_paid !== ""
+                          ? `${item.price_paid} Yalla Coins`
+                          : "—"}
+                    </td>
+                    <td>
+                      AED{" "}
+                      {item?.is_trial ? "0" : item?.subscription_plan?.price}
                     </td>
                     <td>{item?.subscribed_on}</td>
                     <td>{item?.expired_on}</td>
