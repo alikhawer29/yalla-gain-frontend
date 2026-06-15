@@ -4,57 +4,42 @@ import {
 } from "./postMedia";
 import { getAll, post as postApi } from "../Services/Api";
 
-export const mapApiPostToUI = (apiPost) => {
-    const fullName = `${apiPost?.user?.first_name ?? ""} ${apiPost?.user?.last_name ?? ""}`.trim();
-    const reactionCount = Number(apiPost?.reaction_count) || 0;
-    const reactionsFromApi = Array.isArray(apiPost?.reactions)
-        ? apiPost.reactions.reduce((acc, r) => {
-              const type = normalizeReactionType(r?.type ?? r?.reaction);
-              acc[type] = (acc[type] || 0) + 1;
-              return acc;
-          }, {})
-        : null;
+export const mapApiPostToUI = (post) => ({
+    postId: post.id,
 
-    return {
-        postId: apiPost?.id,
-        privacy: "public",
-        status: apiPost?.user?.status === 1 ? "active" : "inactive",
-        user: {
-            userId: apiPost?.user?.id,
-            name: fullName || apiPost?.user?.email || "User",
-            profileImage: apiPost?.user?.photo,
-            timestamp: apiPost?.created_at,
-            timeAgo: apiPost?.time_ago || "",
-        },
-        content: {
-            text: apiPost?.title || "",
-            media: mapPostMediaList(apiPost?.post_media),
-            poll: {
-                isPoll: Boolean(apiPost?.is_poll),
-                options: Array.isArray(apiPost?.poll_options)
-                    ? apiPost.poll_options.map((o) => ({
-                          id: o?.id,
-                          text: o?.option_text,
-                          votes: Number(o?.votes) || 0,
-                          isSelected: Boolean(o?.is_selected),
-                      }))
-                    : [],
-            },
-        },
-        interactions: {
-            comments: apiPost?.comment_count ?? 0,
-            reactionCount,
-            reactions:
-                reactionsFromApi && Object.keys(reactionsFromApi).length > 0
-                    ? reactionsFromApi
-                    : reactionCount > 0
-                      ? { like: reactionCount }
-                      : {},
-            usersReacted: [],
-        },
-        comments: [],
-    };
-};
+    user: {
+        id: post.user?.id,
+        name: `${post.user?.first_name ?? ""} ${post.user?.last_name ?? ""}`.trim(),
+        profileImage: post.user?.photo ?? "",
+        timeAgo: post.time_ago ?? "",
+        timestamp: post.created_at ?? null,
+    },
+
+    content: {
+        text: post.title ?? "",
+        // Normalise post_media → { path, isVideo }
+        media: Array.isArray(post.post_media)
+            ? post.post_media.map((m) => ({
+                path: m.path,
+                isVideo: m.is_video ?? m.media_type === "video",
+            }))
+            : [],
+        image: [],   // legacy fallback – keep if you still use it elsewhere
+        poll: post.is_poll
+            ? { isPoll: true, options: post.poll_options ?? [] }
+            : { isPoll: false },
+    },
+
+    interactions: {
+        reactions: {},           // empty here; populated when modal opens
+        // ↓↓↓ KEY FIX: store the single reaction_type from the list API ↓↓↓
+        reactionType: post.reaction_type ?? null,
+        reactionCount: post.reaction_count ?? 0,
+        comments: post.comment_count ?? 0,
+    },
+
+    comments: [],
+});
 
 export const deletePost = async (postId) => postApi(`/post/${postId}/delete`);
 
@@ -63,24 +48,20 @@ export const deleteComment = async (commentId) =>
 
 export const fetchPostReactions = async (postId) => {
     try {
-        const res = await getAll(`/post/${postId}/reacted`);
-        if (res?.status && Array.isArray(res?.data)) {
-            return res.data.map((r) => ({
-                userId: r?.user?.id,
-                name:
-                    `${r?.user?.first_name ?? ""} ${r?.user?.last_name ?? ""}`.trim() ||
-                    r?.user?.email ||
-                    "User",
-                profileImage: r?.user?.photo,
-                reacted: normalizeReactionType(
-                    r?.reaction ?? r?.reaction_type ?? r?.type,
-                ),
-            }));
-        }
-    } catch (e) {
-        console.error("Failed to load reactions", e);
+        const res = await getAll(`/post/${postId}/reacted`); // adjust endpoint as needed
+        if (!res?.status || !Array.isArray(res.data)) return [];
+
+        return res.data.map((r) => ({
+            userId: r.user?.id ?? r.id,
+            name: `${r.user?.first_name ?? ""} ${r.user?.last_name ?? ""}`.trim(),
+            profileImage: r.user?.photo ?? "",
+            // SocialMediaPost reads r.reacted OR r.reaction — keep both for safety
+            reacted: r.reaction,
+            reaction: r.reaction,
+        }));
+    } catch {
+        return [];
     }
-    return [];
 };
 
 export const fetchPostComments = async (postId) => {

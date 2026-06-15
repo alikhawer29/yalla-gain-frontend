@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -14,10 +16,16 @@ import { usePagination } from "../../../Hooks/usePagination";
 import { getAll } from "../../../Services/Api";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 
+const contentViewSkeletonProps = {
+  baseColor: "rgba(255, 255, 255, 0.12)",
+  highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
 const ContentView = ({ showModal }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [content, setContent] = useState(null);
+  const [contentLoading, setContentLoading] = useState(true);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [videos, setVideos] = useState([]);
   const [filters, setFilters] = useState({
@@ -34,11 +42,32 @@ const ContentView = ({ showModal }) => {
     try {
       const res = await getDetails(`/workout-content/${id}`);
       if (res?.status) setContent(res?.data);
-    } catch (e) {}
+    } catch (e) {
+      setContent(null);
+    }
   };
 
   useEffect(() => {
-    fetchContent();
+    let cancelled = false;
+
+    const load = async () => {
+      setContentLoading(true);
+      try {
+        const res = await getDetails(`/workout-content/${id}`);
+        if (!cancelled && res?.status) setContent(res?.data);
+        else if (!cancelled) setContent(null);
+      } catch (e) {
+        if (!cancelled) setContent(null);
+      } finally {
+        if (!cancelled) setContentLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const fetchVideos = async () => {
@@ -126,23 +155,98 @@ const ContentView = ({ showModal }) => {
                   View Content
                 </h2>
                 <div className="d-flex align-items-center gap-2">
-                  <div className="status-action">
-                    <Select
-                      className={`tabel-select status${content?.status ? "Active" : "Inactive"}`}
-                      id={`status${id}`}
-                      name="status"
-                      label=""
-                      value={content?.status ? "1" : "0"}
-                      onChange={handleStatusChange}
-                      labelclass="me-2 mb-0"
-                    >
-                      {statusOptions}
-                    </Select>
-                  </div>
+                  {contentLoading ? (
+                    <Skeleton
+                      width={160}
+                      height={44}
+                      borderRadius={8}
+                      {...contentViewSkeletonProps}
+                    />
+                  ) : (
+                    <div className="status-action">
+                      <Select
+                        className={`tabel-select status${content?.status ? "Active" : "Inactive"}`}
+                        id={`status${id}`}
+                        name="status"
+                        label=""
+                        value={content?.status ? "1" : "0"}
+                        onChange={handleStatusChange}
+                        labelclass="me-2 mb-0"
+                      >
+                        {statusOptions}
+                      </Select>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="row content-view">
                 <div className="col-12 col-xxl-8">
+                  {contentLoading ? (
+                    <>
+                      <div className="row mb-4">
+                        <div className="mb-4">
+                          <Skeleton
+                            width="20%"
+                            height={20}
+                            {...contentViewSkeletonProps}
+                            className="mb-2"
+                          />
+                          <Skeleton
+                            width="40%"
+                            height={24}
+                            {...contentViewSkeletonProps}
+                          />
+                        </div>
+                        <div className="col-md-4">
+                          <Skeleton
+                            width="45%"
+                            height={20}
+                            {...contentViewSkeletonProps}
+                            className="mb-2"
+                          />
+                          <Skeleton
+                            width="70%"
+                            height={24}
+                            {...contentViewSkeletonProps}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-4 image-box">
+                        <Skeleton
+                          width="15%"
+                          height={20}
+                          {...contentViewSkeletonProps}
+                          className="mb-2"
+                        />
+                        <Skeleton
+                          width={280}
+                          height={280}
+                          borderRadius={10}
+                          {...contentViewSkeletonProps}
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <Skeleton
+                          width="25%"
+                          height={20}
+                          {...contentViewSkeletonProps}
+                          className="mb-2"
+                        />
+                        <Skeleton
+                          count={3}
+                          height={18}
+                          {...contentViewSkeletonProps}
+                        />
+                      </div>
+                      <Skeleton
+                        width={150}
+                        height={44}
+                        borderRadius={8}
+                        {...contentViewSkeletonProps}
+                      />
+                    </>
+                  ) : (
+                    <>
                   {/* <div className="mb-4">
                     <h5 className="detail-label">Title:</h5>
                     <p className="detail-value mb-0">{content?.title ?? "-"}</p>
@@ -200,6 +304,8 @@ const ContentView = ({ showModal }) => {
                   >
                     Edit Content
                   </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

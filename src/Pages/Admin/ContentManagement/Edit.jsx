@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -16,6 +18,50 @@ import {
 import { getDetails, post } from "../../../Services/Api";
 import { workoutContentEditSchema } from "../../../Config/Validations";
 import ImageDropzone from "../../../Components/ImageDropzone";
+import "./style.css";
+
+const contentEditSkeletonProps = {
+  baseColor: "rgba(255, 255, 255, 0.12)",
+  highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
+const ContentEditFormSkeleton = () => (
+  <div className="content-edit-skeleton col-12 col-xl-6 col-xxl-5">
+    <div className="mb-3">
+      <Skeleton
+        width="25%"
+        height={18}
+        {...contentEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton height={48} borderRadius={8} {...contentEditSkeletonProps} />
+    </div>
+    <div className="mb-3">
+      <Skeleton
+        width="30%"
+        height={18}
+        {...contentEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton height={120} borderRadius={8} {...contentEditSkeletonProps} />
+    </div>
+    <div className="mb-3">
+      <Skeleton
+        width="28%"
+        height={18}
+        {...contentEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton height={180} borderRadius={12} {...contentEditSkeletonProps} />
+    </div>
+    <Skeleton
+      width={140}
+      height={44}
+      borderRadius={8}
+      {...contentEditSkeletonProps}
+    />
+  </div>
+);
 
 const emptyValues = {
   title: "",
@@ -33,25 +79,38 @@ const EditContent = ({ showModal }) => {
   const { id } = useParams();
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [initialValues, setInitialValues] = useState(emptyValues);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     const load = async () => {
-      const res = await getDetails(`/workout-content/${id}`);
-      if (res?.status) {
-        const d = res?.data || {};
-        setInitialValues({
-          // title: d.title || "",
-          muscle_key: d.muscle_key || "",
-          muscle_title: d.muscle_title || "",
-          // exercise_key: d.exercise_key || "",
-          // exercise_title: d.exercise_title || "",
-          image: d.image || "",
-          description: d.description || "",
-          // language: d.language || "",
-        });
+      setLoading(true);
+      try {
+        const res = await getDetails(`/workout-content/${id}`);
+        if (!cancelled && res?.status) {
+          const d = res?.data || {};
+          setInitialValues({
+            muscle_key: d.muscle_key || "",
+            muscle_title: d.muscle_title || "",
+            image: d.image || "",
+            description: d.description || "",
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Unable to fetch workout content:", error);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
+
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleSubmit = async (values) => {
@@ -88,6 +147,11 @@ const EditContent = ({ showModal }) => {
                 <BackButton2 />
                 Edit Workout Content
               </h2>
+              {loading ? (
+                <div className="row">
+                  <ContentEditFormSkeleton />
+                </div>
+              ) : (
               <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -234,6 +298,7 @@ const EditContent = ({ showModal }) => {
                   );
                 }}
               </Formik>
+              )}
             </div>
           </div>
         </div>

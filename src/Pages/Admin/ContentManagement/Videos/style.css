@@ -5,3 +5,7 @@
 .video-view .media img { width: 240px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); display: block; }
 .video-view .media video { width: 540px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.25); display: block; }
 
+.video-edit-skeleton {
+  max-width: 100%;
+}
+

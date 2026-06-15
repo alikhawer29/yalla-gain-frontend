@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
@@ -23,6 +25,92 @@ import {
 } from "./challengeConstants";
 import "./style.css";
 
+const challengeEditSkeletonProps = {
+  baseColor: "rgba(255, 255, 255, 0.12)",
+  highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
+const ChallengeEditFormSkeleton = () => (
+  <div className="challenge-edit-skeleton row">
+    {Array.from({ length: 8 }, (_, index) => (
+      <div
+        className={`mb-4 ${index === 4 ? "col-md-2" : index === 5 ? "col-md-4" : "col-md-6"}`}
+        key={`challenge-edit-field-sk-${index}`}
+      >
+        <Skeleton
+          width={index === 4 ? "70%" : "40%"}
+          height={18}
+          {...challengeEditSkeletonProps}
+          className="mb-2"
+        />
+        <Skeleton
+          height={index === 5 ? 48 : 56}
+          borderRadius={8}
+          {...challengeEditSkeletonProps}
+        />
+      </div>
+    ))}
+    <div className="col-md-6 mb-4">
+      <Skeleton
+        width="35%"
+        height={18}
+        {...challengeEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton
+        height={180}
+        borderRadius={12}
+        {...challengeEditSkeletonProps}
+      />
+    </div>
+    <div className="col-md-6 mb-4">
+      <Skeleton
+        width="30%"
+        height={18}
+        {...challengeEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton height={160} borderRadius={8} {...challengeEditSkeletonProps} />
+    </div>
+    <div className="col-6 mb-4">
+      <Skeleton
+        width="25%"
+        height={18}
+        {...challengeEditSkeletonProps}
+        className="mb-2"
+      />
+      <Skeleton height={56} borderRadius={8} {...challengeEditSkeletonProps} />
+    </div>
+    <div className="col-8">
+      <div className="row">
+        {Array.from({ length: 2 }, (_, index) => (
+          <div className="col-6 mb-4" key={`challenge-edit-body-sk-${index}`}>
+            <Skeleton
+              width="55%"
+              height={18}
+              {...challengeEditSkeletonProps}
+              className="mb-2"
+            />
+            <Skeleton
+              height={56}
+              borderRadius={8}
+              {...challengeEditSkeletonProps}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className="col-12 mt-4">
+      <Skeleton
+        width={150}
+        height={48}
+        borderRadius={10}
+        {...challengeEditSkeletonProps}
+      />
+    </div>
+  </div>
+);
+
 const emptyValues = {
   title: "",
   type: "",
@@ -43,46 +131,63 @@ const EditChallenge = ({ showModal }) => {
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
   const [initialValues, setInitialValues] = useState(emptyValues);
   const [challengeMeta, setChallengeMeta] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     const load = async () => {
-      const res = await getDetails(`/challenge/${id}`);
-      if (res?.status) {
-        const d = res?.data || {};
-        const statusVal = d.status;
-        const statusStr =
-          statusVal === 0 || statusVal === 1
-            ? String(statusVal)
-            : statusVal === "0" || statusVal === "1"
-              ? statusVal
-              : "";
+      setLoading(true);
+      try {
+        const res = await getDetails(`/challenge/${id}`);
+        if (!cancelled && res?.status) {
+          const d = res?.data || {};
+          const statusVal = d.status;
+          const statusStr =
+            statusVal === 0 || statusVal === 1
+              ? String(statusVal)
+              : statusVal === "0" || statusVal === "1"
+                ? statusVal
+                : "";
 
-        setChallengeMeta({
-          id: d.id,
-          challenge_status: d.challenge_status,
-          challenge_progress: d.challenge_progress,
-          is_started: d.is_started,
-          execution_time: d.execution_time,
-          created_at: d.created_at,
-        });
+          setChallengeMeta({
+            id: d.id,
+            challenge_status: d.challenge_status,
+            challenge_progress: d.challenge_progress,
+            is_started: d.is_started,
+            execution_time: d.execution_time,
+            created_at: d.created_at,
+          });
 
-        setInitialValues({
-          title: d.title || "",
-          type: d.type || "",
-          image: d.image || "",
-          description: d.description || "",
-          duration: Number.isInteger(Number(d.duration))
-            ? Number(d.duration)
-            : Math.trunc(Number(d.duration)) || 1,
-          ...parseChallengeTimeFromApi(d),
-          milestone: d.milestone || "",
-          reward: Number(d.reward) || 1,
-          status: statusStr,
-          body_parts: mapApiBodyPartsToForm(d.body_parts),
-        });
+          setInitialValues({
+            title: d.title || "",
+            type: d.type || "",
+            image: d.image || "",
+            description: d.description || "",
+            duration: Number.isInteger(Number(d.duration))
+              ? Number(d.duration)
+              : Math.trunc(Number(d.duration)) || 1,
+            ...parseChallengeTimeFromApi(d),
+            milestone: d.milestone || "",
+            reward: Number(d.reward) || 1,
+            status: statusStr,
+            body_parts: mapApiBodyPartsToForm(d.body_parts),
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Unable to fetch challenge details:", error);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
+
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const handleSubmit = async (values) => {
@@ -143,6 +248,9 @@ const EditChallenge = ({ showModal }) => {
                 Edit Challenge
               </h2>
 
+              {loading ? (
+                <ChallengeEditFormSkeleton />
+              ) : (
               <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -392,6 +500,7 @@ const EditChallenge = ({ showModal }) => {
                   </form>
                 )}
               </Formik>
+              )}
             </div>
           </div>
         </div>

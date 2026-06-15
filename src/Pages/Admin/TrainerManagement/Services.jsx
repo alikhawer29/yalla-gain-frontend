@@ -145,13 +145,10 @@ const TrainerServices = ({ showModal }) => {
       <div className="container-fluid">
         <div className="dashCard doctor-services-section">
           <div className="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
-            <div className="d-flex align-items-center gap-3">
+            <h2 className="mainTitle mb-4">
               <BackButton2 />
-              <div>
-                <h2 className="mainTitle mb-1">Trainer Services</h2>
-                {/* <p className="detail-subtitle mb-0">Services offered by {doctor.name}</p> */}
-              </div>
-            </div>
+              Trainer Services
+            </h2>
           </div>
 
           <CustomTable

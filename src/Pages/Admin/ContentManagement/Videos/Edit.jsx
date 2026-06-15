@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Formik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../../Components/Layouts/AdminLayout/DashboardLayout";
@@ -13,6 +15,53 @@ import { getDetails, post } from "../../../../Services/Api";
 import ImageDropzone from "../../../../Components/ImageDropzone";
 import VideoDropzone from "../../../../Components/VideoDropzone";
 import { workoutVideoEditSchema } from "../../../../Config/Validations";
+import "./style.css";
+
+const videoEditSkeletonProps = {
+  baseColor: "rgba(255, 255, 255, 0.12)",
+  highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
+const VideoEditFormSkeleton = () => (
+  <div className="video-edit-skeleton col-12 col-xl-6 col-xxl-5">
+    {Array.from({ length: 3 }, (_, index) => (
+      <div className="mb-3" key={`video-edit-field-sk-${index}`}>
+        <Skeleton
+          width={index === 2 ? "30%" : "25%"}
+          height={18}
+          {...videoEditSkeletonProps}
+          className="mb-2"
+        />
+        <Skeleton
+          height={index === 2 ? 120 : 48}
+          borderRadius={8}
+          {...videoEditSkeletonProps}
+        />
+      </div>
+    ))}
+    {Array.from({ length: 2 }, (_, index) => (
+      <div className="mb-3" key={`video-edit-media-sk-${index}`}>
+        <Skeleton
+          width="28%"
+          height={18}
+          {...videoEditSkeletonProps}
+          className="mb-2"
+        />
+        <Skeleton
+          height={index === 0 ? 220 : 180}
+          borderRadius={12}
+          {...videoEditSkeletonProps}
+        />
+      </div>
+    ))}
+    <Skeleton
+      width={140}
+      height={44}
+      borderRadius={8}
+      {...videoEditSkeletonProps}
+    />
+  </div>
+);
 
 const EditVideo = ({ showModal }) => {
   const navigate = useNavigate();
@@ -29,40 +78,56 @@ const EditVideo = ({ showModal }) => {
   });
   const [exerciseOptions, setExerciseOptions] = useState([]);
   const [muscleId, setMuscleId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
-      const res = await getDetails(`/workout-content/video/${videoId}`);
-      if (res?.status) {
-        const d = res?.data || {};
-        setInitialValues({
-          sets: d.sets || "",
-          rest_time: d.rest_time || "",
-          description: d.description || "",
-          video: d.video || "",
-          thumbnail: d.thumbnail || "",
-          workout_content_id: d.workout_content_id || "",
-          exercise_id: d.exercise_id || "",
-        });
+    let cancelled = false;
 
-        // Load exercises for this muscle
-        if (d?.exercise?.muscle_id) {
-          const muscleId = d.exercise.muscle_id;
-          setMuscleId(muscleId);
-          const exerciseRes = await getDetails(
-            `/muscles/${muscleId}/exercises`,
-          );
-          if (exerciseRes?.status && exerciseRes?.data) {
-            const options = exerciseRes.data.map((item) => ({
-              value: item.id,
-              text: item.text,
-            }));
-            setExerciseOptions(options);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const res = await getDetails(`/workout-content/video/${videoId}`);
+        if (!cancelled && res?.status) {
+          const d = res?.data || {};
+          setInitialValues({
+            sets: d.sets || "",
+            rest_time: d.rest_time || "",
+            description: d.description || "",
+            video: d.video || "",
+            thumbnail: d.thumbnail || "",
+            workout_content_id: d.workout_content_id || "",
+            exercise_id: d.exercise_id || "",
+          });
+
+          if (d?.exercise?.muscle_id) {
+            const muscleIdValue = d.exercise.muscle_id;
+            setMuscleId(muscleIdValue);
+            const exerciseRes = await getDetails(
+              `/muscles/${muscleIdValue}/exercises`,
+            );
+            if (!cancelled && exerciseRes?.status && exerciseRes?.data) {
+              const options = exerciseRes.data.map((item) => ({
+                value: item.id,
+                text: item.text,
+              }));
+              setExerciseOptions(options);
+            }
           }
         }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Unable to fetch video details:", error);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
+
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [videoId]);
 
   const handleSubmit = async (values) => {
@@ -96,6 +161,11 @@ const EditVideo = ({ showModal }) => {
                 <BackButton2 />
                 Edit Video Content
               </h2>
+              {loading ? (
+                <div className="row">
+                  <VideoEditFormSkeleton />
+                </div>
+              ) : (
               <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -204,6 +274,7 @@ const EditVideo = ({ showModal }) => {
                   </form>
                 )}
               </Formik>
+              )}
             </div>
           </div>
         </div>

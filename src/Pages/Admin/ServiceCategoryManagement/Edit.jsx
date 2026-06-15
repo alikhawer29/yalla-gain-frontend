@@ -1,5 +1,7 @@
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import CustomInput from "../../../Components/CustomInput";
@@ -12,6 +14,51 @@ import ImageDropzone from "../../../Components/ImageDropzone";
 import { generalStatus, serviceCategoryTypeOptions } from "../../../Config/TableStatus";
 import { getDetails, post } from "../../../Services/Api";
 import { serviceCategoryEditSchema } from "../../../Config/Validations";
+import "./style.css";
+
+const categoryEditSkeletonProps = {
+    baseColor: "rgba(255, 255, 255, 0.12)",
+    highlightColor: "rgba(255, 255, 255, 0.2)",
+};
+
+const CategoryEditFormSkeleton = () => (
+    <div className="category-edit-skeleton">
+        {Array.from({ length: 3 }, (_, index) => (
+            <div className="mb-3" key={`category-edit-field-sk-${index}`}>
+                <Skeleton
+                    width="35%"
+                    height={18}
+                    {...categoryEditSkeletonProps}
+                    className="mb-2"
+                />
+                <Skeleton
+                    height={48}
+                    borderRadius={8}
+                    {...categoryEditSkeletonProps}
+                />
+            </div>
+        ))}
+        <div className="mb-3">
+            <Skeleton
+                width="30%"
+                height={18}
+                {...categoryEditSkeletonProps}
+                className="mb-2"
+            />
+            <Skeleton
+                height={180}
+                borderRadius={12}
+                {...categoryEditSkeletonProps}
+            />
+        </div>
+        <Skeleton
+            width={180}
+            height={44}
+            borderRadius={8}
+            {...categoryEditSkeletonProps}
+        />
+    </div>
+);
 
 const normalizeStatus = (value) => {
     if (value === 1 || value === "1" || value === true || String(value).toLowerCase() === "active") {
@@ -25,12 +72,16 @@ const EditServiceCategory = ({ showModal }) => {
     const { id } = useParams();
     const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
     const [initialValues, setInitialValues] = useState({ title: "", type: "", status: "", image: "" });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let cancelled = false;
+
         const loadDetails = async () => {
+            setLoading(true);
             try {
                 const res = await getDetails(`/service-category/${id}`);
-                if (res?.status) {
+                if (!cancelled && res?.status) {
                     const data = res?.data || {};
                     setInitialValues({
                         title: data?.title || data?.name || "",
@@ -40,11 +91,19 @@ const EditServiceCategory = ({ showModal }) => {
                     });
                 }
             } catch (error) {
-                console.error("Unable to fetch category details:", error);
+                if (!cancelled) {
+                    console.error("Unable to fetch category details:", error);
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
             }
         };
 
         loadDetails();
+
+        return () => {
+            cancelled = true;
+        };
     }, [id]);
 
     const handleSubmit = async (values) => {
@@ -69,6 +128,9 @@ const EditServiceCategory = ({ showModal }) => {
                     <div className="row">
                         <div className="col-12 col-xl-6 col-xxl-5">
                             <h2 className="mainTitle mb-4"><BackButton2 />Edit Category</h2>
+                            {loading ? (
+                                <CategoryEditFormSkeleton />
+                            ) : (
                             <Formik enableReinitialize initialValues={initialValues} validationSchema={serviceCategoryEditSchema} onSubmit={handleSubmit}>
                                 {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
                                     <form onSubmit={handleSubmit}>
@@ -125,6 +187,7 @@ const EditServiceCategory = ({ showModal }) => {
                                     </form>
                                 )}
                             </Formik>
+                            )}
                         </div>
                     </div>
                 </div>
