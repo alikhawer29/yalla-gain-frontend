@@ -174,29 +174,29 @@ const DoctorDetails = ({ showModal }) => {
 
     const experienceList = Array.isArray(doctor.experience)
       ? doctor.experience.map((item) => ({
-          id: item.id,
-          specialization: item.specialization || "-",
-          experience: item.experience || "-",
-        }))
+        id: item.id,
+        specialization: item.specialization || "-",
+        experience: item.experience || "-",
+      }))
       : [];
 
     const certifications =
       Array.isArray(doctor.certifications) && doctor.certifications.length
         ? doctor.certifications.map((cert) => ({
-            id: cert.id,
-            institute_name: cert.institute_name || "-",
-            certificate_title: cert.certificate_title || "-",
-            certificate_picture:
-              cert.certificate_picture || images.certificate_image,
-          }))
+          id: cert.id,
+          institute_name: cert.institute_name || "-",
+          certificate_title: cert.certificate_title || "-",
+          certificate_picture:
+            cert.certificate_picture || images.certificate_image,
+        }))
         : [
-            {
-              id: "placeholder",
-              institute_name: "-",
-              certificate_title: "-",
-              certificate_picture: images.certificate_image,
-            },
-          ];
+          {
+            id: "placeholder",
+            institute_name: "-",
+            certificate_title: "-",
+            certificate_picture: images.certificate_image,
+          },
+        ];
 
     return {
       name:
@@ -239,8 +239,7 @@ const DoctorDetails = ({ showModal }) => {
     const newStatusValue = e;
     showModal(
       `Mark as ${newStatusValue == "1" ? "Active" : "Inactive"}`,
-      `Are you sure you want to change this user's status to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `Are you sure you want to change this user's status to ${newStatusValue == "1" ? "Active" : "Inactive"
       }?`,
       () => onConfirmStatusChange(userId, newStatusValue),
     );
@@ -257,8 +256,7 @@ const DoctorDetails = ({ showModal }) => {
     fetchDoctor();
     showModal(
       "Successful",
-      `User status has been changed to ${
-        newStatusValue == "1" ? "Active" : "Inactive"
+      `User status has been changed to ${newStatusValue == "1" ? "Active" : "Inactive"
       } successfully.`,
       null,
       true,
@@ -450,13 +448,13 @@ const DoctorDetails = ({ showModal }) => {
                               </span>
                             )}
                           {label === "Specialization and Experience" &&
-                          Array.isArray(value)
+                            Array.isArray(value)
                             ? value.map((item) => (
-                                <div key={item.id}>
-                                  {item.specialization} ({item.experience}{" "}
-                                  years)
-                                </div>
-                              ))
+                              <div key={item.id}>
+                                {item.specialization} ({item.experience}{" "}
+                                years)
+                              </div>
+                            ))
                             : value}
                         </p>
                       </div>
@@ -542,9 +540,9 @@ const DoctorDetails = ({ showModal }) => {
                     key={item.id || index}
                     {...(item.id
                       ? clickableTableRowNavProps(
-                          navigate,
-                          `/admin/appointments/${item.id}`,
-                        )
+                        navigate,
+                        `/admin/appointments/${item.id}`,
+                      )
                       : {})}
                   >
                     <td>{serialNum(offset + index + 1)}</td>
@@ -558,7 +556,7 @@ const DoctorDetails = ({ showModal }) => {
                         item.created_at ||
                         "-"}
                     </td>
-                    <td>{item.amount_paid || item.charges || "-"}</td>
+                    <td>{item?.service?.charges || item.charges || "-"} Yalla Coins</td>
                     <td>
                       <BookingStatusText
                         status={

@@ -41,6 +41,9 @@ import Stats3 from "../Assets/images/svg/stats3.svg?react";
 import Stats4 from "../Assets/images/svg/stats4.svg?react";
 import Stats5 from "../Assets/images/svg/stats5.svg?react";
 import Graph from "../Assets/images/svg/Graph.svg?react";
+import GraphOpposite from "../Assets/images/svg/Graph_opposite.svg?react";
+import ArrowUp from "../Assets/images/svg/teal_up_arrow.svg?react";
+import ArrowDown from "../Assets/images/svg/teal_down_arrow.svg?react";
 
 export const images = {
   Check,
@@ -86,4 +89,7 @@ export const images = {
   Stats4,
   Stats5,
   Graph,
+  GraphOpposite,
+  ArrowUp,
+  ArrowDown,
 };

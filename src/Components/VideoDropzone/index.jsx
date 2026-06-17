@@ -58,11 +58,11 @@ const VideoDropzone = ({
         onDragOver={onDragOver}
       >
         {!preview ? (
-          <div className="dropzone-placeholder">
-            {/* <div className="icon" /> */}
-            <img src={videoIcon} alt="video" />
-            <p className="title">Upload Video</p>
-            <p className="muted">Or Drag & Drop Video</p>
+          <div className="dropzone-placeholder text-center">
+            <img src={videoIcon} alt="video" className="mb-2" />
+            <p className="title mb-0">Upload Video</p>
+            <p className="muted my-1">Or</p>
+            <p className="muted mb-0">Drag & Drop Video</p>
           </div>
         ) : (
           <div className="dropzone-preview">

@@ -120,11 +120,18 @@ const PayoutManagement = ({ filters, setFilters, pagination, updatePagination })
                                     <CustomInput
                                         label="Disbursement Time"
                                         required
-                                        placeholder="05"
+                                        placeholder="Enter Disbursement Time (in days)"
                                         name="disbursement_time"
                                         value={timeValue}
-                                        onChange={(e) => setTimeValue(e.target.value)}
-                                        type="text"
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === "" || (Number(val) >= 0 && Number(val) <= 100)) {
+                                                setTimeValue(val);
+                                            }
+                                        }}
+                                        type="number"
+                                        min={0}
+                                        max={100}
                                     />
                                 </div>
                                 <div className="col-12 col-md-4">
@@ -152,7 +159,7 @@ const PayoutManagement = ({ filters, setFilters, pagination, updatePagination })
                                     {rows.map((item, index) => (
                                         <tr key={item.id}>
                                             <td>{serialNum((filters.page - 1) * filters.per_page + index + 1)}</td>
-                                            <td>{`${item?.disbursement_days} Days`}</td>
+                                            <td>{`${item?.disbursement_days} Day${Number(item?.disbursement_days) === 1 ? '' : 's'}`}</td>
                                             <td>{item?.created_at}</td>
                                         </tr>
                                     ))}
