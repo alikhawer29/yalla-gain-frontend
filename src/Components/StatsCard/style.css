@@ -37,9 +37,11 @@
   justify-content: center;
 }
 
-.statsIcons svg {
+.statsIcons svg,
+.statsIcons .stats-icon-img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .statsText {

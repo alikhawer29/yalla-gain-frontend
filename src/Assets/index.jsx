@@ -3,6 +3,7 @@ import Check from "./images/check.png";
 import Question from "./images/question.png";
 import UserImage from "./images/user-img.png";
 import VideoIcon from "../Assets/images/send-square.png";
+import CoinsIcon from "../Assets/images/coin.png";
 
 import BellIcon from "../Assets/images/svg/bellIcon.svg?react";
 import CameraIconOutline from "../Assets/images/svg/camera-icon-outline.svg?react";
@@ -50,7 +51,7 @@ export const images = {
   Question,
   VideoIcon,
   UserImage,
-
+  CoinsIcon,
   HeartIcon,
   ChatIcon,
   BellIcon,

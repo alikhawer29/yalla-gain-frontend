@@ -7,11 +7,59 @@ import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 import {
+  coinsCommissionLogsHeaders,
   paymentLogsBookingHeaders,
   subscriptionAdminLogsHeaders,
 } from "../../../Config/TableHeaders";
 import { getAll } from "../../../Services/Api";
 import "../ReportsManagement/style.css";
+
+const formatCommissionLogUser = (user) => {
+  if (!user) return "-";
+  const name = `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim();
+  return name || user.email || "-";
+};
+
+const formatCommissionLogType = (type) => {
+  if (type === "coin_purchase") return "Coin Purchase";
+  if (type === "coin_transfer") return "Coin Transfer";
+  return type || "-";
+};
+
+const formatCommissionLogAmount = (row) => {
+  const amount = row?.amount;
+  if (amount == null || amount === "") return "-";
+  const currency = String(row?.amount_currency || "").toLowerCase();
+  if (currency === "aed") return `AED ${Number(amount).toFixed(2)}`;
+  if (currency === "coins") return `${amount} Yalla Coins`;
+  return row?.amount_currency
+    ? `${amount} ${row.amount_currency}`
+    : String(amount);
+};
+
+const formatCommissionLogCoins = (row) => {
+  if (row?.type === "coin_purchase") {
+    const coins = row?.coins_purchased ?? row?.gross_coins;
+    return coins != null ? `${coins} Yalla Coins` : "-";
+  }
+  if (row?.type === "coin_transfer") {
+    const parts = [];
+    if (row?.transfer_amount != null) {
+      parts.push(`Transfer: ${row.transfer_amount}`);
+    }
+    if (row?.total_deducted != null) {
+      parts.push(`Deducted: ${row.total_deducted}`);
+    }
+    return parts.length ? parts.join(" | ") : "-";
+  }
+  return "-";
+};
+
+const formatCommissionLogCommission = (commission) =>
+  commission != null && commission !== "" ? `${commission} AED` : "-";
+
+const formatCommissionLogPercentage = (value) =>
+  value != null && value !== "" ? `${value}%` : "-";
 
 const seedDoctorTrainer = () => {
   // Static rows as per design: S.No, Booking ID, Booking Charges, Commission, Booking Date
@@ -76,6 +124,7 @@ const tabs = [
   { key: "doctor", label: "Doctor" },
   { key: "trainer", label: "Trainer" },
   { key: "subscription", label: "Subscription" },
+  { key: "coins_commission", label: "Coins Commission" },
 ];
 
 const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
@@ -91,6 +140,58 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
 
   useEffect(() => {
     const run = async () => {
+      if (activeTab === "coins_commission") {
+        try {
+          startSubmitting();
+          const params = {
+            page: filters?.page,
+            per_page: filters?.per_page,
+            search: filters?.search || "",
+            from: filters?.from || "",
+            to: filters?.to || "",
+          };
+          const res = await getAll(`/commission-logs`, params);
+          const data = Array.isArray(res?.data) ? res.data : [];
+          const normalized = data.map((r, idx) => ({
+            id: r?.id ?? idx,
+            type: formatCommissionLogType(r?.type),
+            date: r?.date ?? r?.created_at ?? "-",
+            user: formatCommissionLogUser(r?.user),
+            recipient: formatCommissionLogUser(r?.recipient),
+            amount: formatCommissionLogAmount(r),
+            coins: formatCommissionLogCoins(r),
+            commission: formatCommissionLogCommission(r?.commission_aed),
+            commission_percentage: formatCommissionLogPercentage(
+              r?.commission_percentage,
+            ),
+          }));
+          setRows(normalized);
+
+          const meta = res?.meta ?? {};
+          const total = Number(meta?.total ?? normalized.length ?? 0);
+          const perPage = Number(meta?.per_page ?? filters?.per_page ?? 10);
+          const currentPage = Number(meta?.current_page ?? filters?.page ?? 1);
+          const to = Number(meta?.to ?? Math.min(total, currentPage * perPage));
+          updatePagination({
+            showData: to,
+            currentPage,
+            totalRecords: total,
+            totalPages: Math.max(1, Math.ceil(total / perPage)),
+          });
+        } catch (e) {
+          setRows([]);
+          updatePagination({
+            showData: 0,
+            currentPage: 1,
+            totalRecords: 0,
+            totalPages: 1,
+          });
+        } finally {
+          stopSubmitting();
+        }
+        return;
+      }
+
       if (activeTab === "subscription") {
         try {
           startSubmitting();
@@ -162,6 +263,8 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
           booking_id: r?.booking_id ?? "-",
           charges: `${r?.amount_paid ?? r?.service?.charges ?? "-"} Yalla Coins`,
           commission: `${r?.commission ?? "-"} Yalla Coins`,
+          commission_aed: `${r?.commission_aed ?? "-"} AED`,
+          commission_percentage: `${r?.commission_percentage ?? "-"} %`,
           date: r?.appointment_date ?? r?.created_at ?? "-",
           isPaid:
             typeof r?.is_paid === "boolean"
@@ -216,7 +319,10 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                     key={t.key}
                     type="button"
                     className={`btn min-width-120 ${activeTab === t.key ? "btn-primary" : "btn-secondary"}`}
-                    onClick={() => setActiveTab(t.key)}
+                    onClick={() => {
+                      setActiveTab(t.key);
+                      setFilters((prev) => ({ ...prev, page: 1 }));
+                    }}
                   >
                     {t.label}
                   </button>
@@ -230,7 +336,9 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                 headers={
                   activeTab === "subscription"
                     ? subscriptionAdminLogsHeaders
-                    : paymentLogsBookingHeaders
+                    : activeTab === "coins_commission"
+                      ? coinsCommissionLogsHeaders
+                      : paymentLogsBookingHeaders
                 }
                 pagination={pagination}
                 dateFilters={[
@@ -244,54 +352,78 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                 ]}
               >
                 <tbody>
-                  {activeTab !== "subscription"
+                  {activeTab === "coins_commission"
                     ? rows.map((item, index) => (
-                        <tr
-                          key={`${activeTab}-${index}`}
-                          {...(item.appointmentId
-                            ? clickableTableRowNavProps(
-                                navigate,
-                                `/admin/appointments/${item.appointmentId}`,
-                              )
-                            : {})}
-                        >
+                        <tr key={`commission-${item.id ?? index}`}>
                           <td>
                             {serialNum(
                               (filters.page - 1) * filters.per_page + index + 1,
                             )}
                           </td>
-                          <td>#{item.appointmentId}</td>
-                          <td>{item.charges}</td>
-                          <td>{item.commission}</td>
+                          <td>{item.type}</td>
                           <td>{item.date}</td>
-                          <td>{item.isPaid}</td>
+                          <td>{item.user}</td>
+                          {/* <td>{item.recipient}</td> */}
+                          <td>{item.amount}</td>
+                          <td>{item.coins}</td>
+                          <td>{item.commission}</td>
+                          <td>{item.commission_percentage}</td>
                         </tr>
                       ))
-                    : rows.map((item, index) => (
-                        <tr key={`sub-${index}`}>
-                          <td>
-                            {serialNum(
-                              (filters.page - 1) * filters.per_page + index + 1,
-                            )}
-                          </td>
-                          <td>{item.name}</td>
-                          <td>{item.email}</td>
-                          <td>
-                            {item.plan}
-                            {item.is_trial ? null : ` - ${item.planDuration}`}
-                          </td>
-                          <td
-                            style={{
-                              color: item.active ? "#4CD964" : "#FF5C5C",
-                            }}
+                    : activeTab !== "subscription"
+                      ? rows.map((item, index) => (
+                          <tr
+                            key={`${activeTab}-${index}`}
+                            {...(item.appointmentId
+                              ? clickableTableRowNavProps(
+                                  navigate,
+                                  `/admin/appointments/${item.appointmentId}`,
+                                )
+                              : {})}
                           >
-                            {item.active ? "Active" : "Expired"}
-                          </td>
-                          <td>{item.price}</td>
-                          <td>{item.purchase}</td>
-                          <td>{item.expiry}</td>
-                        </tr>
-                      ))}
+                            <td>
+                              {serialNum(
+                                (filters.page - 1) * filters.per_page +
+                                  index +
+                                  1,
+                              )}
+                            </td>
+                            <td>#{item.appointmentId}</td>
+                            <td>{item.charges}</td>
+                            <td>{item.commission}</td>
+                            <td>{item.commission_aed}</td>
+                            <td>{item.commission_percentage}</td>
+                            <td>{item.date}</td>
+                            <td>{item.isPaid}</td>
+                          </tr>
+                        ))
+                      : rows.map((item, index) => (
+                          <tr key={`sub-${index}`}>
+                            <td>
+                              {serialNum(
+                                (filters.page - 1) * filters.per_page +
+                                  index +
+                                  1,
+                              )}
+                            </td>
+                            <td>{item.name}</td>
+                            <td>{item.email}</td>
+                            <td>
+                              {item.plan}
+                              {item.is_trial ? null : ` - ${item.planDuration}`}
+                            </td>
+                            <td
+                              style={{
+                                color: item.active ? "#4CD964" : "#FF5C5C",
+                              }}
+                            >
+                              {item.active ? "Active" : "Expired"}
+                            </td>
+                            <td>{item.price}</td>
+                            <td>{item.purchase}</td>
+                            <td>{item.expiry}</td>
+                          </tr>
+                        ))}
                 </tbody>
               </CustomTable>
             </div>

@@ -6,6 +6,7 @@ import { images } from "../../Assets";
 
 const StatsCard = (props) => {
   const Icon = props.item.image;
+  const isImageUrl = typeof Icon === "string";
   const isEarning = String(props.item.text || "")
     .toLowerCase()
     .includes("earning");
@@ -24,11 +25,27 @@ const StatsCard = (props) => {
 
         <div className="statsMain">
           <div className={`statsIcons flex-shrink-0 statsImg-${props.index}`}>
-            <Icon />
+            {isImageUrl ? (
+              <img src={Icon} alt="" className="stats-icon-img" />
+            ) : (
+              <Icon />
+            )}
           </div>
           <h3 className="statsNumber mb-0">
-            {isEarning && <FontAwesomeIcon icon={faDollarSign} className="me-1" />}
-            {props.item.number ?? props.item.change ?? "0"}
+            {/* {isEarning && <FontAwesomeIcon icon={faDollarSign} className="me-1" />} */}
+            {props.item.number ?? props.item.change ?? "0"} {props.item.otherText ? " " : ""}
+            {props.item.otherText && (
+              <span
+                className="text-white"
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "400",
+                  textTransform: "capitalize",
+                }}
+              >
+                {props.item.otherText}
+              </span>
+            )}
           </h3>
         </div>
 

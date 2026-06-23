@@ -217,8 +217,23 @@ export const paymentLogsBookingHeaders = [
   { key: "booking_id", title: "Booking ID" },
   { key: "booking_charges", title: "Booking Charges" },
   { key: "commission", title: "Commission" },
+  { key: "commission_aed", title: "Commission AED" },
+  { key: "commission_percentage", title: "Commission %" },
   { key: "booking_date", title: "Booking Date" },
   { key: "is_paid", title: "Is Paid" },
+];
+
+// Payment Logs – coins commission tab
+export const coinsCommissionLogsHeaders = [
+  { key: "id", title: "S.No" },
+  { key: "type", title: "Type" },
+  { key: "date", title: "Date" },
+  { key: "user", title: "User" },
+  // { key: "recipient", title: "Recipient" },
+  { key: "amount", title: "Amount" },
+  { key: "coins", title: "Coins" },
+  { key: "commission", title: "Commission" },
+  { key: "commission_percentage", title: "Commission %" },
 ];
 
 // Query/Feedback logs table headers
