@@ -12,6 +12,7 @@ import {
   subscriptionAdminLogsHeaders,
 } from "../../../Config/TableHeaders";
 import { getAll } from "../../../Services/Api";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import "../ReportsManagement/style.css";
 
 const formatCommissionLogUser = (user) => {
@@ -265,7 +266,7 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
           commission: `${r?.commission ?? "-"} Yalla Coins`,
           commission_aed: `${r?.commission_aed ?? "-"} AED`,
           commission_percentage: `${r?.commission_percentage ?? "-"} %`,
-          date: r?.appointment_date ?? r?.created_at ?? "-",
+          date: getBookingLocalDate(r),
           isPaid:
             typeof r?.is_paid === "boolean"
               ? r.is_paid

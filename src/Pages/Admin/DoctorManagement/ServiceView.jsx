@@ -11,8 +11,11 @@ import BookingStatusText from "../../../Components/BookingStatusText";
 import {
   clickableTableRowNavProps,
   serialNum,
-  timeFormat,
 } from "../../../Utils/helper";
+import {
+  formatServiceSlotLocalRange,
+  getBookingLocalDate,
+} from "../../../Utils/timezone";
 import { getAll, post } from "../../../Services/Api";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { images } from "../../../Assets";
@@ -41,12 +44,6 @@ const formatDay = (value) => {
   if (!value) return "-";
   const lower = value.toString().toLowerCase();
   return lower.charAt(0).toUpperCase() + lower.slice(1);
-};
-
-const formatSlotRange = (start, end) => {
-  if (!start && !end) return "-";
-  if (start && end) return `${timeFormat(start)} - ${timeFormat(end)}`;
-  return timeFormat(start || end) || "-";
 };
 
 const serviceViewSkeletonProps = {
@@ -162,16 +159,21 @@ const DoctorServiceView = ({ showModal }) => {
         banner: images.placeholder,
         statusLabel: "Inactive",
         slots: [],
+        slotTimezone: null,
       };
     }
 
     const statusLabel = formatServiceStatus(service.status);
+    const slotTimezone =
+      service.service_slots?.find((s) => s?.timezone)?.timezone ||
+      service.timezone ||
+      null;
     const slotGroups = Array.isArray(service.service_slots)
       ? (() => {
           const slotMap = new Map();
           service.service_slots.forEach((slot) => {
             const day = formatDay(slot.day);
-            const time = formatSlotRange(slot.start_time, slot.end_time);
+            const time = formatServiceSlotLocalRange(slot);
             const entries = slotMap.get(day) || [];
             entries.push({ id: slot.id, time });
             slotMap.set(day, entries);
@@ -192,6 +194,7 @@ const DoctorServiceView = ({ showModal }) => {
       statusLabel,
       status: service.status,
       slots: slotGroups,
+      slotTimezone,
     };
   }, [service]);
 
@@ -367,7 +370,14 @@ const DoctorServiceView = ({ showModal }) => {
                 </div>
               </div>
 
-              <h4 className="f-white-color">Slots</h4>
+              <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <h4 className="f-white-color mb-0">Slots</h4>
+                {serviceDetails.slotTimezone && (
+                  <span className="text-white-50 small">
+                    Doctor timezone: {serviceDetails.slotTimezone}
+                  </span>
+                )}
+              </div>
 
               <div className="row">
                 {serviceDetails.slots.length ? (
@@ -439,8 +449,7 @@ const DoctorServiceView = ({ showModal }) => {
                     .join(" ") ||
                   item.user?.name ||
                   "-";
-                const appointmentDate =
-                  item.appointment_date || item.date || item.created_at || "-";
+                const appointmentDate = getBookingLocalDate(item);
                 const charges = item.amount_paid || item.charges || "-";
                 return (
                   <tr

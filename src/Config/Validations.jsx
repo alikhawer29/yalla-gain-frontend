@@ -483,6 +483,7 @@ export const loginValidationSchema = Yup.object().shape({
   password: Yup.string()
     // .min(8, 'Password must be at least 8 characters')
     .required("Password is required"),
+  timezone: Yup.string().required("Timezone is required"),
 });
 
 export const contactValidationSchema = Yup.object().shape({
@@ -706,6 +707,7 @@ export const adminProfileValidation = Yup.object().shape({
   phone: Yup.string()
     .required("Phone number is required")
     .matches(/^\+?[1-9]\d{1,14}$/, "Phone number is not valid"),
+  timezone: Yup.string().required("Timezone is required"),
 });
 
 export const restaurantProfileValidation = Yup.object().shape({

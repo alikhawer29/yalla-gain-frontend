@@ -13,6 +13,7 @@ import {
   serialNum,
   getCountryFlag,
 } from "../../../Utils/helper";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import { usePagination } from "../../../Hooks/usePagination";
 import { images } from "../../../Assets";
 import { doctorBookingHeaders } from "../../../Config/TableHeaders";
@@ -561,10 +562,7 @@ const TrainerDetails = ({ showModal }) => {
                       {item.service?.title || item.service_category || "-"}
                     </td>
                     <td>
-                      {item.appointment_date ||
-                        item.date ||
-                        item.created_at ||
-                        "-"}
+                      {getBookingLocalDate(item)}
                     </td>
                     <td>{item.amount_paid || item.charges || "-"}</td>
                     <td>

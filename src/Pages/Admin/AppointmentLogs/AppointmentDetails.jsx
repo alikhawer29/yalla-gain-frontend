@@ -11,8 +11,11 @@ import {
   capitalizeFirstLetter,
   dateFormat,
   getCountryFlag,
-  timeFormat,
 } from "../../../Utils/helper";
+import {
+  formatUtcToLocalDate,
+  getBookingLocalTimeRange,
+} from "../../../Utils/timezone";
 import { getDetails } from "../../../Services/Api";
 import "./style.css";
 import { images } from "../../../Assets";
@@ -157,22 +160,28 @@ const AppointmentDetails = () => {
     rawPhone.startsWith(dialingCode) || rawPhone.startsWith(`+${dialingCode}`)
       ? rawPhone
       : `${dialingCode}${rawPhone}`;
-  const formatAppointmentTimeRange = (start, end) => {
-    if (start && end) return `${timeFormat(start)} - ${timeFormat(end)}`;
-    if (start) return timeFormat(start);
-    if (end) return timeFormat(end);
-    return "-";
-  };
-  const appointmentTime = formatAppointmentTimeRange(
-    appointmentDetails?.appointment_start_time,
-    appointmentDetails?.appointment_end_time,
-  );
+  const appointmentTime = getBookingLocalTimeRange(appointmentDetails);
   const hasRescheduled = appointmentDetails?.is_rescheduled;
+  const rescheduledStartUtc =
+    appointmentDetails?.rescheduled_scheduled_start_at ||
+    appointmentDetails?.rescheduled_start_at;
+  const rescheduledEndUtc =
+    appointmentDetails?.rescheduled_scheduled_end_at ||
+    appointmentDetails?.rescheduled_end_at;
   const rescheduledTime = hasRescheduled
-    ? formatAppointmentTimeRange(
-        appointmentDetails?.rescheduled_appointment_start_time,
-        appointmentDetails?.rescheduled_appointment_end_time,
-      )
+    ? getBookingLocalTimeRange({
+        scheduled_start_at: rescheduledStartUtc,
+        scheduled_end_at: rescheduledEndUtc,
+      })
+    : "";
+  const appointmentLocalDate =
+    formatUtcToLocalDate(appointmentDetails?.scheduled_start_at) ||
+    dateFormat(appointmentDetails?.appointment_date) ||
+    "-";
+  const rescheduledLocalDate = hasRescheduled
+    ? formatUtcToLocalDate(rescheduledStartUtc) ||
+      dateFormat(appointmentDetails?.rescheduled_appointment_date) ||
+      "-"
     : "";
   const statusRaw = (appointmentDetails?.status || "").toLowerCase();
   const isRejected = statusRaw === "rejected";
@@ -238,9 +247,7 @@ const AppointmentDetails = () => {
                                   },
                                   {
                                     label: "Appointment Date:",
-                                    value: dateFormat(
-                                      appointmentDetails.appointment_date,
-                                    ),
+                                    value: appointmentLocalDate,
                                   },
                                   {
                                     label: "Appointment Time:",
@@ -251,9 +258,7 @@ const AppointmentDetails = () => {
                                         {
                                           label:
                                             "Rescheduled Appointment Date:",
-                                          value: dateFormat(
-                                            appointmentDetails.rescheduled_appointment_date,
-                                          ),
+                                          value: rescheduledLocalDate,
                                         },
                                         {
                                           label:

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getAll } from "../../../Services/Api";
 import { usePagination } from "../../../Hooks/usePagination";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import { userBookingLogsData } from "../../../Config/data";
 import "./style.css";
 
@@ -271,12 +272,7 @@ const AppointmentLogs = () => {
           item?.trainer_name ||
           "-";
 
-        const bookingDate =
-          item?.booking_date ||
-          item?.appointment_date ||
-          item?.created_at ||
-          item?.date ||
-          "-";
+        const bookingDate = getBookingLocalDate(item);
 
         const charges =
           item?.amount_paid ||

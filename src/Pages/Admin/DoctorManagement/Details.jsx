@@ -13,6 +13,7 @@ import {
   serialNum,
   getCountryFlag,
 } from "../../../Utils/helper";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import { usePagination } from "../../../Hooks/usePagination";
 import { images } from "../../../Assets";
 import { doctorBookingHeaders } from "../../../Config/TableHeaders";
@@ -551,10 +552,7 @@ const DoctorDetails = ({ showModal }) => {
                       {item.service?.title || item.service_category || "-"}
                     </td>
                     <td>
-                      {item.appointment_date ||
-                        item.date ||
-                        item.created_at ||
-                        "-"}
+                      {getBookingLocalDate(item)}
                     </td>
                     <td>{item?.service?.charges || item.charges || "-"} Yalla Coins</td>
                     <td>

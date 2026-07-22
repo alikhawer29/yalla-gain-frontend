@@ -10,6 +10,7 @@ import {
   dateFormat,
   capitalizeFirstLetter,
 } from "../../../Utils/helper";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import {
   reportsBookingHeaders,
   reportsNewsfeedHeaders,
@@ -161,8 +162,7 @@ const ReportsManagement = ({
                           ]
                             .filter(Boolean)
                             .join(" ") || "-";
-                        const bookingDate =
-                          appt?.appointment_date || appt?.created_at || "-";
+                        const bookingDate = getBookingLocalDate(appt);
                         const reportedOn = item?.created_at || "-";
                         const charges =
                           appt?.amount_paid || appt?.service?.charges || "-";

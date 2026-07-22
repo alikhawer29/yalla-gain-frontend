@@ -32,6 +32,7 @@ import {
   serialNum,
   capitalizeStatus,
 } from "../../../Utils/helper";
+import { getBookingLocalDate } from "../../../Utils/timezone";
 import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 
 const profileSkeletonProps = {
@@ -462,7 +463,7 @@ const UserDetails = ({
                     </td>
                     <td>#{item?.id}</td>
                     <td>{capitalizeStatus(item?.service?.user?.type)}</td>
-                    <td>{item?.appointment_date}</td>
+                    <td>{getBookingLocalDate(item)}</td>
                     <td>
                       {item?.payment_type === "subscription_included"
                         ? "Included in Plan"

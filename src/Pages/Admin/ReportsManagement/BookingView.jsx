@@ -7,8 +7,11 @@ import { images } from "../../../Assets";
 import {
   capitalizeFirstLetter,
   dateFormat,
-  timeFormat,
 } from "../../../Utils/helper";
+import {
+  formatUtcToLocalDate,
+  getBookingLocalTimeRange,
+} from "../../../Utils/timezone";
 import { getDetails, post } from "../../../Services/Api";
 import "./style.css";
 
@@ -253,15 +256,14 @@ const BookingView = ({ showModal, reasonModal, closeModal }) => {
                       },
                       {
                         label: "Appointment Date",
-                        value: detail?.appointment?.appointment_date,
+                        value:
+                          formatUtcToLocalDate(
+                            detail?.appointment?.scheduled_start_at,
+                          ) || detail?.appointment?.appointment_date,
                       },
                       {
                         label: "Appointment Time",
-                        value: timeFormat(
-                          detail?.appointment?.appointment_start_time,
-                        )
-                          ? `${timeFormat(detail?.appointment?.appointment_start_time)} - ${timeFormat(detail?.appointment?.appointment_end_time)}`
-                          : "-",
+                        value: getBookingLocalTimeRange(detail?.appointment),
                       },
                     ].map(({ label, value }) => (
                       <div className="col-xxl-3 col-xl-6 mb-3" key={label}>

@@ -9,6 +9,7 @@ import { setData, setRoles, setToken } from "../../Store/actions.jsx";
 import CustomButton from "../CustomButton/index.jsx";
 import CustomInput from "../CustomInput/index.jsx";
 import Toast, { showToast } from "../Toast/index.jsx";
+import { getBrowserTimezone } from "../../Utils/timezone.js";
 import "./style.css";
 import { Form } from "react-bootstrap";
 
@@ -30,8 +31,12 @@ const LoginForm = ({
 
         try {
             // Making the login API call
+            const payload = {
+                ...values,
+                timezone: values.timezone || getBrowserTimezone(),
+            };
 
-            let response = await login(apiEndpoint, values);
+            let response = await login(apiEndpoint, payload);
             if (response?.data?.message == 'Login successfully') {
                 // Assuming response.message contains the success message
                 showToast(response.message, "success"); // Show success toast
@@ -56,6 +61,7 @@ const LoginForm = ({
             initialValues={{
                 email: "",
                 password: "",
+                timezone: getBrowserTimezone(),
                 ...additionalField,
             }}
             validationSchema={validationSchema}

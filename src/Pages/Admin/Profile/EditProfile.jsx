@@ -7,12 +7,17 @@ import { images } from "../../../Assets";
 import BackButton2 from "../../../Components/BackButton/BackButton2";
 import CustomButton from "../../../Components/CustomButton";
 import CustomInput from "../../../Components/CustomInput";
+import { Select } from "../../../Components/Select";
 import { DashboardLayout } from "../../../Components/Layouts/AdminLayout/DashboardLayout";
 import { adminProfileValidation } from "../../../Config/Validations";
 import withModal from "../../../HOC/withModal";
 import { useAuth } from "../../../Hooks/useAuth";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { validateImage } from "../../../Utils/helper";
+import {
+  getBrowserTimezone,
+  timezoneSelectOptions,
+} from "../../../Utils/timezone";
 import "./style.css";
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { post } from "../../../Services/Api";
@@ -69,6 +74,7 @@ const EditProfile = ({ showModal }) => {
         values.phone = phone;
         values.dialing_code = dialing;
         values.country_code = country;
+        values.timezone = values.timezone || getBrowserTimezone();
 
         let response = await post("/profile/update", values);
 
@@ -109,7 +115,11 @@ const EditProfile = ({ showModal }) => {
                                             last_name: profileData.last_name || "",
                                             phone: profileData.phone ? profileData.dialing_code + profileData.phone : "",
                                             email: profileData.email || "",
+                                            timezone:
+                                              profileData.timezone ||
+                                              getBrowserTimezone(),
                                         }}
+                                        enableReinitialize
                                         validationSchema={adminProfileValidation}
                                         onSubmit={handleSubmit}
                                     >
@@ -181,10 +191,34 @@ const EditProfile = ({ showModal }) => {
                                                                     />
                                                                     {touched.phone && errors.phone ? <div className="text-danger">{errors.phone}</div> : null}
                                                                 </div>
-                                                                {/* <div className="col-12 my-1">
-                                  <label className="mainLabel mb-0">Email Address</label>
-                                  <p className="grayColor">{values?.email}</p>
-                                </div> */}
+                                                                <div className="col-12 my-1">
+                                                                    <Select
+                                                                      label="Timezone"
+                                                                      labelclass="mainLabel"
+                                                                      required
+                                                                      id="timezone"
+                                                                      name="timezone"
+                                                                      value={values.timezone}
+                                                                      onChange={(value) =>
+                                                                        setFieldValue(
+                                                                          "timezone",
+                                                                          value,
+                                                                        )
+                                                                      }
+                                                                      onBlur={() =>
+                                                                        setFieldTouched(
+                                                                          "timezone",
+                                                                          true,
+                                                                        )
+                                                                      }
+                                                                      error={
+                                                                        touched.timezone &&
+                                                                        errors.timezone
+                                                                      }
+                                                                    >
+                                                                      {timezoneSelectOptions}
+                                                                    </Select>
+                                                                </div>
                                                             </div>
 
                                                             <div className="row mt-4">

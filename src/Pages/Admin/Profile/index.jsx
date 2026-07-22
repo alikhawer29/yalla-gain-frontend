@@ -59,6 +59,12 @@ const Profile = () => {
                                                 </p>
                                             </div>
                                         </div>
+                                        <div className="col-xl-4 col-lg-6 mb-3">
+                                            <div className="detail-box">
+                                                <h6 className="">Timezone</h6>
+                                                <p className="">{user?.timezone || "-"}</p>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="d-flex gap-3 flex-wrap">
