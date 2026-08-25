@@ -58,15 +58,30 @@ export const Select = (props) => {
         >
           {props?.mainLabel && <option value="">{props?.mainLabel}</option>}
 
-          {props?.children?.map((item) => (
-            <option
-              key={item?.value}
-              value={item?.value}
-              disabled={!item?.value}
-            >
-              {item?.text}
-            </option>
-          ))}
+          {props?.children?.map((item) => {
+            const optionValue = item?.value;
+            const isEmptyValue =
+              optionValue === "" ||
+              optionValue === null ||
+              optionValue === undefined;
+            const isAllOption =
+              String(item?.text ?? "")
+                .trim()
+                .toLowerCase() === "all";
+            // Empty placeholders ("Select…") stay disabled; "All" with "" must stay selectable for filters.
+            const disabled =
+              item?.disabled === true || (isEmptyValue && !isAllOption);
+
+            return (
+              <option
+                key={optionValue}
+                value={optionValue}
+                disabled={disabled}
+              >
+                {item?.text}
+              </option>
+            );
+          })}
         </select>
 
         {/* <FontAwesomeIcon icon={faChevronDown} className="chevron-icon" /> */}

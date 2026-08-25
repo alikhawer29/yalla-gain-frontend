@@ -16,6 +16,13 @@ import { getAll, post } from "../../../Services/Api";
 const isRowActiveStatus = (status) =>
   status === 1 || status === true || status === "1";
 
+/** Omit All/empty status so the API returns every user, not Inactive. */
+const toUserListParams = (filters) => {
+  const params = { ...filters };
+  if (!params.status || params.status === "all") delete params.status;
+  return params;
+};
+
 const UserManagement = ({
   showModal,
   filters,
@@ -29,7 +36,7 @@ const UserManagement = ({
 
   const { data: usersResponse, isLoading, error, refetch } = useQuery({
     queryKey: ['users', filters],
-    queryFn: () => getAll(`/users`, filters),
+    queryFn: () => getAll(`/users`, toUserListParams(filters)),
   });
 
   // Update pagination when data changes
