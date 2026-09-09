@@ -88,7 +88,7 @@ const ContentManagement = ({
                     className="btn btn-primary"
                     onClick={() => navigate("/admin/content-management/add")}
                   >
-                    Add Content
+                    Add Content Category
                   </button>
                 </div>
               </div>

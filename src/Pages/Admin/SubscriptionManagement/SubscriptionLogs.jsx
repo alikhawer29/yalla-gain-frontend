@@ -7,7 +7,7 @@ import { subscriptionAdminLogsHeaders } from "../../../Config/TableHeaders";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { serialNum } from "../../../Utils/helper";
-import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
+import { formatSubscriptionPlanDisplayName, toSubscriptionLogParams } from "../../../Utils/subscriptionLogHelpers";
 import { getAll } from "../../../Services/Api";
 
 const SubscriptionLogs = ({ filters, setFilters, pagination, updatePagination }) => {
@@ -17,7 +17,7 @@ const SubscriptionLogs = ({ filters, setFilters, pagination, updatePagination })
     const fetchLogs = async () => {
         try {
             startSubmitting(true);
-            const response = await getAll(`/subscription-logs`, filters);
+            const response = await getAll(`/subscription-logs`, toSubscriptionLogParams(filters));
             if (response.status) {
                 const { data } = response;
                 const { total, per_page, current_page, to } = response.meta;

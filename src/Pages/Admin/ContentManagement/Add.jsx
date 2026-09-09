@@ -65,7 +65,7 @@ const AddContent = ({ showModal }) => {
         <div className="dashCard">
           <h2 className="mainTitle mb-4">
             <BackButton2 />
-            Add Workout Content
+            Add Content Category
           </h2>
 
           <Formik

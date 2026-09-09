@@ -33,7 +33,7 @@ import {
   capitalizeStatus,
 } from "../../../Utils/helper";
 import { getBookingLocalDate } from "../../../Utils/timezone";
-import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
+import { formatSubscriptionPlanDisplayName, toSubscriptionLogParams } from "../../../Utils/subscriptionLogHelpers";
 
 const profileSkeletonProps = {
   baseColor: "#e8e8e8",
@@ -96,7 +96,7 @@ const UserDetails = ({
   const { data: subscriptionResponse, isLoading: subscriptionLoading } =
     useQuery({
       queryKey: ["subscription-logs", id, subscriptionFilters],
-      queryFn: () => getAll(`/subscription-logs/${id}`, subscriptionFilters),
+      queryFn: () => getAll(`/subscription-logs/${id}`, toSubscriptionLogParams(subscriptionFilters)),
       enabled: !!id,
     });
 

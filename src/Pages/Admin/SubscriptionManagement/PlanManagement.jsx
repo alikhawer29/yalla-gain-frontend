@@ -34,7 +34,19 @@ const PlanManagement = ({
   const fetchPlans = async () => {
     try {
       startSubmitting(true);
-      const response = await getAll(`/plans`, filters);
+      const { search, page, per_page, status, fromDate, toDate, from, to } =
+        filters;
+      const params = {
+        search: search || "",
+        page: page || 1,
+        per_page: per_page || 10,
+        from: from || fromDate || "",
+        to: to || toDate || "",
+      };
+      if (status === "1" || status === "0") params.status = status;
+      if (!params.from) delete params.from;
+      if (!params.to) delete params.to;
+      const response = await getAll(`/plans`, params);
       if (response.status) {
         const { data } = response;
         const { total, per_page, current_page, to } = response.meta;
@@ -116,8 +128,8 @@ const PlanManagement = ({
                 dateFilters={[
                   {
                     title: "Date",
-                    from: "fromDate",
-                    to: "toDate",
+                    from: "from",
+                    to: "to",
                     fromTitle: "Created On",
                     toTitle: "Created To",
                   },
@@ -128,8 +140,8 @@ const PlanManagement = ({
                     title: "status",
                     options: [
                       { value: "", text: "All" },
-                      { value: "Active", text: "Active" },
-                      { value: "Inactive", text: "Inactive" },
+                      { value: "1", text: "Active" },
+                      { value: "0", text: "Inactive" },
                     ],
                   },
                 ]}
