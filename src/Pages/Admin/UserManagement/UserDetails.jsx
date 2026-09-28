@@ -238,7 +238,7 @@ const UserDetails = ({
 
   // Memoized detail fields
   const detailFields = useMemo(() => {
-    const { email, phone, first_name, last_name, dob, dialing_code } =
+    const { email, phone, first_name, last_name, dob, dialing_code, unique_code } =
       profileData;
     const displayName = [first_name, last_name]
       .filter(Boolean)
@@ -246,6 +246,7 @@ const UserDetails = ({
       .trim();
     const displayPhone = [dialing_code, phone].filter(Boolean).join("");
     return [
+      { label: "User's Unique Id", value: unique_code ?? "—" },
       { label: "User Name", value: displayName || "—" },
       { label: "Phone Number", value: displayPhone || "—", isPhone: true },
       // { label: "Date Of Birth", value: dob ?? "—" },

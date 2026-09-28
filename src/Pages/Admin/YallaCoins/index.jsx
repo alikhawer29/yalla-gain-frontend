@@ -11,6 +11,27 @@ import { getAll } from "../../../Services/Api";
 // API endpoint for coin logs
 const COIN_LOGS_ROUTE = "/coin-logs";
 
+/** Base purchase amount in AED (excludes transaction commission). */
+const formatBasePrice = (item) => {
+  const amountPaid = Number(item?.amount_paid);
+  const totalCharge = Number(item?.total_charge_aed);
+  const commissionAed = Number(item?.commission_aed);
+
+  let base = Number.isFinite(amountPaid) ? amountPaid : 0;
+
+  // Older rows may have stored the card total in amount_paid; recover the base.
+  if (
+    Number.isFinite(totalCharge) &&
+    Number.isFinite(commissionAed) &&
+    Math.abs(amountPaid - totalCharge) < 0.01 &&
+    commissionAed > 0
+  ) {
+    base = Math.max(0, totalCharge - commissionAed);
+  }
+
+  return `AED ${base.toFixed(2).replace(/\.00$/, "")}`;
+};
+
 const InAppCoinManagement = ({
   filters,
   setFilters,
@@ -35,10 +56,11 @@ const InAppCoinManagement = ({
         const list = (res?.data || []).map((item) => ({
           id: item?.id,
           full_name:
-            `${item?.user?.first_name ?? ""} ${item?.user?.last_name ?? ""}`.trim(),
+            `${item?.user?.first_name ?? ""} ${item?.user?.last_name ?? ""}`.trim() ||
+            "-",
           email: item?.user?.email ?? "-",
           coins: item?.coins ?? 0,
-          price: `AED ${item?.amount_paid ?? 0}`,
+          price: formatBasePrice(item),
           purchase_date: item?.created_at ?? "-",
         }));
 
@@ -81,12 +103,12 @@ const InAppCoinManagement = ({
       <div className="container-fluid">
         <div className="dashCard">
           <div className="d-flex justify-content-between align-items-center mb-2">
-            <h2 className="mainTitle mb-0">In App Coin Management</h2>
+            <h2 className="mainTitle mb-0">Yalla Coin Logs</h2>
             <button
               className="btn btn-primary"
               onClick={() => navigate(`/admin/yalla-coins/manage`)}
             >
-              Coin Managment
+              Coin Management
             </button>
           </div>
           <CustomTable

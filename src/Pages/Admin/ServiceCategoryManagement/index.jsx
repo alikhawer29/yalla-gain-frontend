@@ -9,7 +9,7 @@ import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
 import { serviceCategoryHeaders } from "../../../Config/TableHeaders";
-import { getAll, post } from "../../../Services/Api";
+import { deleteRequest, getAll, post } from "../../../Services/Api";
 
 const formatType = (value = "") => {
   if (!value) return "-";
@@ -40,15 +40,17 @@ const ServiceCategoryManagement = ({
   const [rows, setRows] = useState([]);
   const [reloadKey, setReloadKey] = useState(0);
 
-  const requestParams = useMemo(
-    () => ({
+  const requestParams = useMemo(() => {
+    const params = {
       ...filters,
       search: filters?.search || "",
       from: filters?.from || filters?.fromDate || "",
       to: filters?.to || filters?.toDate || "",
-    }),
-    [filters],
-  );
+    };
+    if (!params.status || params.status === "all") delete params.status;
+    if (!params.type || params.type === "all") delete params.type;
+    return params;
+  }, [filters]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -127,6 +129,8 @@ const ServiceCategoryManagement = ({
     requestParams.search,
     requestParams.from,
     requestParams.to,
+    requestParams.status,
+    requestParams.type,
     reloadKey,
   ]);
 
@@ -154,6 +158,47 @@ const ServiceCategoryManagement = ({
         "Error",
         "Unable to change category status at the moment.",
         null,
+        true,
+      );
+    }
+  };
+
+  const handleDelete = (item) => {
+    const title = item?.title || item?.name || "this category";
+    showModal(
+      "Delete Category",
+      `Are you sure you want to delete ${title}?`,
+      () => onConfirmDelete(item?.id),
+    );
+  };
+
+  const onConfirmDelete = async (id) => {
+    try {
+      const response = await deleteRequest(`/service-category/${id}/delete`);
+      if (response?.status) {
+        setReloadKey((prev) => prev + 1);
+        showModal(
+          null,
+          response?.message || "Service category deleted successfully.",
+          null,
+          true,
+        );
+      } else {
+        showModal(
+          "Error",
+          response?.message || "Unable to delete this category.",
+          null,
+          false,
+          true,
+        );
+      }
+    } catch (error) {
+      console.error("Unable to delete category:", error);
+      showModal(
+        "Error",
+        "Unable to delete this category at the moment.",
+        null,
+        false,
         true,
       );
     }
@@ -196,6 +241,26 @@ const ServiceCategoryManagement = ({
                 toTitle: "To",
               },
             ]}
+            selectOptions={[
+              {
+                main_title: "Filter by status",
+                title: "status",
+                options: [
+                  { value: "", text: "All" },
+                  { value: "1", text: "Active" },
+                  { value: "0", text: "Inactive" },
+                ],
+              },
+              {
+                main_title: "Filter by type",
+                title: "type",
+                options: [
+                  { value: "", text: "All" },
+                  { value: "doctor", text: "Doctor" },
+                  { value: "trainer", text: "Trainer" },
+                ],
+              },
+            ]}
           >
             <tbody>
               {rows.map((item, index) => {
@@ -231,6 +296,15 @@ const ServiceCategoryManagement = ({
                       >
                         {statusOptions}
                       </Select>
+                    </td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => handleDelete(item)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 );

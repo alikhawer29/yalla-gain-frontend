@@ -129,6 +129,7 @@ export const serviceCategoryHeaders = [
   { key: "type", title: "Type" },
   { key: "created_at", title: "Creation Date" },
   { key: "status", title: "Status" },
+  { key: "action", title: "Action" },
 ];
 export const subscriptionLogsHeaders = [
   {
@@ -298,11 +299,11 @@ export const contentVideoHeaders = [
 // Yalla coin logs (in-app and management)
 export const inAppCoinHeaders = [
   { key: "id", title: "S.No" },
-  { key: "full_name", title: "Full Name" },
-  { key: "email", title: "Email Address" },
-  { key: "coins", title: "Yalla Coins" },
+  { key: "full_name", title: "Name" },
+  { key: "email", title: "Email" },
+  { key: "coins", title: "Coins" },
   { key: "price", title: "Price" },
-  { key: "purchase_date", title: "Purchase date" },
+  { key: "purchase_date", title: "Date" },
 ];
 
 export const coinManagementHeaders = [

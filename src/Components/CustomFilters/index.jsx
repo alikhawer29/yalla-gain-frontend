@@ -35,6 +35,10 @@ const CustomFilters = (props) => {
       [name]: value,
     };
 
+    if (name === "search" || name === "per_page") {
+      updatedFormData.page = 1;
+    }
+
     setFormData(updatedFormData);
 
     if (name === "search") {
@@ -58,13 +62,19 @@ const CustomFilters = (props) => {
     const updatedFormData = {
       ...formData,
       [name]: checked,
+      page: 1,
     };
     setFormData(updatedFormData);
     debouncedSetFilters(updatedFormData);
   };
 
   const handleApply = () => {
-    props.setFilters(formData);
+    const updatedFormData = {
+      ...formData,
+      page: 1,
+    };
+    setFormData(updatedFormData);
+    props.setFilters(updatedFormData);
     setFilterMenuOpen(false);
   };
 

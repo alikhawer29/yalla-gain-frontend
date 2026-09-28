@@ -7,7 +7,7 @@ import BackButton2 from "../../../Components/BackButton/BackButton2";
 import withModal from "../../../HOC/withModal";
 import { Select } from "../../../Components/Select";
 import { statusOptions } from "../../../Config/TableStatus";
-import { getDetails, post } from "../../../Services/Api";
+import { deleteRequest, getDetails, post } from "../../../Services/Api";
 import CustomButton from "../../../Components/CustomButton";
 import "./style.css";
 
@@ -107,6 +107,46 @@ const ServiceCategoryView = ({ showModal }) => {
         "Error",
         "Unable to change category status at the moment.",
         null,
+        true,
+      );
+    }
+  };
+
+  const handleDelete = () => {
+    const title = data?.title || data?.name || "this category";
+    showModal(
+      "Delete Category",
+      `Are you sure you want to delete ${title}?`,
+      () => onConfirmDelete(),
+    );
+  };
+
+  const onConfirmDelete = async () => {
+    try {
+      const response = await deleteRequest(`/service-category/${id}/delete`);
+      if (response?.status) {
+        showModal(
+          null,
+          response?.message || "Service category deleted successfully.",
+          () => navigate("/admin/service-category-management"),
+          true,
+        );
+      } else {
+        showModal(
+          "Error",
+          response?.message || "Unable to delete this category.",
+          null,
+          false,
+          true,
+        );
+      }
+    } catch (error) {
+      console.error("Unable to delete category:", error);
+      showModal(
+        "Error",
+        "Unable to delete this category at the moment.",
+        null,
+        false,
         true,
       );
     }
@@ -217,13 +257,23 @@ const ServiceCategoryView = ({ showModal }) => {
                     </div>
                   </div>
 
-                  <CustomButton
-                    text="Edit Category"
-                    variant="primary"
-                    onClick={() =>
-                      navigate(`/admin/service-category-management/${id}/edit`)
-                    }
-                  />
+                  <div className="d-flex align-items-center gap-3">
+                    <CustomButton
+                      text="Edit Category"
+                      variant="primary"
+                      onClick={() =>
+                        navigate(
+                          `/admin/service-category-management/${id}/edit`,
+                        )
+                      }
+                    />
+                    <CustomButton
+                      type="button"
+                      text="Delete"
+                      variant="secondary"
+                      onClick={handleDelete}
+                    />
+                  </div>
                 </>
               )}
             </div>
