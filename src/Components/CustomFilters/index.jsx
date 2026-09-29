@@ -226,7 +226,7 @@ const CustomFilters = (props) => {
                               onChange={(value) =>
                                 handleChange(option.title, value)
                               }
-                              label={`${option?.title}`}
+                              label={option?.label || option?.title}
                             >
                               {option?.options}
                             </Select>

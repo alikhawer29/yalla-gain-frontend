@@ -128,11 +128,19 @@ const tabs = [
   { key: "coins_commission", label: "Coins Commission" },
 ];
 
+const isPaidFilterOptions = [
+  { value: "", text: "All" },
+  { value: "1", text: "Yes" },
+  { value: "0", text: "No" },
+];
+
 const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("doctor");
   const [rows, setRows] = useState([]);
   const { isSubmitting, startSubmitting, stopSubmitting } = useFormStatus();
+
+  const isBookingTab = activeTab === "doctor" || activeTab === "trainer";
 
   const allRows = useMemo(() => {
     if (activeTab === "subscription") return seedSubscriptions();
@@ -253,29 +261,39 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
           from: filters?.from || "",
           to: filters?.to || "",
           type: activeTab, // doctor | trainer
+          ...(filters?.is_paid !== undefined &&
+          filters?.is_paid !== null &&
+          String(filters.is_paid) !== ""
+            ? { is_paid: filters.is_paid }
+            : {}),
         };
         const res = await getAll(`/appointments/all-bookings`, params);
         const data = Array.isArray(res?.data) ? res.data : [];
 
         // Normalize for view
-        const normalized = data.map((r, idx) => ({
-          id: r?.id ?? idx,
-          appointmentId: r?.id ?? null,
-          booking_id: r?.booking_id ?? "-",
-          charges: `${r?.amount_paid ?? r?.service?.charges ?? "-"} Yalla Coins`,
-          commission: `${r?.commission ?? "-"} Yalla Coins`,
-          commission_aed: `${r?.commission_aed ?? "-"} AED`,
-          commission_percentage: `${r?.commission_percentage ?? "-"} %`,
-          date: getBookingLocalDate(r),
-          isPaid:
-            typeof r?.is_paid === "boolean"
-              ? r.is_paid
-                ? "Yes"
-                : "No"
-              : r?.is_paid
-                ? "Yes"
-                : "No",
-        }));
+        const normalized = data.map((r, idx) => {
+          const includedInPlan = r?.payment_type === "subscription_included";
+          return {
+            id: r?.id ?? idx,
+            appointmentId: r?.id ?? null,
+            booking_id: r?.booking_id ?? "-",
+            charges: includedInPlan
+              ? "Included in Plan"
+              : `${r?.amount_paid ?? r?.service?.charges ?? "-"} Yalla Coins`,
+            commission: `${r?.commission ?? "-"} Yalla Coins`,
+            commission_aed: `${r?.commission_aed ?? "-"} AED`,
+            commission_percentage: `${r?.commission_percentage ?? "-"} %`,
+            date: getBookingLocalDate(r),
+            isPaid:
+              typeof r?.is_paid === "boolean"
+                ? r.is_paid
+                  ? "Yes"
+                  : "No"
+                : r?.is_paid
+                  ? "Yes"
+                  : "No",
+          };
+        });
         setRows(normalized);
 
         const meta = res?.meta ?? {};
@@ -322,7 +340,11 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                     className={`btn min-width-120 ${activeTab === t.key ? "btn-primary" : "btn-secondary"}`}
                     onClick={() => {
                       setActiveTab(t.key);
-                      setFilters((prev) => ({ ...prev, page: 1 }));
+                      setFilters((prev) => ({
+                        ...prev,
+                        page: 1,
+                        is_paid: "",
+                      }));
                     }}
                   >
                     {t.label}
@@ -342,6 +364,18 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
                       : paymentLogsBookingHeaders
                 }
                 pagination={pagination}
+                selectOptions={
+                  isBookingTab
+                    ? [
+                        {
+                          main_title: "Filter by Is Paid",
+                          title: "is_paid",
+                          label: "Is Paid",
+                          options: isPaidFilterOptions,
+                        },
+                      ]
+                    : undefined
+                }
                 dateFilters={[
                   {
                     title: "Date",
@@ -435,5 +469,5 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
   );
 };
 
-const additionalFilters = { from: "", to: "" };
+const additionalFilters = { from: "", to: "", is_paid: "" };
 export default withFilters(PaymentLogs, additionalFilters);
