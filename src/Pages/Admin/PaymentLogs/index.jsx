@@ -5,6 +5,7 @@ import CustomTable from "../../../Components/CustomTable";
 import withFilters from "../../../HOC/withFilters";
 import { useFormStatus } from "../../../Hooks/useFormStatus";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
+import { formatAppointmentChargesDisplay } from "../../../Utils/appointmentCharges";
 import { formatSubscriptionPlanDisplayName } from "../../../Utils/subscriptionLogHelpers";
 import {
   coinsCommissionLogsHeaders,
@@ -272,14 +273,11 @@ const PaymentLogs = ({ filters, setFilters, pagination, updatePagination }) => {
 
         // Normalize for view
         const normalized = data.map((r, idx) => {
-          const includedInPlan = r?.payment_type === "subscription_included";
           return {
             id: r?.id ?? idx,
             appointmentId: r?.id ?? null,
             booking_id: r?.booking_id ?? "-",
-            charges: includedInPlan
-              ? "Included in Plan"
-              : `${r?.amount_paid ?? r?.service?.charges ?? "-"} Yalla Coins`,
+            charges: formatAppointmentChargesDisplay(r),
             commission: `${r?.commission ?? "-"} Yalla Coins`,
             commission_aed: `${r?.commission_aed ?? "-"} AED`,
             commission_percentage: `${r?.commission_percentage ?? "-"} %`,

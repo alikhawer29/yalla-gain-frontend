@@ -16,6 +16,7 @@ import {
   formatUtcToLocalDate,
   getBookingLocalTimeRange,
 } from "../../../Utils/timezone";
+import { formatAppointmentChargesDisplay } from "../../../Utils/appointmentCharges";
 import { getDetails } from "../../../Services/Api";
 import "./style.css";
 import { images } from "../../../Assets";
@@ -269,12 +270,9 @@ const AppointmentDetails = () => {
                                     : []),
                                   {
                                     label: "Appointment Charges:",
-                                    value:
-                                      appointmentDetails?.payment_type ===
-                                      "subscription_included"
-                                        ? `Included in Plan`
-                                        : `${appointmentDetails.amount_paid} Yalla Coins` ||
-                                          "-",
+                                    value: formatAppointmentChargesDisplay(
+                                      appointmentDetails,
+                                    ),
                                   },
                                   {
                                     label: "Sub Category:",

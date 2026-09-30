@@ -33,6 +33,7 @@ import {
   capitalizeStatus,
 } from "../../../Utils/helper";
 import { getBookingLocalDate } from "../../../Utils/timezone";
+import { formatAppointmentChargesDisplay } from "../../../Utils/appointmentCharges";
 import { formatSubscriptionPlanDisplayName, toSubscriptionLogParams } from "../../../Utils/subscriptionLogHelpers";
 
 const profileSkeletonProps = {
@@ -466,11 +467,7 @@ const UserDetails = ({
                     <td>{capitalizeStatus(item?.service?.user?.type)}</td>
                     <td>{getBookingLocalDate(item)}</td>
                     <td>
-                      {item?.payment_type === "subscription_included"
-                        ? "Included in Plan"
-                        : item?.amount_paid != null && item?.amount_paid !== ""
-                          ? `${item.amount_paid} Yalla Coins`
-                          : "—"}
+                      {formatAppointmentChargesDisplay(item)}
                     </td>
                     <td>
                       <BookingStatusText status={item?.status} variant="text" />

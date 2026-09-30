@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getAll } from "../../../Services/Api";
 import { usePagination } from "../../../Hooks/usePagination";
 import { clickableTableRowNavProps, serialNum } from "../../../Utils/helper";
+import { formatAppointmentChargesDisplay } from "../../../Utils/appointmentCharges";
 import { getBookingLocalDate } from "../../../Utils/timezone";
 import { userBookingLogsData } from "../../../Config/data";
 import "./style.css";
@@ -274,13 +275,6 @@ const AppointmentLogs = () => {
 
         const bookingDate = getBookingLocalDate(item);
 
-        const charges =
-          item?.amount_paid ||
-          item?.amount ||
-          item?.charges ||
-          item?.service?.charges ||
-          "-";
-
         return {
           key: item?.id ?? `${bookingId}-${index}`,
           appointmentId: item?.id,
@@ -290,8 +284,7 @@ const AppointmentLogs = () => {
           serviceCategory,
           providerName,
           bookingDate,
-          charges,
-          paymentType: item?.payment_type,
+          chargesDisplay: formatAppointmentChargesDisplay(item),
         };
       }),
     [records, startIndex],
@@ -365,12 +358,7 @@ const AppointmentLogs = () => {
                     <td>{row.serviceCategory}</td>
                     <td>{row.providerName}</td>
                     <td>{row.bookingDate}</td>
-                    <td>
-                      {" "}
-                      {row.paymentType === "subscription_included"
-                        ? `Included in Plan`
-                        : `${row.charges} Yalla Coins` || "-"}
-                    </td>
+                    <td>{row.chargesDisplay || "-"}</td>
                   </tr>
                 ))
               ) : (
